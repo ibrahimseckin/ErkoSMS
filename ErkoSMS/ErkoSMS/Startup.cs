@@ -1,7 +1,7 @@
 ﻿using ErkoSMS.Enums;
 using ErkoSMS.Models;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
+using AspNet.Identity.SQLite;
 using Microsoft.Owin;
 using Owin;
 
@@ -19,9 +19,9 @@ namespace ErkoSMS
         // In this method we will create default User roles and Admin user for login    
         private void createRolesandUsers()
         {
-            ApplicationDbContext context = new ApplicationDbContext();
+            ApplicationDbContext context = new ApplicationDbContext("DefaultConnection");
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
-            var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+            var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser, IdentityRole>(context));
 
             if (!roleManager.RoleExists(UserType.Administrator.ToString()))
             {
