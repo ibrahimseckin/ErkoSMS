@@ -6,7 +6,6 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -20,16 +19,19 @@
                 @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>
-    <div class="container body-content">
+    <!-- Sidebar -->
+    <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:17%">
+        <div style="padding:20px">
+            @Html.ActionLink("Home", "Index", "Home", htmlAttributes: new { @class = "w3-bar-item w3-button leftMenu" })
+            @Html.ActionLink("About", "About", "Home", htmlAttributes: new { @class = "w3-bar-item w3-button leftMenu" })
+            @Html.ActionLink("Contact", "Contact", "Home", htmlAttributes: new { @class = "w3-bar-item w3-button leftMenu" })
+        </div>
+    </div>
+    <div class="container" style="margin-left:20%">
         @RenderBody()
         <hr />
         <footer>
