@@ -7,6 +7,9 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -24,15 +27,11 @@
             </div>
         </div>
     </div>
-    <!-- Sidebar -->
-    <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:17%">
 
-        <div style="padding:20px">
-            @Html.ActionLink("Home", "Index", "Home", new { area = "" }, htmlAttributes: new { @class = "w3-bar-item w3-button leftMenu", data_nav = "Home Page" })
-            @Html.ActionLink("About", "About", "Home", new { area = "" }, htmlAttributes: new { @class = "w3-bar-item w3-button leftMenu", data_nav = "About" })
-            @Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, htmlAttributes: new { @class = "w3-bar-item w3-button leftMenu", data_nav = "Contact" })
-        </div>
+    <div style="width:17%">
+        @Html.Action("LeftMenu", "Home", new { selectedMenu = ViewBag.Title });
     </div>
+   
     <div class="container" style="margin-left:20%">
         @RenderBody()
         <hr />
@@ -40,15 +39,6 @@
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>
     </div>
-
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
 </body>
 </html>
-<script>
-    $(document).ready(function () {
-        $("[data-nav='@ViewBag.Title']").addClass("w3-green");
-    });
 
-</script>

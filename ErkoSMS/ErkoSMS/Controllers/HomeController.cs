@@ -29,5 +29,43 @@ namespace ErkoSMS.Controllers
 
             return View();
         }
+
+        public ActionResult LeftMenu(string selectedMenu)
+        {
+            ViewBag.Role = GetUserRole();
+            ViewBag.SelectedMenu = selectedMenu;
+            return PartialView("_LeftMenu");
+        }
+
+        private string GetUserRole()
+        {
+            if (User.IsInRole(UserType.Administrator.ToString()))
+            {
+                return UserType.Administrator.ToString();
+            }
+            if (User.IsInRole(UserType.Accountant.ToString()))
+            {
+                return UserType.Accountant.ToString();
+            }
+            if (User.IsInRole(UserType.Purchaser.ToString()))
+            {
+                return UserType.Purchaser.ToString();
+            }
+            if (User.IsInRole(UserType.SalesMan.ToString()))
+            {
+                return UserType.SalesMan.ToString();
+            }
+            if (User.IsInRole(UserType.WareHouseMan.ToString()))
+            {
+                return UserType.WareHouseMan.ToString();
+            }
+
+            return "";
+
+        }
+
+
+
+
     }
 }
