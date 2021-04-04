@@ -1,16 +1,15 @@
-﻿
+﻿@model ErkoSMS.ViewModels.LeftMenuViewModel
 <div class="w3-sidebar w3-light-grey w3-bar-block">
-    <p> @ViewBag.Role</p>
     <div style="padding:20px">
-        @Html.ActionLink("Home", "Index", "Home", new { area = "" }, htmlAttributes: new { @class = "w3-bar-item w3-button leftMenu", data_nav = "Home Page" })
-        @Html.ActionLink("About", "About", "Home", new { area = "" }, htmlAttributes: new { @class = "w3-bar-item w3-button leftMenu", data_nav = "About" })
-        @Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, htmlAttributes: new { @class = "w3-bar-item w3-button leftMenu", data_nav = "Contact" })
+        @foreach (var nav in Model.Navigations)
+        {
+            @Html.ActionLink(nav.DisplayText, nav.Action, nav.Controller, new { area = "" }, htmlAttributes: new { @class = "w3-bar-item w3-button leftMenu", data_nav = nav.DisplayText })
+        }
     </div>
-</div>
 
-<script>
+    <script>
     $(document).ready(function () {
         $("[data-nav='@ViewBag.SelectedMenu']").addClass("w3-green");
     });
 
-</script>
+    </script>

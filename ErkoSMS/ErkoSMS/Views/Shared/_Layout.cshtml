@@ -28,11 +28,11 @@
         </div>
     </div>
 
-    <div style="width:17%">
-        @Html.Action("LeftMenu", "Home", new { selectedMenu = ViewBag.Title });
+    <div>
+        @Html.Action("LeftMenu", "Home", new { selectedMenu = ViewBag.Title })
     </div>
    
-    <div class="container" style="margin-left:20%">
+    <div class="container">
         @RenderBody()
         <hr />
         <footer>

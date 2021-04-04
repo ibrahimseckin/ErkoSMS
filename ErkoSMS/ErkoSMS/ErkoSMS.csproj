@@ -185,6 +185,7 @@
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\StockController.cs" />
     <Compile Include="Controllers\StockHistoryController.cs" />
+    <Compile Include="Controllers\UserAdministrationController.cs" />
     <Compile Include="Enums\UserType.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -200,6 +201,7 @@
     <Compile Include="Models\StockHistory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\LeftMenuViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -260,6 +262,7 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_LeftMenu.cshtml" />
+    <Content Include="Views\UserAdministration\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
