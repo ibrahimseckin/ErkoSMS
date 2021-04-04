@@ -9,27 +9,13 @@ using System.Linq;
 namespace ErkoSMS.DataAccess
 {
 
-    public abstract class DataProvider<TAdapter, TDataParameter>
+    public abstract class DataProvider<TAdapter, TDataParameter> : IDataProvider
         where TAdapter : IDbDataAdapter, new()
         where TDataParameter : IDbDataParameter, new()
     {
-        private static readonly string SqlLiteSourcePath = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
-        private static readonly string SqlLiteFileName = "ErkoSMS.db";
-        private static readonly string SqlLiteDataSource = Path.Combine(SqlLiteSourcePath, SqlLiteFileName);
 
         private readonly List<TDataParameter> _parameters = new List<TDataParameter>();
-        /// <summary>
-        /// Overridden method for getting connection
-        /// </summary>
-        /// <returns>Returns the SQLite connection obejct as IDbConnection</returns>
-        public IDbConnection GetConnection()
-        {
-            IDbConnection connection = new SQLiteConnection
-            {
-                ConnectionString = $"Data Source={SqlLiteDataSource};foreign keys=true"
-            };
-            return connection;
-        }
+        public abstract IDbConnection GetConnection();
 
         public int ExecuteNonQuery(string commandText)
         {
@@ -101,7 +87,7 @@ namespace ErkoSMS.DataAccess
                     command.CommandText = commandText;
                     PrepareCommandParameters(command);
                     connection.Open();
-                    TAdapter dataAdapter = new TAdapter {SelectCommand = command};
+                    TAdapter dataAdapter = new TAdapter{SelectCommand = command};
                     DataSet dataSet = new DataSet { Locale = CultureInfo.InvariantCulture };
                     dataAdapter.Fill(dataSet);
                     _parameters.Clear();
