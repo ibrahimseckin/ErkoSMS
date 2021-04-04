@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErkoSMS", "ErkoSMS\ErkoSMS.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{C231430B-82A6-4AD2-977C-DCF27D80FE48}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{F121866F-D9E3-426D-B57C-8E2B70854CC2}"
+	ProjectSection(SolutionItems) = preProject
+		SolutionItems\SQLite\createDatabase.bat = SolutionItems\SQLite\createDatabase.bat
+		SolutionItems\SQLite\sqlite3.exe = SolutionItems\SQLite\sqlite3.exe
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
