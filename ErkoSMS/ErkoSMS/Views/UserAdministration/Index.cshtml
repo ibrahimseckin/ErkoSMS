@@ -1,4 +1,49 @@
-﻿@{
+﻿@using ErkoSMS.ViewModels
+@model UserAdministrationViewModel
+@{
     ViewBag.Title = "User Administration";
 }
-<h2>@ViewBag.Title.</h2>
+<h2>@ViewBag.Title</h2>
+
+<table class="table table-striped table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>
+                <span>Kullanıcı Tipi</span>
+            </th>
+            <th>
+                <span>Kullanıcı Adı</span>
+            </th>
+            <th>
+                <span>İsim</span>
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>
+                    <span>@user.UserType</span>
+                </td>
+                <td>
+                    <span>@user.UserName</span>
+                </td>
+                <td>
+                    <span class="btn btn-warning">
+                        <span class="glyphicon glyphicon-pencil"></span> Güncelle
+                    </span>
+
+                    <span class="btn btn-danger">
+                        <span class="glyphicon glyphicon-minus"></span> Sil
+                    </span>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
