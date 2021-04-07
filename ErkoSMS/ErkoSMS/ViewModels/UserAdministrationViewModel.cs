@@ -1,6 +1,7 @@
 ﻿using ErkoSMS.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -13,8 +14,13 @@ namespace ErkoSMS.ViewModels
 
     public class UserViewModel
     {
+        [Display(Name = "Kullanıcı Adı")]
         public string UserName { get; set; }
+
+        [Display(Name = "Şifre")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
+
         public string UserType { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }

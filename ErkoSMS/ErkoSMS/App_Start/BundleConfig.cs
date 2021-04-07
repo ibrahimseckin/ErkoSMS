@@ -22,10 +22,18 @@ namespace ErkoSMS
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/layout").Include(
+                     "~/Content/vex/js/vex.combined.js",
+                      "~/CustomContent/Scripts/defaultComponentConfiguration.js",
+                      "~/CustomContent/Scripts/base.js"));
+
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
-                      "~/Content/w3.css"));
+                      "~/Content/w3.css",
+                      "~/Content/vex/css/vex.css",
+                      "~/CustomContent/Styles/vex-theme-metro.css"));
         }
     }
 }
