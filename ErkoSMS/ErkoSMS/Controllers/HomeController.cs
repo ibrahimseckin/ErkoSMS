@@ -1,4 +1,4 @@
-﻿using ErkoSMS.Enums;
+using ErkoSMS.Enums;
 using ErkoSMS.ViewModels;
 using System;
 using System.Collections.Generic;

@@ -25,5 +25,7 @@ namespace ErkoSMS.DataAccess
         IEnumerable<DataRow> ExecuteDataRows(string commandText);
 
         IEnumerable<DataRow> ExecuteDataRows(string commandText, CommandType commandType);
+
+        void AddParameter(string parameterName, object value);
     }
 }

@@ -105,6 +105,12 @@ namespace ErkoSMS.DataAccess
             return ExecuteDataSet(commandText, commandType).Tables.OfType<DataTable>().FirstOrDefault()?.Rows.OfType<DataRow>();
         }
 
+        public void AddParameter(string parameterName, object value)
+        {
+            TDataParameter param = new TDataParameter {ParameterName = parameterName, Value = value};
+            _parameters.Add(param);
+        }
+
         private void PrepareCommandParameters(IDbCommand command)
         {
             foreach (var param in _parameters)
