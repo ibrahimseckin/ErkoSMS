@@ -177,7 +177,7 @@ var closeParentVexModal = function (el) {
 })(jQuery);
 
 var base = (function () {
-    var RCMS = window.RCMS = window.RCMS || {};
+    var ERKOSMS = window.ERKOSMS = window.ERKOSMS || {};
 
     // #region Blocker
     var blocker = null;
@@ -213,7 +213,7 @@ var base = (function () {
 
         var $blockerText = $(document.createElement('div'));
         $blockerText.addClass('blockerText');
-        $blockerText.text(window.RCMS.BlockerLoadingText);
+        $blockerText.text(window.ERKOSMS.BlockerLoadingText);
         $blockerContainer.append($blockerText);
 
         blocker.fadeIn(blockerActiveTimeout);
@@ -231,32 +231,32 @@ var base = (function () {
     };
     // #endregion
 
-    window.makeEventEmitter(RCMS);
+    window.makeEventEmitter(ERKOSMS);
 
-    RCMS.formatUtc = function (date) {
-        return window.moment(date).format( RCMS.CustomDateFormat + ' hh:mm:ss.SSS A');
+    ERKOSMS.formatUtc = function (date) {
+        return window.moment(date).format( ERKOSMS.CustomDateFormat + ' hh:mm:ss.SSS A');
     };
 
-    RCMS.formatUtcShort = function (date) {
-        return window.moment(date).format(RCMS.CustomDateFormat+' hh:mm:ss A');
+    ERKOSMS.formatUtcShort = function (date) {
+        return window.moment(date).format(ERKOSMS.CustomDateFormat+' hh:mm:ss A');
     };
 
-    RCMS.formatDuration = function (duration) {
+    ERKOSMS.formatDuration = function (duration) {
         return Math.floor(duration.asHours()) + ':' +
             duration.minutes().toString().padStart(2, '0') + ':' +
             duration.seconds().toString().padStart(2, '0');
     };
 
 
-    RCMS.ShowGeneralError = function () {
-        vex.dialog.alert(RCMS.SystemErrorMessage);
+    ERKOSMS.ShowGeneralError = function () {
+        vex.dialog.alert(ERKOSMS.SystemErrorMessage);
     };
 
     var getAjaxData = function (element) {
         if (!element) {
             return {};
         }
-        var dt = element.data('rcms-ajax-data');
+        var dt = element.data('erkosms-ajax-data');
         if (typeof dt === 'function') {
             return dt() || {};
         }
@@ -268,17 +268,17 @@ var base = (function () {
      * Mirrors AjaxResultCode enum in the back-end code.
      * Any changes made to this enum must be reflected to the back-end.
      */
-    RCMS.ResultCode = {
+    ERKOSMS.ResultCode = {
         None: 0,
         Success: 1,
         UserFailure: 2,
         NotLoggedIn: 3
     };
 
-    RCMS.AjaxCall = function (action, settings, disableBlock) {
-        if (RCMS.connected === false) {
+    ERKOSMS.AjaxCall = function (action, settings, disableBlock) {
+        if (ERKOSMS.connected === false) {
             if (!disableBlock) {
-                RCMS.ShowConnectionError();
+                ERKOSMS.ShowConnectionError();
             }
             return (new $.Deferred).reject(null, true);
         }
@@ -300,15 +300,15 @@ var base = (function () {
         return xhr;
     };
 
-    RCMS.GetAjaxView = function (action, settings, disableBlock) {
-        return RCMS.AjaxAction(action, settings, disableBlock)
+    ERKOSMS.GetAjaxView = function (action, settings, disableBlock) {
+        return ERKOSMS.AjaxAction(action, settings, disableBlock)
             .then(function (result) {
                 return $(result);
             });
     };
 
-    RCMS.GetAjaxDialog = function (action, settings, disableBlock) {
-        return RCMS.GetAjaxView(action, settings, disableBlock)
+    ERKOSMS.GetAjaxDialog = function (action, settings, disableBlock) {
+        return ERKOSMS.GetAjaxView(action, settings, disableBlock)
             .then(function (result) {
                 var dialog = vex.open({
                     buttons: [],
@@ -316,7 +316,7 @@ var base = (function () {
                     focusFirstInput: false,
                     escapeButtonCloses: true,
                     overlayClosesOnClick: false,
-                    contentClassName: 'rcms-vex-dialog'
+                    contentClassName: 'erkosms-vex-dialog'
                 });
                 var $dialogContent = $(dialog.contentEl);
                 $dialogContent.append(result);
@@ -330,20 +330,20 @@ var base = (function () {
             },
                 function (data, handled) {
                     if (handled !== true) {
-                        RCMS.ShowGeneralError();
+                        ERKOSMS.ShowGeneralError();
                     }
                     return (new $.Deferred).reject(data, true);
                 });
     };
 
-    RCMS.AjaxAction = function (action, settings, disableBlock) {
-        return RCMS.AjaxCall(action, settings, disableBlock)
+    ERKOSMS.AjaxAction = function (action, settings, disableBlock) {
+        return ERKOSMS.AjaxCall(action, settings, disableBlock)
             .then(function (result) {
-                if (result.Code === RCMS.ResultCode.UserFailure) {
-                    RCMS.ShowWarning(result.Message);
+                if (result.Code === ERKOSMS.ResultCode.UserFailure) {
+                    ERKOSMS.ShowWarning(result.Message);
                     return (new $.Deferred).reject(result, true);
                 }
-                else if (result.Code === RCMS.ResultCode.NotLoggedIn) {
+                else if (result.Code === ERKOSMS.ResultCode.NotLoggedIn) {
                     window.location = '/Login';
                     return (new $.Deferred).reject(result, true);
                 }
@@ -353,7 +353,7 @@ var base = (function () {
             });
     };
 
-    RCMS.CreateGUID = function () {
+    ERKOSMS.CreateGUID = function () {
         var s4 = function () {
             return (
                 Math.floor(
@@ -370,7 +370,7 @@ var base = (function () {
         );
     };
 
-    RCMS.AjaxSubmit = function (form, settings, disableBlock) {
+    ERKOSMS.AjaxSubmit = function (form, settings, disableBlock) {
         var data = form.serializeObject();
 
         var formData = {
@@ -390,17 +390,17 @@ var base = (function () {
             }
         }
 
-        return RCMS.AjaxAction(action, $.extend(settings, formData), disableBlock);
+        return ERKOSMS.AjaxAction(action, $.extend(settings, formData), disableBlock);
     };
 
-    RCMS.topologyTreeNodeModes = {
+    ERKOSMS.topologyTreeNodeModes = {
         HideCheckbox: 0,
         Normal: 1
     };
 
     // topology tree's checkboxes modes being set by that object.
-    RCMS.TopologyTreeMode = {
-        selectionMode: RCMS.topologyTreeNodeModes.Normal,
+    ERKOSMS.TopologyTreeMode = {
+        selectionMode: ERKOSMS.topologyTreeNodeModes.Normal,
 
         getSelectionMode: function () {
             return this.selectionMode;
@@ -408,22 +408,22 @@ var base = (function () {
 
         setSelectionMode: function (topologyTreeNodeModes) {
             this.selectionMode = topologyTreeNodeModes;
-            RCMS.TopologyTree.setCheckboxes(this.selectionMode);
+            ERKOSMS.TopologyTree.setCheckboxes(this.selectionMode);
         }
     };
 
-    RCMS.IsBrowserIE = function () {
+    ERKOSMS.IsBrowserIE = function () {
         return window.navigator.userAgent.match(/Trident/);
     };
 
-    RCMS.getMaximumCanvasSize = function () {
-        if (RCMS.IsBrowserIE()) {
+    ERKOSMS.getMaximumCanvasSize = function () {
+        if (ERKOSMS.IsBrowserIE()) {
             return 8192;
         }
         return 32767;
     };
 
-    RCMS.showComplexValidationMessage = function (validationMessage, element, error) {
+    ERKOSMS.showComplexValidationMessage = function (validationMessage, element, error) {
 
         var errorDivName = element.violatedRule + "ErrorDiv";
         var errorItemListDivName = element.violatedRule + "ItemList";
@@ -474,17 +474,17 @@ var base = (function () {
 
     //sets guid for pertab.
     if (!window.name) {
-        window.name = RCMS.CreateGUID();
+        window.name = ERKOSMS.CreateGUID();
     }
 
-    $(document).on('click', '[data-rcms-role="ajax-dialog-button"]',
+    $(document).on('click', '[data-erkosms-role="ajax-dialog-button"]',
         function (ev) {
             ev.preventDefault();
             var $tg = $(ev.currentTarget);
-            var action = $tg.data('rcms-targetaction');
+            var action = $tg.data('erkosms-targetaction');
             var elementAjaxData = getAjaxData($tg);
 
-            RCMS.GetAjaxDialog(action, { data: elementAjaxData })
+            ERKOSMS.GetAjaxDialog(action, { data: elementAjaxData })
                 .then(function (result) {
                     var data = { result: result };
                     $tg.trigger('ajax-dialog:succeed', data);
@@ -498,7 +498,7 @@ var base = (function () {
 
     var confirmFormCallback = function (form, obj, result) {
         if (result) {
-            RCMS.AjaxSubmit(form).then(function (result) {
+            ERKOSMS.AjaxSubmit(form).then(function (result) {
                 var data = { data: obj, result: result };
                 form.trigger('ajax-form:succeed', data);
             }, function (message) {
@@ -510,7 +510,7 @@ var base = (function () {
         }
     };
 
-    $(document).on('submit', '[data-rcms-role="ajax-form"]', function (ev) {
+    $(document).on('submit', '[data-erkosms-role="ajax-form"]', function (ev) {
         ev.preventDefault();
         var $tg = $(ev.currentTarget);
         var $form = $tg;
@@ -528,7 +528,7 @@ var base = (function () {
                 callback: confirmFormCallback.bind(null, $form, obj)
             });
         } else {
-            RCMS.AjaxSubmit($form).then(function (result) {
+            ERKOSMS.AjaxSubmit($form).then(function (result) {
                 var data = { data: obj, result: result };
                 $tg.trigger('ajax-form:succeed', data);
             }, function (message) {
@@ -541,7 +541,7 @@ var base = (function () {
     // When openning with new page with form apppend the page id
     //to the form before submit.
     $(document).on('submit',
-        'form[target="_blank"]:not([data-rcms-role="ajax-form"])',
+        'form[target="_blank"]:not([data-erkosms-role="ajax-form"])',
         function (ev) {
             ev.preventDefault();
             var $tg = $(ev.currentTarget);
@@ -560,10 +560,10 @@ var base = (function () {
 
     var confirmActionCallback = function (tg, result) {
         if (result) {
-            var action = tg.data('rcms-targetaction');
+            var action = tg.data('erkosms-targetaction');
             tg.trigger('ajax-action:confirmed');
             var elementAjaxData = getAjaxData(tg);
-            RCMS.AjaxAction(action, { method: 'POST', data: elementAjaxData })
+            ERKOSMS.AjaxAction(action, { method: 'POST', data: elementAjaxData })
                 .then(function (data) {
                     tg.trigger('ajax-action:succeed', [data]);
                 },
@@ -575,7 +575,7 @@ var base = (function () {
         }
     };
 
-    $(document).on('click', '[data-rcms-role="ajax-confirmation"]',
+    $(document).on('click', '[data-erkosms-role="ajax-confirmation"]',
         function (ev) {
             ev.preventDefault();
             var $tg = $(ev.currentTarget);
@@ -586,7 +586,7 @@ var base = (function () {
             });
         });
 
-    $(document).on('click', '[data-rcms-role="ajax-action-button"]',
+    $(document).on('click', '[data-erkosms-role="ajax-action-button"]',
         function (ev) {
             ev.preventDefault();
             var $tg = $(ev.currentTarget);
@@ -596,7 +596,7 @@ var base = (function () {
 
     $(document)
         .on('change',
-            '[data-rcms-role="ajax-upload"] input[type="file"]',
+            '[data-erkosms-role="ajax-upload"] input[type="file"]',
             function () {
                 if (document.activeElement && document.activeElement !== document.body) {
                     document.activeElement.blur();
@@ -604,7 +604,7 @@ var base = (function () {
                 if (!this.value) {
                     return;
                 }
-                var parent = $(this).closest('[data-rcms-role="ajax-upload"]');
+                var parent = $(this).closest('[data-erkosms-role="ajax-upload"]');
 
                 var targetSelector = parent.data('upload-target');
                 var target = parent;
@@ -615,7 +615,7 @@ var base = (function () {
                 var hidden = target.find('> input[type="hidden"]');
                 var $fileInput = $(this);
 
-                var action = target.data('rcms-targetaction')
+                var action = target.data('erkosms-targetaction')
                     || 'MediaResource/CreateMediaResource';
 
 
@@ -642,7 +642,7 @@ var base = (function () {
                 var data = new FormData();
                 data.append('file', file);
 
-                var ajax = RCMS.AjaxAction(action, {
+                var ajax = ERKOSMS.AjaxAction(action, {
                     data: data,
                     processData: false,
                     cache: false,
@@ -665,9 +665,9 @@ var base = (function () {
 
     $(document)
         .on('click',
-            '[data-rcms-role="ajax-upload"] .removeButton',
+            '[data-erkosms-role="ajax-upload"] .removeButton',
             function () {
-                var parent = $(this).closest('[data-rcms-role="ajax-upload"]');
+                var parent = $(this).closest('[data-erkosms-role="ajax-upload"]');
                 var image = parent.find('img');
                 var hidden = parent.find('input[type="hidden"]');
                 var fileInput = parent.find('input[type="file"]');
@@ -680,9 +680,9 @@ var base = (function () {
             });
 
     $(document).on('dblclick', 'input[type="file"],' +
-        ' [data-rcms-role="ajax-dialog-button"], ' +
-        ' [data-rcms-role="ajax-confirmation"],' +
-        ' [data-rcms-role="ajax-action-button"]',
+        ' [data-erkosms-role="ajax-dialog-button"], ' +
+        ' [data-erkosms-role="ajax-confirmation"],' +
+        ' [data-erkosms-role="ajax-action-button"]',
         function (ev) {
             ev.preventDefault();
             ev.stopPropagation();
@@ -690,7 +690,7 @@ var base = (function () {
         });
 
     var baseWarningDialog;
-    RCMS.ShowWarning = function (message) {
+    ERKOSMS.ShowWarning = function (message) {
         message = message || '';
         if (baseWarningDialog) {
             var newMessageDiv = document.createElement('div');

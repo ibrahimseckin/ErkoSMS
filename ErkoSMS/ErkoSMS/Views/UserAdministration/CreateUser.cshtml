@@ -3,7 +3,7 @@
 <div>
     <h3>Yeni Kullanıcı Oluştur</h3>
     <hr />
-    @using (Html.BeginForm("CreateUser", "UserAdministration", FormMethod.Post, new { data_rcms_role = "ajax-form", data_ajax_form_autoclose = "succeed", style = "width:300px" }))
+    @using (Html.BeginForm("CreateUser", "UserAdministration", FormMethod.Post, new { data_erkosms_role = "ajax-form", data_ajax_form_autoclose = "succeed", style = "width:300px" }))
     {
 
         @Html.AntiForgeryToken()
