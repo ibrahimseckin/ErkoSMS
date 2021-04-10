@@ -186,7 +186,7 @@
     <Compile Include="Controllers\StockController.cs" />
     <Compile Include="Controllers\StockHistoryController.cs" />
     <Compile Include="Controllers\UserAdministrationController.cs" />
-    <Compile Include="Enums\UserType.cs" />
+    <Compile Include="Enums\UserTypes.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

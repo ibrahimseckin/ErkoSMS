@@ -23,38 +23,38 @@ namespace ErkoSMS
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser, IdentityRole>(context));
 
-            if (!roleManager.RoleExists(UserType.Administrator.ToString()))
+            if (!roleManager.RoleExists(UserTypes.Administrator.Name))
             {
                 var role = new IdentityRole();
-                role.Name = UserType.Administrator.ToString();
+                role.Name = UserTypes.Administrator.Name;
                 roleManager.Create(role);
             }
 
-            if (!roleManager.RoleExists(UserType.Accountant.ToString()))
+            if (!roleManager.RoleExists(UserTypes.Accountant.Name))
             {
                 var role = new IdentityRole();
-                role.Name = UserType.Accountant.ToString();
+                role.Name = UserTypes.Accountant.Name;
                 roleManager.Create(role);
 
             }
-            if (!roleManager.RoleExists(UserType.Purchaser.ToString()))
+            if (!roleManager.RoleExists(UserTypes.Purchaser.Name))
             {
                 var role = new IdentityRole();
-                role.Name = UserType.Purchaser.ToString();
+                role.Name = UserTypes.Purchaser.Name;
                 roleManager.Create(role);
             }
-            if (!roleManager.RoleExists(UserType.SalesMan.ToString()))
+            if (!roleManager.RoleExists(UserTypes.SalesMan.Name))
             {
                 var role = new IdentityRole();
-                role.Name = UserType.SalesMan.ToString();
+                role.Name = UserTypes.SalesMan.Name;
                 roleManager.Create(role);
 
             }
 
-            if (!roleManager.RoleExists(UserType.WareHouseMan.ToString()))
+            if (!roleManager.RoleExists(UserTypes.WareHouseMan.Name))
             {
                 var role = new IdentityRole();
-                role.Name = UserType.WareHouseMan.ToString();
+                role.Name = UserTypes.WareHouseMan.Name;
                 roleManager.Create(role);
 
             }

@@ -1,4 +1,5 @@
 ﻿@using ErkoSMS.ViewModels
+@using ErkoSMS.Enums
 @model UserAdministrationViewModel
 @{
     ViewBag.Title = "User Administration";
@@ -33,7 +34,7 @@
         {
             <tr>
                 <td>
-                    <span>@user.UserType</span>
+                    <span>@UserTypes.GetDisplayName(user.UserType)</span>
                 </td>
                 <td>
                     <span>@user.UserName</span>

@@ -1,9 +1,10 @@
-﻿@model ErkoSMS.ViewModels.UserViewModel
-
+﻿
+@model ErkoSMS.ViewModels.UserViewModel
+@using ErkoSMS.Enums;
 <div>
     <h3>Yeni Kullanıcı Oluştur</h3>
     <hr />
-    @using (Html.BeginForm("CreateUser", "UserAdministration", FormMethod.Post, new { data_erkosms_role = "ajax-form", data_ajax_form_autoclose = "succeed", style = "width:300px" }))
+    @using (Html.BeginForm("CreateUser", "UserAdministration", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "CreateUserForm", style = "width:300px" }))
     {
 
         @Html.AntiForgeryToken()
@@ -21,6 +22,18 @@
                 <span class="btn btn-default" id="randomizeButton">Rastgele</span>
             </div>
         </div>
+
+        <div class="form-group">
+            <label>Kullanıcı Tipi</label>
+            <select name="UserType" class="form-control">
+                <option value="@(UserTypes.Accountant.Name)">@(UserTypes.Accountant.DisplayName)</option>
+                <option value="@(UserTypes.Administrator.Name)">@(UserTypes.Administrator.DisplayName)</option>
+                <option value="@((UserTypes.Purchaser.Name))">@(UserTypes.Purchaser.DisplayName)</option>
+                <option value="@((UserTypes.SalesMan.Name))">@(UserTypes.SalesMan.DisplayName)</option>
+                <option value="@((UserTypes.WareHouseMan.Name))">@(UserTypes.WareHouseMan.DisplayName)</option>
+            </select>
+        </div>
+
 
         <input type="submit" class="btn btn-primary pull-right" value="Kaydet" />
 
@@ -61,4 +74,12 @@
 
                 $("#password")[0].select();
             });
+
+    $("#CreateUserForm").on("ajax-form:succeed", function (ev) {
+        var tg = $(ev.currentTarget);
+        closeParentVexModal(tg);
+        location.reload()
+       
+    });
+
 </script>

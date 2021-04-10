@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -21,12 +22,16 @@ namespace ErkoSMS.Controllers
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
+            
+
             var users = userManager.Users.Select(x => new UserViewModel
             {
                 UserName = x.UserName,
-                UserType = userManager.GetRolesAsync(x.Id).ConfigureAwait(false).GetAwaiter().GetResult().FirstOrDefault() ?? ""
+                UserType = userManager.GetRolesAsync(x.Id).ConfigureAwait(false).GetAwaiter().GetResult().FirstOrDefault() ?? "",
             }).ToList();
             var userAdministrationViewModel = new UserAdministrationViewModel { Users = users };
+
+            
 
             return View(userAdministrationViewModel);
         }
@@ -47,12 +52,17 @@ namespace ErkoSMS.Controllers
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    userManager.AddToRole(user.Id, UserType.Administrator.ToString());
+                    userManager.AddToRole(user.Id, model.UserType);
                     return Json(new AjaxResult(new { Code = AjaxResultCode.Success }));
                 }
             else
             {
-                return Json(new AjaxResult(AjaxResultCode.UserFailure,"Hata"));
+                var errorStringBuilder = new StringBuilder();
+                foreach (var error in result.Errors)
+                {
+                    errorStringBuilder.Append(error);
+                }
+                return Json(new AjaxResult(AjaxResultCode.UserFailure, errorStringBuilder.ToString()));
             }
             
         }

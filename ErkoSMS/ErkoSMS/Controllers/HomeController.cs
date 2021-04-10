@@ -32,7 +32,7 @@ namespace ErkoSMS.Controllers
 
         public ActionResult Index()
         {
-            ViewBag.Role = User.IsInRole(UserType.Administrator.ToString()) ? UserType.Administrator.ToString() : "";
+            ViewBag.Role = User.IsInRole(UserTypes.Administrator.Name) ? UserTypes.Administrator.Name : "";
             return View();
         }
 
@@ -59,23 +59,23 @@ namespace ErkoSMS.Controllers
 
         private LeftMenuViewModel GetUserNavigation()
         {
-            if (User.IsInRole(UserType.Administrator.ToString()))
+            if (User.IsInRole(UserTypes.Administrator.Name))
             {
                 return AdministratorNavigations;
             }
-            if (User.IsInRole(UserType.Accountant.ToString()))
+            if (User.IsInRole(UserTypes.Accountant.Name))
             {
                 return AnynomousNavigations;
             }
-            if (User.IsInRole(UserType.Purchaser.ToString()))
+            if (User.IsInRole(UserTypes.Purchaser.Name))
             {
                 return AnynomousNavigations;
             }
-            if (User.IsInRole(UserType.SalesMan.ToString()))
+            if (User.IsInRole(UserTypes.SalesMan.Name))
             {
                 return AnynomousNavigations;
             }
-            if (User.IsInRole(UserType.WareHouseMan.ToString()))
+            if (User.IsInRole(UserTypes.WareHouseMan.Name))
             {
                 return AnynomousNavigations;
             }
