@@ -14,6 +14,8 @@ namespace ErkoSMS.ViewModels
 
     public class UserViewModel
     {
+        public string Id { get; set; }
+
         [Display(Name = "Kullanıcı Adı")]
         public string UserName { get; set; }
 

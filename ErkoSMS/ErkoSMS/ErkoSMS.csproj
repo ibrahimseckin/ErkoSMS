@@ -284,6 +284,7 @@
     <Content Include="Views\Shared\_LeftMenu.cshtml" />
     <Content Include="Views\UserAdministration\Index.cshtml" />
     <Content Include="Views\UserAdministration\CreateUser.cshtml" />
+    <Content Include="Views\UserAdministration\EditUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Customer\" />

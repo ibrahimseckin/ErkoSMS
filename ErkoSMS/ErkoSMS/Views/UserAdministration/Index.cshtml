@@ -1,8 +1,10 @@
 ﻿@using ErkoSMS.ViewModels
 @using ErkoSMS.Enums
+@using Microsoft.AspNet.Identity;
 @model UserAdministrationViewModel
 @{
     ViewBag.Title = "User Administration";
+
 }
 <h2>@ViewBag.Title</h2>
 
@@ -40,17 +42,26 @@
                     <span>@user.UserName</span>
                 </td>
                 <td>
-                    <span class="btn btn-warning">
+
+                    <span class="btn btn-warning" data-erkosms-role="ajax-dialog-button" data-erkosms-targetaction="UserAdministration/EditUser?username=@user.UserName">
                         <span class="glyphicon glyphicon-pencil"></span> Güncelle
                     </span>
-
-                    <span class="btn btn-danger">
-                        <span class="glyphicon glyphicon-minus"></span> Sil
-                    </span>
-
+                    @if (User.Identity.GetUserId() != user.Id)
+                    {
+                        <span class="btn btn-danger erkosms-user-deleteButton" data-confirmation-message="Kullanıcı silinecek. Emin misin ?" data-erkosms-role="ajax-confirmation" data-erkosms-targetaction="UserAdministration/DeleteUser?username=@user.UserName">
+                            <span class="glyphicon glyphicon-minus"></span> Sil
+                        </span>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 
 </table>
+
+<script>
+    $(".erkosms-user-deleteButton").on("ajax-action:succeed", function (ev) {
+        // Remove the row
+        $(ev.target).closest("tr").remove();
+    });
+</script>
