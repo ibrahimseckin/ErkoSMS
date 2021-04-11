@@ -30,6 +30,7 @@ namespace ErkoSMS.Controllers
                                                     }
         };
 
+        [Authorize]
         public ActionResult Index()
         {
             ViewBag.Role = User.IsInRole(UserTypes.Administrator.Name) ? UserTypes.Administrator.Name : "";

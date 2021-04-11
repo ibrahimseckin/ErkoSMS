@@ -34,6 +34,10 @@ namespace ErkoSMS
                       "~/Content/w3.css",
                       "~/Content/vex/css/vex.css",
                       "~/CustomContent/Styles/vex-theme-metro.css"));
+
+            bundles.Add(new StyleBundle("~/Content/login").Include(
+                     "~/CustomContent/Styles/login.css",
+                      "~/Content/bootstrap.css"));
         }
     }
 }

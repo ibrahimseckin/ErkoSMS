@@ -18,6 +18,7 @@ namespace ErkoSMS.Controllers
     public class UserAdministrationController : Controller
     {
         // GET: UserAdministration
+        [Authorize(Roles = "Administrator")]
         public ActionResult Index()
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -126,5 +127,6 @@ namespace ErkoSMS.Controllers
             userManager.Delete(user);
             return Json(new AjaxResult(new { Code = AjaxResultCode.Success }));
         }
+
     }
 }

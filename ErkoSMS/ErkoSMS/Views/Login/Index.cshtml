@@ -1,0 +1,31 @@
+﻿@{
+    Layout = null;
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/login")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</head>
+<body class="text-center">
+    <div class="container" style="width:350px">
+        <div class="row">
+            <form class="form-signin" action="/Login" method="post">
+                @Html.AntiForgeryToken()
+                <h1 class="h3 mb-3 font-weight-normal">Kullanıcı Girişi</h1>
+                <label for="inputUserName" class="sr-only">Kullanıcı Adı</label>
+                <input type="text" id="inputUserName" class="form-control" name="UserName" placeholder="Kullanıcı Adı" required="" autofocus="">
+                <label for="inputPassword" class="sr-only">Şifre</label>
+                <input type="password" id="inputPassword" name="Password" class="form-control" placeholder="Şifre" required="">
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Giriş</button>
+            </form>
+        </div>
+
+        <div class="row">
+            @Html.ValidationSummary()
+        </div>
+    </div>
+</body>
+

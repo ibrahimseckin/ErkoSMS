@@ -180,6 +180,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
@@ -227,6 +228,7 @@
     <Content Include="Content\w3.css" />
     <Content Include="CustomContent\Scripts\Base.js" />
     <Content Include="CustomContent\Scripts\defaultComponentConfiguration.js" />
+    <Content Include="CustomContent\Styles\Login.css" />
     <Content Include="CustomContent\Styles\vex-theme-metro.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -285,6 +287,7 @@
     <Content Include="Views\UserAdministration\Index.cshtml" />
     <Content Include="Views\UserAdministration\CreateUser.cshtml" />
     <Content Include="Views\UserAdministration\EditUser.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Customer\" />
