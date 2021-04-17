@@ -14,7 +14,7 @@ namespace ErkoSMS.DataAccess.Model
         public SalesState SalesState { get; set; }
         public int Id { get; set; }
         public DateTime InvoiceDate { get; set; }
-        public int InvoiceNumber { get; set; }
+        public string InvoiceNumber { get; set; }
         public Customer Customer { get; set; }
         public IdentityUser SalesUser { get; set; }
         public Currency Currency { get; set; }
