@@ -213,7 +213,7 @@ var base = (function () {
 
         var $blockerText = $(document.createElement('div'));
         $blockerText.addClass('blockerText');
-        $blockerText.text(window.ERKOSMS.BlockerLoadingText);
+        $blockerText.text("Veriler getiriliyor.");
         $blockerContainer.append($blockerText);
 
         blocker.fadeIn(blockerActiveTimeout);

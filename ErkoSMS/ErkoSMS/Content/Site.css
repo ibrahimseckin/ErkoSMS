@@ -22,3 +22,52 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/*#region Blocker */
+.blocker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(128, 128, 128, 0.3);
+    z-index: 100000;
+}
+
+    .blocker.passive {
+        display: none;
+    }
+
+    .blocker .blockerText {
+        font-size: 26px;
+        margin-top: 5px;
+        color: white;
+        text-shadow: 1px 1px black, 1px -1px black, -1px 1px black, -1px -1px black;
+    }
+
+    .blocker .blockerContainer {
+        width: auto;
+        height: auto;
+        background-size: 100px;
+        background-repeat: no-repeat;
+        border: none;
+        background-position: center;
+        margin: auto;
+        top: 50%;
+        left: 50%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    .blocker .blocker-spin {
+        border: none;
+        margin: auto;
+        position: relative;
+        font-size: 100px;
+    }
+
+        .blocker .blocker-spin.passive {
+            display: none;
+        }
+/*#endregion */

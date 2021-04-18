@@ -49,9 +49,9 @@ namespace ErkoSMS.DataAccess
                 Brand = row["Brand"]?.ToString(),
                 Description = row["Description"]?.ToString(),
                 EnglishDescription = row["DescriptionEng"]?.ToString(),
-                Group = row["Group"]?.ToString(),
+                Group = row["ProductGroup"]?.ToString(),
                 Model = row["Model"]?.ToString(),
-                LastPrice = Convert.IsDBNull(row["LastPrice"]) ? null : (double?) row["LastPrice"]
+                LastPrice = Convert.IsDBNull(row["LastPrice"]) || string.IsNullOrEmpty(row["LastPrice"].ToString()) ? null : (double?) row["LastPrice"]
             };
         }
     }

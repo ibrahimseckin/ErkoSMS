@@ -25,7 +25,8 @@ namespace ErkoSMS
             bundles.Add(new ScriptBundle("~/bundles/layout").Include(
                      "~/Content/vex/js/vex.combined.js",
                       "~/CustomContent/Scripts/defaultComponentConfiguration.js",
-                      "~/CustomContent/Scripts/base.js"));
+                      "~/CustomContent/Scripts/base.js",
+                      "~/Scripts/DataTables/jquery.dataTables.min.js"));
 
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
@@ -33,7 +34,8 @@ namespace ErkoSMS
                       "~/Content/site.css",
                       "~/Content/w3.css",
                       "~/Content/vex/css/vex.css",
-                      "~/CustomContent/Styles/vex-theme-metro.css"));
+                      "~/CustomContent/Styles/vex-theme-metro.css",
+                      "~/Content/DataTables/css/jquery.dataTables.min.css"));
 
             bundles.Add(new StyleBundle("~/Content/login").Include(
                      "~/CustomContent/Styles/login.css",

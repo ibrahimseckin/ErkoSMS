@@ -3,13 +3,9 @@
     <div style="padding:20px">
         @foreach (var nav in Model.Navigations)
         {
-            @Html.ActionLink(nav.DisplayText, nav.Action, nav.Controller, new { area = "" }, htmlAttributes: new { @class = "w3-bar-item w3-button leftMenu", data_nav = nav.DisplayText })
+            var navLinkClass = ViewBag.SelectedMenu == nav.DisplayText ? "w3-bar-item w3-button leftMenu w3-green" : "w3-bar-item w3-button leftMenu";
+            @Html.ActionLink(nav.DisplayText, nav.Action, nav.Controller, new { area = "" }, htmlAttributes: new { @class = navLinkClass, data_nav = nav.DisplayText })
         }
     </div>
 
-    <script>
-    $(document).ready(function () {
-        $("[data-nav='@ViewBag.SelectedMenu']").addClass("w3-green");
-    });
-
-    </script>
+</div>

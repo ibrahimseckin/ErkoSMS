@@ -1,4 +1,4 @@
-using ErkoSMS.Enums;
+﻿using ErkoSMS.Enums;
 using ErkoSMS.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,8 @@ namespace ErkoSMS.Controllers
         {
             Navigations = new List<LeftMenuItem>
             {
-                    new LeftMenuItem("User Administration", "UserAdministration", "Index"),
+                    new LeftMenuItem("Kullanıcı Yönetimi", "UserAdministration", "Index"),
+                    new LeftMenuItem("Ürünler", "Product", "Index"),
 
             }
         };
