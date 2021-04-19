@@ -1,46 +1,154 @@
 ﻿@{
     ViewBag.Title = "Ürünler";
 }
-<div style="margin-top:20px">
+
+<div id="filteringDiv" style="margin-top:20px">
+    <input type="text" id="productCode" placeholder="Ürün Kodu" />
+    <input type="button" id="searchButton" value="Ara" />
+    <input type="button" id="getAllButtomn" value="Hepsini getir" />
+</div>
+
+<div id="productTableDiv" style="margin-top:20px">
     <table id="productListTable" class="table table-bordered table-condensed table-hover table-responsive table-striped"></table>
 </div>
 <script>
-    var tb = $("#productListTable");
 
-    ERKOSMS.AjaxAction("Product/GetProducts", {}, false).then(function (data) {
-        var datatable = tb.DataTable({
-            autoWidth: true,
-            columns: [
-                { title: "Ürün Kodu", data: "Code" },
-                { title: "CrossReferenceCode", data: "CrossReferenceCode" },
-                { title: "Ürün Açıklaması", data: "Description" },
-                { title: "Ürün Açıklaması İnglizce", data: "EnglishDescription" },
-                { title: "Ürün Grubu", data: "Group" },
-                { title: "Marka", data: "Brand" },
-                { title: "Model", data: "Model" },
-                { title: "En Son Fiyatı", data: "LastPrice" },
-            ],
-            data: data,
-            sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
-            aaSorting: [],      // Initial sorting
-            bInfo: true,       // Info is not shown because the total count to show is not known
-            searching: true,   // Disable searching TODO: Enable searching if necessary
-            paging: true, // Disable paging in outstanding
-            pageLength: 50,
-            deferRender: true,
-            columnDefs: [{
-                targets: 1,
-                render: function (data, type, row) {
-                    shortened =  data.length > 20 ?
-                        data.substr(0, 20) + '…' :
-                        data;
-                    return '<span  title="' + data + '">' + shortened + '</span>'
-                }
-            }]
+    $("#getAllButtomn").on("click", function () {
+        destroyTable();
+        var tb = $("#productListTable");
+        ERKOSMS.AjaxAction("Product/GetProducts", {}, false).then(function (data) {
+            var datatable = tb.DataTable({
+                autoWidth: true,
+                columns: [
+                    { title: "Ürün Kodu", data: "Code" },
+                    { title: "CrossReferenceCode", data: "CrossReferenceCode" },
+                    { title: "Ürün Açıklaması", data: "Description" },
+                    { title: "Ürün Açıklaması İnglizce", data: "EnglishDescription" },
+                    { title: "Ürün Grubu", data: "Group" },
+                    { title: "Marka", data: "Brand" },
+                    { title: "Model", data: "Model" },
+                    { title: "En Son Fiyatı", data: "LastPrice" },
+                    {
+                        data: null,
+                        className: "dt-center editor-edit",
+                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                        orderable: false
+                    },
+                    {
+                        data: null,
+                        className: "dt-center editor-delete",
+                        defaultContent: '<span class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> Sil</span>',
+                        orderable: false
+                    }
+                ],
+                data: data,
+                sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
+                aaSorting: [],      // Initial sorting
+                bInfo: true,       // Info is not shown because the total count to show is not known
+                searching: true,   // Disable searching TODO: Enable searching if necessary
+                paging: true, // Disable paging in outstanding
+                pageLength: 50,
+                deferRender: true,
+                columnDefs: [{
+                    targets: 1,
+                    render: function (data, type, row) {
+                        shortened = data.length > 20 ?
+                            data.substr(0, 20) + '…' :
+                            data;
+                        return '<span  title="' + data + '">' + shortened + '</span>'
+                    }
+                }]
+            });
         });
     });
 
-    $('#productListTable').width('100%');
+    // Edit record
+    $('#productListTable').on('click', 'td.editor-edit', function (e) {
+        e.preventDefault();
+        alert("güncelle");
+    });
+
+
+    $('#productListTable').on('click', 'td.editor-delete', function (e) {
+        e.preventDefault();
+        var dataTable = $('#productListTable').DataTable();
+        var rowToBeDelleted = $(this).closest('tr')[0]
+        var productCode = rowToBeDelleted.cells[0].innerText
+        vex.dialog.confirm({
+            message: "Seçilen ürün silinecektir. Emin misiniz? ",
+            callback: function (result) {
+                if (result) {
+                    ERKOSMS.AjaxAction("Product/DeleteProductByCode?productCode=" + productCode, {}, false).then(function () {
+                        debugger;
+                        rowToBeDelleted.remove();
+                    }), function (data) {
+                        ERKOSMS.ShowWarning(data);
+                    }
+                }
+            }
+        });
+    });
+
+
+    $("#searchButton").on("click", function () {
+        destroyTable();
+        var tb = $("#productListTable");
+        var productCode = $("#productCode").val();
+        ERKOSMS.AjaxAction("Product/GetProductByCode?productCode=" + productCode, {}, false).then(function (data) {
+            var datatable = tb.DataTable({
+                autoWidth: true,
+                columns: [
+                    { title: "Ürün Kodu", data: "Code" },
+                    { title: "CrossReferenceCode", data: "CrossReferenceCode" },
+                    { title: "Ürün Açıklaması", data: "Description" },
+                    { title: "Ürün Açıklaması İnglizce", data: "EnglishDescription" },
+                    { title: "Ürün Grubu", data: "Group" },
+                    { title: "Marka", data: "Brand" },
+                    { title: "Model", data: "Model" },
+                    { title: "En Son Fiyatı", data: "LastPrice" },
+                    {
+                        data: null,
+                        className: "dt-center editor-edit",
+                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                        orderable: false
+                    },
+                    {
+                        data: null,
+                        className: "dt-center editor-delete",
+                        defaultContent: '<span class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> Sil</span>',
+                        orderable: false
+                    }
+                ],
+                data: data,
+                sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
+                aaSorting: [],      // Initial sorting
+                bInfo: true,       // Info is not shown because the total count to show is not known
+                searching: true,   // Disable searching TODO: Enable searching if necessary
+                paging: true, // Disable paging in outstanding
+                pageLength: 50,
+                deferRender: true,
+                columnDefs: [{
+                    targets: 1,
+                    render: function (data, type, row) {
+                        shortened = data.length > 20 ?
+                            data.substr(0, 20) + '…' :
+                            data;
+                        return '<span  title="' + data + '">' + shortened + '</span>'
+                    }
+                }]
+            });
+        });
+    });
+
+
+    var destroyTable = function () {
+        var tb = $("#productListTable");
+
+        if ($.fn.dataTable.isDataTable(tb))
+            tb.DataTable().destroy();
+
+        tb.empty();
+    };
 
 
 </script>

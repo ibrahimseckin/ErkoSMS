@@ -37,6 +37,22 @@ namespace ErkoSMS.DataAccess
             return CreateProduct(row);
         }
 
+        public Product GetProductByCode(string productCode)
+        {
+            const string query = "Select * From products Where code = @productCode";
+            _sqliteDataProvider.AddParameter("@productCode", productCode);
+            DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
+            return row != null ? CreateProduct(row) : null;
+        }
+
+        public bool DeleteProductByCode(string productCode)
+        {
+            const string query = "Delete From products Where code = @productCode";
+            _sqliteDataProvider.AddParameter("@productCode", productCode);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
+
+
 
 
         private Product CreateProduct(DataRow row)

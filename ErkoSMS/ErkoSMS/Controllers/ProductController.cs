@@ -20,20 +20,40 @@ namespace ErkoSMS.Controllers
         [HttpGet]
         public ActionResult GetProducts()
         {
-            var products = new ProductDataService().GetAllProducts();
-
-            var asd = products.Where(x => x.CrossReferenceCode.Length > 1000);
-       
+            var products = new ProductDataService().GetAllProducts();  
             return new JsonResult()
             {
                 Data = products,
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = Int32.MaxValue
+            };              
+        }
+
+
+        [HttpGet]
+        public ActionResult GetProductByCode(string productCode)
+        {
+            var product = new ProductDataService().GetProductByCode(productCode);
+            return new JsonResult()
+            {
+                Data = product != null ? new List<Product> { product } : new List<Product>(),
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };            
+        }
+
+        [HttpGet]
+        public ActionResult DeleteProductByCode(string productCode)
+        {
+            var result = new ProductDataService().DeleteProductByCode(productCode);
+            return new JsonResult()
+            {
+                Data = result,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
 
-
-            //return Json(new { result }, JsonRequestBehavior.AllowGet);               
         }
     }
 }
