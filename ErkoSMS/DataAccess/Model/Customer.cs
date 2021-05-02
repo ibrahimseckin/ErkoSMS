@@ -23,7 +23,7 @@ namespace ErkoSMS.DataAccess.Model
         public string FaxNumber { get; set; }
         public string Condition { get; set; }
         public string CommunicationMethod { get; set; }
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
         public string ContactPerson { get; set; }
         public string TaxOffice { get; set; }
         public string TaxNumber { get; set; }

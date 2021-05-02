@@ -4,19 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AspNet.Identity.SQLite;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace ErkoSMS.DataAccess.Model
 {
     public class Sales
     {
         public DateTime SalesStartDate { get; set; }
-        public DateTime LastModifiedDate { get; set; }
+        public DateTime? LastModifiedDate { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
         public SalesState SalesState { get; set; }
         public int Id { get; set; }
-        public DateTime InvoiceDate { get; set; }
+        public DateTime? InvoiceDate { get; set; }
         public string InvoiceNumber { get; set; }
         public Customer Customer { get; set; }
         public IdentityUser SalesUser { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
         public Currency Currency { get; set; }
         public double TotalPrice { get; set; }
     }

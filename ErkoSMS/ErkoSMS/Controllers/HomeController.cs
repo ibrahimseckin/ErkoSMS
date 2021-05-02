@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ErkoSMS.DataAccess.Model;
 
 namespace ErkoSMS.Controllers
 {
@@ -18,7 +19,17 @@ namespace ErkoSMS.Controllers
             {
                     new LeftMenuItem("Kullanıcı Yönetimi", "UserAdministration", "Index"),
                     new LeftMenuItem("Ürünler", "Product", "Index"),
+                    new LeftMenuItem("Satış Yönetimi", "Order", "Index"),
 
+            }
+        };
+
+        private LeftMenuViewModel SalesNavigations = new LeftMenuViewModel
+        {
+            Navigations = new List<LeftMenuItem>
+            {
+                new LeftMenuItem("Satış Yönetimi", "Order", "Index"),
+                new LeftMenuItem("Ürünler", "Product", "Index"),
             }
         };
 
@@ -75,7 +86,7 @@ namespace ErkoSMS.Controllers
             }
             if (User.IsInRole(UserTypes.SalesMan.Name))
             {
-                return AnynomousNavigations;
+                return SalesNavigations;
             }
             if (User.IsInRole(UserTypes.WareHouseMan.Name))
             {

@@ -2,6 +2,8 @@
 {
     public enum SalesState
     {
+        //Nonspecified is for old data
+        Nonspecified = -1,
         InternalSalesConducted = 0,
         InvoiceDoneAndPacked = 1,
         WaitForPacking = 2,

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace ErkoSMS.DataAccess
 
         public IList<Sales> GetSalesBySalesPerson(string salesPeopleGuid)
         {
-            const string query = "Select * From sales Where salespeople = @salesPeopleGuid";
+            const string query = "SELECT * From sales Where salespeople = @salesPeopleGuid";
             _sqliteDataProvider.AddParameter("@salesPeopleGuid", salesPeopleGuid);
             var dataSet = _sqliteDataProvider.ExecuteDataSet(query);
             IList<Sales> sales = new List<Sales>();
@@ -33,18 +34,32 @@ namespace ErkoSMS.DataAccess
 
         private Sales CreateSales(DataRow row)
         {
+
+            var Id = Convert.ToInt32(row["Id"]);
+            var Currency = (Currency)Convert.ToInt32(row["currency"]);
+            var SalesState = DBNull.Value.Equals(row["state"])
+                ? Model.SalesState.Nonspecified
+                : (SalesState)Convert.ToInt32(row["state"]);
+            var TotalPrice = Convert.ToDouble(row["totalprice"]);
+            var Customer = GetCustomerByName(row["customername"].ToString());
+            var InvoiceDate = string.IsNullOrEmpty(row["InvoiceDate"].ToString()) ? (DateTime?)null : DateTime.Parse(row["InvoiceDate"].ToString());
+            var InvoiceNumber = row["InvoiceNumber"]?.ToString();
+            var LastModifiedDate = string.IsNullOrEmpty(row["lastmodifieddate"].ToString()) ? (DateTime?)null : DateTime.Parse(row["lastmodifieddate"].ToString());
+            var SalesStartDate = DateTime.Parse(row["startdate"].ToString());
+            var SalesUser = GetUserByGuid(row["salespeople"]?.ToString());
+
             return new Sales
             {
-                Id = Convert.ToInt32(row["id"]),
-                Currency = (Currency)Convert.ToInt32(row["currency"]),
-                SalesState = (SalesState)Convert.ToInt32(row["state"]),
-                TotalPrice = Convert.ToDouble(row["totalprice"]),
-                Customer = GetCustomerByName(row["customername"].ToString()),
-                InvoiceDate = (DateTime)(row["invoicedate"]),
-                InvoiceNumber = row["invoicenumber"]?.ToString(),
-                LastModifiedDate = (DateTime)(row["lastmodifieddate"]),
-                SalesStartDate = (DateTime)(row["startdate"]),
-                SalesUser = GetUserByGuid(row["salespeople"]?.ToString())
+                Id = Id,
+                Currency = Currency,
+                SalesState = SalesState,
+                TotalPrice = TotalPrice,
+                Customer = Customer,
+                InvoiceDate = InvoiceDate,
+                InvoiceNumber = InvoiceNumber,
+                LastModifiedDate = LastModifiedDate,
+                SalesStartDate = SalesStartDate,
+                SalesUser = SalesUser
             };
         }
 
@@ -60,7 +75,7 @@ namespace ErkoSMS.DataAccess
         {
             return new IdentityUser
             {
-                Id = row["id"].ToString(),
+                Id = row["Id"].ToString(),
                 UserName = row["username"].ToString()
             };
         }
@@ -70,40 +85,51 @@ namespace ErkoSMS.DataAccess
             const string query = "Select * From customers Where name = @customername";
             _sqliteDataProvider.AddParameter("@customername", customerName);
             DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
-            return CreateCustomer(row);
+            if (row == null)
+            {
+                return new Customer {Name = customerName};
+            }
+            else
+            {
+                return CreateCustomer(row);
+            }
+            
         }
 
         private Customer CreateCustomer(DataRow row)
         {
+            var Id = Convert.ToInt32(row["Id"]);
+            var Name = row["name"]?.ToString();
+            var Comment = row["comment"]?.ToString();
+            var Owner = row["owner"]?.ToString();
+            var OwnerMobile = row["ownermobile"]?.ToString();
+            var OwnerMail = row["ownermail"]?.ToString();
+            var Manager = row["manager"]?.ToString();
+            var ManagerMobile = row["managermobile"]?.ToString();
+            var ManagerEmail = row["managermobile"]?.ToString();
+            var ManagerTitle = row["managertitle"]?.ToString();
+            var Address = row["adress"]?.ToString();
+            var City = row["city"]?.ToString();
+            var Country = row["country"]?.ToString();
+            var PostalCode = row["postalcode"]?.ToString();
+            var PhoneNumber = row["phonenumber"]?.ToString();
+            var CountryCode = row["countrycode"]?.ToString();
+            var FaxNumber = row["faxnumber"]?.ToString();
+            var Condition = row["condition"]?.ToString();
+            var CommunicationMethod = row["communicationmethod"]?.ToString();
+            DateTime? StartDate = string.IsNullOrEmpty(row["startdate"].ToString()) ? (DateTime?)null : DateTime.Parse(row["startdate"].ToString());
+            var ContactPerson = row["contactperson"]?.ToString();
+            var TaxOffice = row["taxoffice"]?.ToString();
+            var TaxNumber = row["taxnumber"]?.ToString();
+            var Currency = row["currency"]?.ToString();
+            var Region = row["region"]?.ToString();
+            var DiscountRate = Convert.ToDouble(row["discountrate"]);
+            var SalesRepresentative = row["salesrepresentative"]?.ToString();
+
             return new Customer
             {
-                Id = Convert.ToInt32(row["id"]),
-                Name = row["name"]?.ToString(),
-                Comment = row["comment"]?.ToString(),
-                Owner = row["owner"]?.ToString(),
-                OwnerMobile = row["ownermobile"]?.ToString(),
-                OwnerMail = row["ownermail"]?.ToString(),
-                Manager = row["manager"]?.ToString(),
-                ManagerMobile = row["managermobile"]?.ToString(),
-                ManagerEmail = row["managermobile"]?.ToString(),
-                ManagerTitle = row["managertitle"]?.ToString(),
-                Address = row["adress"]?.ToString(),
-                City = row["city"]?.ToString(),
-                Country = row["country"]?.ToString(),
-                PostalCode = row["postalcode"]?.ToString(),
-                PhoneNumber = row["phonenumber"]?.ToString(),
-                CountryCode = row["countrycode"]?.ToString(),
-                FaxNumber = row["faxnumber"]?.ToString(),
-                Condition = row["condition"]?.ToString(),
-                CommunicationMethod = row["communicationmethod"]?.ToString(),
-                StartDate = (DateTime)row["startdate"],
-                ContactPerson = row["contactperson"]?.ToString(),
-                TaxOffice = row["taxoffice"]?.ToString(),
-                TaxNumber = row["taxnumber"]?.ToString(),
-                Currency = row["currency"]?.ToString(),
-                Region = row["region"]?.ToString(),
-                DiscountRate = Convert.ToDouble(row["discountrate"]),
-                SalesRepresentative = row["salesrepresentative"]?.ToString(),
+                Name = Name,
+                Id = Id
             };
         }
     }

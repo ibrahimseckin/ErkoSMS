@@ -88,7 +88,7 @@ namespace ErkoSMS.DataAccess
                     PrepareCommandParameters(command);
                     connection.Open();
                     TAdapter dataAdapter = new TAdapter{SelectCommand = command};
-                    DataSet dataSet = new DataSet { Locale = CultureInfo.InvariantCulture };
+                    DataSet dataSet = new DataSet();
                     dataAdapter.Fill(dataSet);
                     _parameters.Clear();
                     return dataSet;
