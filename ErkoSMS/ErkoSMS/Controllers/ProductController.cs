@@ -21,14 +21,14 @@ namespace ErkoSMS.Controllers
         [HttpGet]
         public ActionResult GetProducts()
         {
-            var products = new ProductDataService().GetAllProducts();  
+            var products = new ProductDataService().GetAllProducts();
             return new JsonResult()
             {
                 Data = products,
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = Int32.MaxValue
-            };              
+            };
         }
 
 
@@ -41,13 +41,13 @@ namespace ErkoSMS.Controllers
                 Data = product != null ? new List<Product> { product } : new List<Product>(),
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
-            };            
+            };
         }
 
         [HttpGet]
-        public ActionResult DeleteProductByCode(string productCode)
+        public ActionResult DeleteProduct(int productId)
         {
-            var result = new ProductDataService().DeleteProductByCode(productCode);
+            var result = new ProductDataService().DeleteProductById(productId);
             return new JsonResult()
             {
                 Data = result,
@@ -65,7 +65,7 @@ namespace ErkoSMS.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public  ActionResult CreateProduct(ProductViewModel product)
+        public ActionResult CreateProduct(ProductViewModel product)
         {
             var productDataService = new ProductDataService();
             var result = productDataService.CreateProduct(product);
@@ -76,6 +76,25 @@ namespace ErkoSMS.Controllers
             };
         }
 
+        public ActionResult EditProduct(int productId)
+        {
+            var productDataService = new ProductDataService();
+            var product = productDataService.GetProductById(productId);
+            return PartialView(new ProductViewModel(product));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditProduct(ProductViewModel product)
+        {
+            var productDataService = new ProductDataService();
+            var result = productDataService.UpdateProduct(product);
+            return new JsonResult()
+            {
+                Data = result,
+                ContentType = "application/json"
+            };
+        }
 
     }
 }

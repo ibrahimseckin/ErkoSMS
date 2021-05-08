@@ -53,6 +53,13 @@ namespace ErkoSMS.DataAccess
             return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
         }
 
+        public bool DeleteProductById(int productId)
+        {
+            const string query = "Delete From products Where Id = @productId";
+            _sqliteDataProvider.AddParameter("@productId", productId);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
+
         public bool CreateProduct(IProduct product)
         {
             const string query = "Insert into Products (Code,CrossReferenceCode,Description,DescriptionEng,ProductGroup,Brand,Model,LastPrice) values " +
@@ -70,6 +77,24 @@ namespace ErkoSMS.DataAccess
             return queryResult != null;
         }
 
+        public bool UpdateProduct(IProduct product)
+        {
+            const string query = "Update Products " +
+                           "Set Code = @Code, CrossReferenceCode = @CrossReferenceCode," +
+                           "Description = @Description, DescriptionEng = @DescriptionEng," +
+                           "ProductGroup = @ProductGroup, Brand = @Brand, Model = @Model,LastPrice = @LastPrice " +
+                           " Where Id = @Id";
+            _sqliteDataProvider.AddParameter("@Id", product.Id);
+            _sqliteDataProvider.AddParameter("@Code", product.Code);
+            _sqliteDataProvider.AddParameter("@CrossReferenceCode", product.CrossReferenceCode);
+            _sqliteDataProvider.AddParameter("@Description", product.Description);
+            _sqliteDataProvider.AddParameter("@DescriptionEng", product.EnglishDescription);
+            _sqliteDataProvider.AddParameter("@ProductGroup", product.Group);
+            _sqliteDataProvider.AddParameter("@Brand", product.Brand);
+            _sqliteDataProvider.AddParameter("@Model", product.Model);
+            _sqliteDataProvider.AddParameter("@LastPrice", product.LastPrice);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
 
 
 

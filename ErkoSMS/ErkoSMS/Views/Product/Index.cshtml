@@ -28,6 +28,7 @@
             var datatable = tb.DataTable({
                 autoWidth: true,
                 columns: [
+                    { title: "Id", data: "Id"},
                     { title: "Ürün Kodu", data: "Code" },
                     { title: "CrossReferenceCode", data: "CrossReferenceCode" },
                     { title: "Ürün Açıklaması", data: "Description" },
@@ -73,20 +74,26 @@
     // Edit record
     $('#productListTable').on('click', 'td.editor-edit', function (e) {
         e.preventDefault();
-        alert("güncelle");
+        debugger;
+        var rowToBeUpdated = $(this).closest('tr')[0];
+        var productId = rowToBeUpdated.cells[0].innerText;
+        ERKOSMS.GetAjaxDialog("Product/EditProduct?productId=" + productId, {}, false).then(function () {
+            debugger;
+        }), function (data) {
+            ERKOSMS.ShowWarning(data);
+        }
     });
 
 
     $('#productListTable').on('click', 'td.editor-delete', function (e) {
         e.preventDefault();
-        var dataTable = $('#productListTable').DataTable();
         var rowToBeDelleted = $(this).closest('tr')[0]
-        var productCode = rowToBeDelleted.cells[0].innerText
+        var productId = rowToBeDelleted.cells[0].innerText
         vex.dialog.confirm({
             message: "Seçilen ürün silinecektir. Emin misiniz? ",
             callback: function (result) {
                 if (result) {
-                    ERKOSMS.AjaxAction("Product/DeleteProductByCode?productCode=" + productCode, {}, false).then(function () {
+                    ERKOSMS.AjaxAction("Product/DeleteProduct?productId=" + productId, {}, false).then(function () {
                         debugger;
                         rowToBeDelleted.remove();
                     }), function (data) {
@@ -106,6 +113,7 @@
             var datatable = tb.DataTable({
                 autoWidth: true,
                 columns: [
+                    { title: "Id", data: "Id" },
                     { title: "Ürün Kodu", data: "Code" },
                     { title: "CrossReferenceCode", data: "CrossReferenceCode" },
                     { title: "Ürün Açıklaması", data: "Description" },

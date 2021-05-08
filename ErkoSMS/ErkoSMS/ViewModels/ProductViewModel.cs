@@ -31,5 +31,23 @@ namespace ErkoSMS.ViewModels
         [Display(Name = "Son Satış Fiyatı")]
         public string LastPrice { get; set; }
 
+        public ProductViewModel()
+        {
+
+        }
+
+        public ProductViewModel(IProduct product)
+        {
+            Id = product.Id;
+            Code = product.Code;
+            CrossReferenceCode = product.CrossReferenceCode;
+            Description = product.Description;
+            EnglishDescription = product.EnglishDescription;
+            Group = product.Group;
+            Brand = product.Brand;
+            Model = product.Model;
+            LastPrice = product.LastPrice;
+        }
+
     }
 }
