@@ -205,6 +205,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\LeftMenuViewModel.cs" />
+    <Compile Include="ViewModels\ProductViewModel.cs" />
     <Compile Include="ViewModels\UserAdministrationViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -596,6 +597,7 @@
     <Content Include="Views\Order\Index.cshtml" />
     <Content Include="Scripts\moment.min.js.map" />
     <Content Include="Scripts\moment-with-locales.min.js.map" />
+    <Content Include="Views\Product\CreateProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Customer\" />

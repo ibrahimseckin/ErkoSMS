@@ -2,6 +2,14 @@
     ViewBag.Title = "Ürünler";
 }
 
+<h2>@ViewBag.Title</h2>
+
+<p>
+    <span class="btn btn-success" id="createProductButton" data-erkosms-role="ajax-dialog-button" data-erkosms-targetaction="Product/CreateProduct">
+        <span class="fa fa-user-plus"></span> Ürün Ekle
+    </span>
+</p>
+
 <div id="filteringDiv" style="margin-top:20px">
     <input type="text" id="productCode" placeholder="Ürün Kodu" />
     <input type="button" id="searchButton" value="Ara" />

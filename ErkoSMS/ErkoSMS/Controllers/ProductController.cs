@@ -1,5 +1,6 @@
 ﻿using ErkoSMS.DataAccess;
 using ErkoSMS.DataAccess.Model;
+using ErkoSMS.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,5 +56,26 @@ namespace ErkoSMS.Controllers
             };
 
         }
+
+        public ActionResult CreateProduct()
+        {
+            return PartialView();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public  ActionResult CreateProduct(ProductViewModel product)
+        {
+            var productDataService = new ProductDataService();
+            var result = productDataService.CreateProduct(product);
+            return new JsonResult()
+            {
+                Data = result,
+                ContentType = "application/json"
+            };
+        }
+
+
     }
 }
