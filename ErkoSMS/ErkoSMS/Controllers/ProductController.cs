@@ -68,10 +68,10 @@ namespace ErkoSMS.Controllers
         public ActionResult CreateProduct(ProductViewModel product)
         {
             var productDataService = new ProductDataService();
-            var result = productDataService.CreateProduct(product);
+            productDataService.CreateProduct(product);
             return new JsonResult()
             {
-                Data = result,
+                Data = product,
                 ContentType = "application/json"
             };
         }
@@ -88,10 +88,10 @@ namespace ErkoSMS.Controllers
         public ActionResult EditProduct(ProductViewModel product)
         {
             var productDataService = new ProductDataService();
-            var result = productDataService.UpdateProduct(product);
+            productDataService.UpdateProduct(product);
             return new JsonResult()
             {
-                Data = result,
+                Data = product,
                 ContentType = "application/json"
             };
         }

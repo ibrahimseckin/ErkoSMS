@@ -55,11 +55,11 @@
 
 <script>
   
-    $("#EditProductForm").on("ajax-form:succeed", function (ev) {
+    $("#EditProductForm").on("ajax-form:succeed", function (ev,data) {
         var tg = $(ev.currentTarget);
         closeParentVexModal(tg);
-        location.reload()
-       
+        $("#productCode").val(data.result.Code);
+        $("#searchButton").click();      
     });
 
 </script>

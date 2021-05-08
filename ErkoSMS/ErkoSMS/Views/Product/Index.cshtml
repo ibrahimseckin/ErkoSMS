@@ -59,7 +59,7 @@
                 pageLength: 50,
                 deferRender: true,
                 columnDefs: [{
-                    targets: 1,
+                    targets: 2,
                     render: function (data, type, row) {
                         shortened = data.length > 20 ?
                             data.substr(0, 20) + '…' :
@@ -74,11 +74,9 @@
     // Edit record
     $('#productListTable').on('click', 'td.editor-edit', function (e) {
         e.preventDefault();
-        debugger;
         var rowToBeUpdated = $(this).closest('tr')[0];
         var productId = rowToBeUpdated.cells[0].innerText;
         ERKOSMS.GetAjaxDialog("Product/EditProduct?productId=" + productId, {}, false).then(function () {
-            debugger;
         }), function (data) {
             ERKOSMS.ShowWarning(data);
         }
@@ -94,7 +92,6 @@
             callback: function (result) {
                 if (result) {
                     ERKOSMS.AjaxAction("Product/DeleteProduct?productId=" + productId, {}, false).then(function () {
-                        debugger;
                         rowToBeDelleted.remove();
                     }), function (data) {
                         ERKOSMS.ShowWarning(data);
@@ -144,7 +141,7 @@
                 pageLength: 50,
                 deferRender: true,
                 columnDefs: [{
-                    targets: 1,
+                    targets: 2,
                     render: function (data, type, row) {
                         shortened = data.length > 20 ?
                             data.substr(0, 20) + '…' :
