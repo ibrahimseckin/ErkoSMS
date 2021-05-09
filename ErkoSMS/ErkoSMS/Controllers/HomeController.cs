@@ -19,6 +19,7 @@ namespace ErkoSMS.Controllers
             {
                     new LeftMenuItem("Kullanıcı Yönetimi", "UserAdministration", "Index"),
                     new LeftMenuItem("Ürünler", "Product", "Index"),
+                    new LeftMenuItem("Müşteriler", "Customer", "Index"),
                     new LeftMenuItem("Satış Yönetimi", "Order", "Index"),
 
             }

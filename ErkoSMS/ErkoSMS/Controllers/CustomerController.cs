@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ErkoSMS.DataAccess;
+using ErkoSMS.DataAccess.Model;
+using ErkoSMS.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,10 +11,101 @@ namespace ErkoSMS.Controllers
 {
     public class CustomerController : Controller
     {
-        // GET: Customer
+        // GET: Product
         public ActionResult Index()
         {
             return View();
         }
+
+        [HttpGet]
+        public ActionResult GetCustomers()
+        {
+            var customers = new CustomerDataService().GetAllCustomers();
+            return new JsonResult()
+            {
+                Data = customers,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+        }
+
+        [HttpGet]
+        public ActionResult GetCustomer(string customerName)
+        {
+            var customer = new CustomerDataService().GetCustomerByName(customerName);
+            return new JsonResult()
+            {
+                Data = customer != null ? new List<Customer> { customer } : new List<Customer>(),
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+            };
+        }
+
+
+
+
+        //[HttpGet]
+        //public ActionResult GetProductByCode(string productCode)
+        //{
+        //    var product = new ProductDataService().GetProductByCode(productCode);
+        //    return new JsonResult()
+        //    {
+        //        Data = product != null ? new List<Product> { product } : new List<Product>(),
+        //        ContentType = "application/json",
+        //        JsonRequestBehavior = JsonRequestBehavior.AllowGet
+        //    };
+        //}
+
+        [HttpGet]
+        public ActionResult DeleteCustomer(int customerId)
+        {
+            var result = new CustomerDataService().DeleteCustomerById(customerId);
+            return new JsonResult()
+            {
+                Data = result,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+
+        }
+
+        public ActionResult CreateCustomer()
+        {
+            return PartialView();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateCustomer (CustomerViewModel customer)
+        {
+            var customerDataService = new CustomerDataService();
+            customerDataService.CreateCustomer(customer);
+            return new JsonResult()
+            {
+                Data = customer,
+                ContentType = "application/json"
+            };
+        }
+
+        //public ActionResult EditProduct(int productId)
+        //{
+        //    var productDataService = new ProductDataService();
+        //    var product = productDataService.GetProductById(productId);
+        //    return PartialView(new ProductViewModel(product));
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult EditProduct(ProductViewModel product)
+        //{
+        //    var productDataService = new ProductDataService();
+        //    productDataService.UpdateProduct(product);
+        //    return new JsonResult()
+        //    {
+        //        Data = product,
+        //        ContentType = "application/json"
+        //    };
+        //}
     }
 }

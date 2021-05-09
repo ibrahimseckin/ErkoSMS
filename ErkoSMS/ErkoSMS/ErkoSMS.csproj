@@ -204,6 +204,7 @@
     <Compile Include="Objects\AjaxResultCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\CustomerViewModel.cs" />
     <Compile Include="ViewModels\LeftMenuViewModel.cs" />
     <Compile Include="ViewModels\ProductViewModel.cs" />
     <Compile Include="ViewModels\UserAdministrationViewModel.cs" />
@@ -599,9 +600,11 @@
     <Content Include="Scripts\moment-with-locales.min.js.map" />
     <Content Include="Views\Product\CreateProduct.cshtml" />
     <Content Include="Views\Product\EditProduct.cshtml" />
+    <Content Include="Views\Customer\CreateCustomer.cshtml" />
+    <Content Include="Views\Customer\EditCustomer.cshtml" />
+    <Content Include="Views\Customer\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Customer\" />
     <Folder Include="Views\StockHistory\" />
     <Folder Include="Views\Stock\" />
   </ItemGroup>

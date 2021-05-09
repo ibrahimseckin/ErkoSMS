@@ -1,8 +1,9 @@
-﻿using System;
+﻿using ErkoSMS.DataAccess.Interfaces;
+using System;
 
 namespace ErkoSMS.DataAccess.Model
 {
-    public class Customer
+    public class Customer : ICustomer
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -77,6 +77,7 @@
     <Compile Include="CustomerDataService.cs" />
     <Compile Include="DataProvider.cs" />
     <Compile Include="IDataProvider.cs" />
+    <Compile Include="Interfaces\ICustomer.cs" />
     <Compile Include="Interfaces\IProduct.cs" />
     <Compile Include="Model\Currency.cs" />
     <Compile Include="Model\Customer.cs" />
