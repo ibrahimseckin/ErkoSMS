@@ -88,5 +88,41 @@ namespace ErkoSMS.ViewModels
 
         [Display(Name = "Satış Temsilcisi")]
         public string SalesRepresentative { get; set; }
+
+        public CustomerViewModel()
+        {
+
+        }
+
+        public CustomerViewModel(ICustomer customer)
+        {
+            Address = customer.Address;
+            City = customer.City;
+            Comment = customer.Comment;
+            CommunicationMethod = customer.CommunicationMethod;
+            Condition = customer.Condition;
+            ContactPerson = customer.ContactPerson;
+            Country = customer.Country;
+            CountryCode = customer.CountryCode;
+            Currency = customer.Currency;
+            DiscountRate = customer.DiscountRate;
+            FaxNumber = customer.FaxNumber;
+            Id = customer.Id;
+            Manager = customer.Manager;
+            ManagerEmail = customer.ManagerEmail;
+            ManagerMobile = customer.ManagerMobile;
+            ManagerTitle = customer.ManagerTitle;
+            Name = customer.Name;
+            Owner = customer.Owner;
+            OwnerMail = customer.OwnerMail;
+            OwnerMobile = customer.OwnerMobile;
+            PhoneNumber = customer.PhoneNumber;
+            PostalCode = customer.PostalCode;
+            Region = customer.Region;
+            SalesRepresentative = customer.SalesRepresentative;
+            StartDate = customer.StartDate;
+            TaxNumber = customer.TaxNumber;
+            TaxOffice = customer.TaxOffice;         
+        }
     }
 }

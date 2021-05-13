@@ -1,51 +1,137 @@
 ﻿
-@model ErkoSMS.ViewModels.ProductViewModel
+@model ErkoSMS.ViewModels.CustomerViewModel
 <div>
-    <h3>Ürün Güncelle</h3>
+    <h3>Müşteri Güncelle</h3>
     <hr />
-    @using (Html.BeginForm("EditProduct", "Product", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "EditProductForm", style = "width:300px" }))
+    @using (Html.BeginForm("EditCustomer", "Customer", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "EditCustomerForm", style = "width:300px" }))
     {
         @Html.Hidden("Id", Model.Id)
         @Html.AntiForgeryToken()
         @Html.ValidationSummary("", new { @class = "text-danger" })
         <div class="form-group">
-            @Html.LabelFor(m => m.Code)
-            @Html.TextBoxFor(m => m.Code, new { @class = "form-control" })
+            @Html.LabelFor(m => m.Address)
+            @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.CrossReferenceCode)
-            @Html.TextBoxFor(m => m.CrossReferenceCode, new { @class = "form-control" })
+            @Html.LabelFor(m => m.City)
+            @Html.TextBoxFor(m => m.City, new { @class = "form-control" })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Description)
-            @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+            @Html.LabelFor(m => m.Comment)
+            @Html.TextBoxFor(m => m.Comment, new { @class = "form-control" })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.EnglishDescription)
-            @Html.TextBoxFor(m => m.EnglishDescription, new { @class = "form-control" })
+            @Html.LabelFor(m => m.CommunicationMethod)
+            @Html.TextBoxFor(m => m.CommunicationMethod, new { @class = "form-control" })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Group)
-            @Html.TextBoxFor(m => m.Group, new { @class = "form-control" })
+            @Html.LabelFor(m => m.Condition)
+            @Html.TextBoxFor(m => m.Condition, new { @class = "form-control" })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Brand)
-            @Html.TextBoxFor(m => m.Brand, new { @class = "form-control" })
+            @Html.LabelFor(m => m.ContactPerson)
+            @Html.TextBoxFor(m => m.ContactPerson, new { @class = "form-control" })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Model)
-            @Html.TextBoxFor(m => m.Model, new { @class = "form-control" })
+            @Html.LabelFor(m => m.Country)
+            @Html.TextBoxFor(m => m.Country, new { @class = "form-control" })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.LastPrice)
-            @Html.TextBoxFor(m => m.LastPrice, new { @class = "form-control" })
+            @Html.LabelFor(m => m.CountryCode)
+            @Html.TextBoxFor(m => m.CountryCode, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Currency)
+            @Html.TextBoxFor(m => m.Currency, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.DiscountRate)
+            @Html.TextBoxFor(m => m.DiscountRate, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.FaxNumber)
+            @Html.TextBoxFor(m => m.FaxNumber, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Manager)
+            @Html.TextBoxFor(m => m.Manager, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.ManagerEmail)
+            @Html.TextBoxFor(m => m.ManagerEmail, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.ManagerMobile)
+            @Html.TextBoxFor(m => m.ManagerMobile, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.ManagerTitle)
+            @Html.TextBoxFor(m => m.ManagerTitle, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name)
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Owner)
+            @Html.TextBoxFor(m => m.Owner, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.OwnerMail)
+            @Html.TextBoxFor(m => m.OwnerMail, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.OwnerMobile)
+            @Html.TextBoxFor(m => m.OwnerMobile, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.PhoneNumber)
+            @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.PostalCode)
+            @Html.TextBoxFor(m => m.PostalCode, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Region)
+            @Html.TextBoxFor(m => m.Region, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.SalesRepresentative)
+            @Html.TextBoxFor(m => m.SalesRepresentative, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.TaxNumber)
+            @Html.TextBoxFor(m => m.TaxNumber, new { @class = "form-control" })
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.TaxOffice)
+            @Html.TextBoxFor(m => m.TaxOffice, new { @class = "form-control" })
         </div>
 
         <input type="submit" class="btn btn-primary pull-right" value="Güncelle" />
@@ -54,12 +140,12 @@
 </div>
 
 <script>
-  
-    $("#EditProductForm").on("ajax-form:succeed", function (ev,data) {
+
+    $("#EditCustomerForm").on("ajax-form:succeed", function (ev, data) {
         var tg = $(ev.currentTarget);
         closeParentVexModal(tg);
-        $("#productCode").val(data.result.Code);
-        $("#searchButton").click();      
+        $("#customerName").val(data.result.Name);
+        $("#searchButton").click();
     });
 
 </script>

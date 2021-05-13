@@ -40,10 +40,60 @@ namespace ErkoSMS.DataAccess
             return row != null ? CreateCustomerObject(row) : null;
         }
 
+        public Customer GetCustomerById(int customerId)
+        {
+            const string query = "select * from customers where Id=@Id";
+            _sqliteDataProvider.AddParameter("@Id", customerId);
+            DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
+
+            return row != null ? CreateCustomerObject(row) : null;
+        }
+
         public bool DeleteCustomerById(int customerId)
         {
             const string query = "Delete From customers Where Id = @customerId";
             _sqliteDataProvider.AddParameter("@customerId", customerId);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
+
+        public bool UpdateCustomer(ICustomer customer)
+        {
+            const string query = "Update Customers " +
+                           "Set Adress = @Adress, City = @City, Comment = @Comment," +
+                           "CommunicationMethod = @CommunicationMethod, Condition = @Condition, ContactPerson = @ContactPerson," +
+                           "Country = @Country, CountryCode = @CountryCode, Currency = @Currency," +
+                           "DiscountRate = @DiscountRate,FaxNumber = @FaxNumber ,Manager = @Manager," +
+                           "ManagerEmail = @ManagerEmail,ManagerMobile = @ManagerMobile,ManagerTitle = @ManagerTitle," +
+                           "Name = @Name, Owner = @Owner, OwnerMail = @OwnerMail, OwnerMobile = @OwnerMobile," +
+                           "PhoneNumber = @PhoneNumber, PostalCode = @PostalCode, Region = @Region," +
+                           "SalesRepresentative = @SalesRepresentative, TaxNumber = @TaxNumber, TaxOffice = @TaxOffice" +
+                           " Where Id = @Id";
+            _sqliteDataProvider.AddParameter("@Id", customer.Id);
+            _sqliteDataProvider.AddParameter("@Adress", customer.Address);
+            _sqliteDataProvider.AddParameter("@City", customer.City);
+            _sqliteDataProvider.AddParameter("@Comment", customer.Comment);
+            _sqliteDataProvider.AddParameter("@CommunicationMethod", customer.CommunicationMethod);
+            _sqliteDataProvider.AddParameter("@Condition", customer.Condition);
+            _sqliteDataProvider.AddParameter("@ContactPerson", customer.ContactPerson);
+            _sqliteDataProvider.AddParameter("@Country", customer.Country);
+            _sqliteDataProvider.AddParameter("@CountryCode", customer.CountryCode);
+            _sqliteDataProvider.AddParameter("@Currency", customer.Currency);
+            _sqliteDataProvider.AddParameter("@DiscountRate", customer.DiscountRate);
+            _sqliteDataProvider.AddParameter("@FaxNumber", customer.FaxNumber);
+            _sqliteDataProvider.AddParameter("@Manager", customer.Manager);
+            _sqliteDataProvider.AddParameter("@ManagerEmail", customer.ManagerEmail);
+            _sqliteDataProvider.AddParameter("@ManagerMobile", customer.ManagerMobile);
+            _sqliteDataProvider.AddParameter("@ManagerTitle", customer.ManagerTitle);
+            _sqliteDataProvider.AddParameter("@Name", customer.Name);
+            _sqliteDataProvider.AddParameter("@Owner", customer.Owner);
+            _sqliteDataProvider.AddParameter("@OwnerMail", customer.OwnerMail);
+            _sqliteDataProvider.AddParameter("@OwnerMobile", customer.OwnerMobile);
+            _sqliteDataProvider.AddParameter("@PhoneNumber", customer.PhoneNumber);
+            _sqliteDataProvider.AddParameter("@PostalCode", customer.PostalCode);
+            _sqliteDataProvider.AddParameter("@Region", customer.Region);
+            _sqliteDataProvider.AddParameter("@SalesRepresentative", customer.SalesRepresentative);
+            _sqliteDataProvider.AddParameter("@TaxNumber", customer.TaxNumber);
+            _sqliteDataProvider.AddParameter("@TaxOffice", customer.TaxOffice);
             return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
         }
 

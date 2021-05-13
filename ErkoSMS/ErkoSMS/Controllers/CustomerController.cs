@@ -43,20 +43,6 @@ namespace ErkoSMS.Controllers
         }
 
 
-
-
-        //[HttpGet]
-        //public ActionResult GetProductByCode(string productCode)
-        //{
-        //    var product = new ProductDataService().GetProductByCode(productCode);
-        //    return new JsonResult()
-        //    {
-        //        Data = product != null ? new List<Product> { product } : new List<Product>(),
-        //        ContentType = "application/json",
-        //        JsonRequestBehavior = JsonRequestBehavior.AllowGet
-        //    };
-        //}
-
         [HttpGet]
         public ActionResult DeleteCustomer(int customerId)
         {
@@ -77,7 +63,7 @@ namespace ErkoSMS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateCustomer (CustomerViewModel customer)
+        public ActionResult CreateCustomer(CustomerViewModel customer)
         {
             var customerDataService = new CustomerDataService();
             customerDataService.CreateCustomer(customer);
@@ -88,24 +74,24 @@ namespace ErkoSMS.Controllers
             };
         }
 
-        //public ActionResult EditProduct(int productId)
-        //{
-        //    var productDataService = new ProductDataService();
-        //    var product = productDataService.GetProductById(productId);
-        //    return PartialView(new ProductViewModel(product));
-        //}
+        public ActionResult EditCustomer(int customerId)
+        {
+            var customerDataService = new CustomerDataService();
+            var customer = customerDataService.GetCustomerById(customerId);
+            return PartialView(new CustomerViewModel(customer));
+        }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult EditProduct(ProductViewModel product)
-        //{
-        //    var productDataService = new ProductDataService();
-        //    productDataService.UpdateProduct(product);
-        //    return new JsonResult()
-        //    {
-        //        Data = product,
-        //        ContentType = "application/json"
-        //    };
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditCustomer(CustomerViewModel customer)
+        {
+            var customerDataService = new CustomerDataService();
+            var result = customerDataService.UpdateCustomer(customer);
+            return new JsonResult()
+            {
+                Data = customer,
+                ContentType = "application/json"
+            };
+        }
     }
 }
