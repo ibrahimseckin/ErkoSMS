@@ -42,6 +42,21 @@ namespace ErkoSMS.Controllers
             };
         }
 
+        [HttpGet]
+        public ActionResult GetStockInformationByProductCode(string productCode)
+        {
+            var stock = 10;
+
+            return new JsonResult()
+            {
+                Data = stock,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+        }
+
+
         [HttpPost]
         public ActionResult GetFilteredSales(IEnumerable<int> customerIds, IEnumerable<SalesState> states,
                                             IEnumerable<Currency> currencies, string invoiceNo)

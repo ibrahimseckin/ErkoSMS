@@ -1,0 +1,27 @@
+﻿@model ErkoSMS.ViewModels.OrderLine
+
+<li class="orderRow" style="overflow: hidden;">
+    <div class="row form-group-sm" style="padding-top: 5px;">
+        <div class="col-md-2">
+            @Html.LabelFor(x => x.ProductCode)
+            @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control productCode", name = "ProductCode", @id = Guid.NewGuid(), style = "display:inline-block" })
+        </div>
+        <div class="col-md-2">
+            @Html.LabelFor(x => x.Quantity)
+            @Html.TextBoxFor(x => x.Quantity, new { @class = "form-control quantity", id = "QuantityTextBox", style = "display:inline-block" })
+        </div>
+        <div class="col-md-2">
+            <label>Stok miktarı:</label>
+            <input class="form-control stockQuantity" type="text">
+        </div>
+        <div class="col-md-2">
+            @Html.LabelFor(x => x.UnitPrice)
+            @Html.TextBoxFor(x => x.UnitPrice, new { @class = "form-control unitPrice", id = "UnitPriceTextBox", style = "display:inline-block" })
+        </div>
+
+        <div class="col-md-2">
+            <button class="stockButton">Stok Sorgula</button>
+        </div>
+    </div>
+</li>
+
