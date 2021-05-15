@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ErkoSMS.DataAccess;
+using ErkoSMS.DataAccess.Model;
 using Microsoft.AspNet.Identity;
 
 namespace ErkoSMS.Controllers
@@ -17,7 +18,7 @@ namespace ErkoSMS.Controllers
             ViewBag.Customers =
                 allCustomers.GroupBy(x => x.Id)
                     .Select(x => x.FirstOrDefault()).Select(
-                        x => 
+                        x =>
                             new SelectListItem
                             {
                                 Text = x.Name,
@@ -42,11 +43,28 @@ namespace ErkoSMS.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetFilteredSales(IEnumerable<int> customerIds)
+        public ActionResult GetFilteredSales(IEnumerable<int> customerIds, IEnumerable<SalesState> states,
+                                            IEnumerable<Currency> currencies, string invoiceNo)
         {
             var salesByPerson = new SalesDataService().GetSalesBySalesPerson(User.Identity.GetUserId());
 
-            var filteredSales = salesByPerson.Where(x => customerIds.Contains(x.Id)); 
+            var filteredSales = salesByPerson;
+            if(customerIds != null)
+            {
+                filteredSales = salesByPerson.Where(x => customerIds.Contains(x.Customer.Id)).ToList();
+            }
+            if(states != null)
+            {
+                filteredSales = salesByPerson.Where(x => states.Contains(x.SalesState)).ToList();
+            }
+            if (currencies != null)
+            {
+                filteredSales = salesByPerson.Where(x => currencies.Contains(x.Currency)).ToList();
+            }
+            if(string.IsNullOrEmpty(invoiceNo) == false)
+            {
+                filteredSales = salesByPerson.Where(x => invoiceNo == x.InvoiceNumber).ToList();
+            }
             return new JsonResult()
             {
                 Data = filteredSales,
