@@ -19,9 +19,11 @@ namespace ErkoSMS.DataAccess.Model
         public DateTime? InvoiceDate { get; set; }
         public string InvoiceNumber { get; set; }
         public Customer Customer { get; set; }
-        public IdentityUser SalesUser { get; set; }
+        public string SalesUserName { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public Currency Currency { get; set; }
         public double TotalPrice { get; set; }
+        public IEnumerable<SalesDetail> SalesDetails { get; set; }
+        public bool IsActive { get; set; }
     }
 }

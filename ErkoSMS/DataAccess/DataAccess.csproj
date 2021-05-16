@@ -85,6 +85,7 @@
     <Compile Include="Model\Customer.cs" />
     <Compile Include="Model\Product.cs" />
     <Compile Include="Model\Sales.cs" />
+    <Compile Include="Model\SalesDetail.cs" />
     <Compile Include="Model\SalesState.cs" />
     <Compile Include="Model\StockORKA.cs" />
     <Compile Include="ORKADataService.cs" />

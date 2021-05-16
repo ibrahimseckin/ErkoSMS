@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using ErkoSMS.DataAccess;
 using ErkoSMS.DataAccess.Model;
+using ErkoSMS.ViewModels;
 using Microsoft.AspNet.Identity;
 
 namespace ErkoSMS.Controllers
@@ -13,18 +14,6 @@ namespace ErkoSMS.Controllers
     {
         public ActionResult Index()
         {
-            var allCustomers = new CustomerDataService().GetAllCustomers().ToList();
-            // Create a SelectListItem list from the alarm class configurations which are distinct by their names
-            ViewBag.Customers =
-                allCustomers.GroupBy(x => x.Id)
-                    .Select(x => x.FirstOrDefault()).Select(
-                        x =>
-                            new SelectListItem
-                            {
-                                Text = x.Name,
-                                Value = x.Id.ToString()
-                            })
-                    .ToList();
             return View(new OrderFilterParameters());
         }
 
@@ -45,7 +34,7 @@ namespace ErkoSMS.Controllers
         [HttpGet]
         public ActionResult GetStockInformationByProductCode(string productCode)
         {
-            var stock = 10;
+            var stock = new ORKADataService().GetStockByCode(productCode);
 
             return new JsonResult()
             {
@@ -56,6 +45,43 @@ namespace ErkoSMS.Controllers
             };
         }
 
+        public ActionResult CreateOrder()
+        {
+            FillViewBag();
+
+            var orderViewModel = new OrderViewModel { OrderLines = new List<OrderLine>() };
+
+            return View(orderViewModel);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateOrder(OrderViewModel order)
+        {
+            var sales = new Sales();
+            var salesDetails = new List<SalesDetail>();
+            foreach (var orderLine in order.OrderLines)
+            {
+                salesDetails.Add(new SalesDetail { ProductCode = orderLine.ProductCode, Quantity = orderLine.Quantity, UnitPrice = orderLine.UnitPrice });
+            }
+            sales.Currency = order.Currency;
+            sales.Customer = new CustomerDataService().GetCustomerById(order.CustomerId);
+            sales.IsActive = order.IsActive;
+            sales.SalesStartDate = DateTime.Now;
+            sales.SalesUserName = User.Identity.Name;
+            sales.SalesDetails = salesDetails;
+
+            new SalesDataService().CreateOrder(sales);
+            return new JsonResult();
+            
+        }
+
+        public ActionResult ListOrder()
+        {
+            FillViewBag();
+            return View(new OrderFilterParameters());
+        }
 
         [HttpPost]
         public ActionResult GetFilteredSales(IEnumerable<int> customerIds, IEnumerable<SalesState> states,
@@ -87,6 +113,22 @@ namespace ErkoSMS.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = Int32.MaxValue
             };
+        }
+
+        private void FillViewBag()
+        {
+            var allCustomers = new CustomerDataService().GetAllCustomers().ToList();
+            // Create a SelectListItem list from the alarm class configurations which are distinct by their names
+            ViewBag.Customers =
+                allCustomers.GroupBy(x => x.Id)
+                    .Select(x => x.FirstOrDefault()).Select(
+                        x =>
+                            new SelectListItem
+                            {
+                                Text = x.Name,
+                                Value = x.Id.ToString()
+                            })
+                    .ToList();
         }
     }
 }
