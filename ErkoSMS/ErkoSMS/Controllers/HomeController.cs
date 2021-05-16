@@ -15,32 +15,37 @@ namespace ErkoSMS.Controllers
 
         LeftMenuViewModel AdministratorNavigations = new LeftMenuViewModel
         {
-            Navigations = new List<LeftMenuItem>
+            Navigations = new List<LeftMenu>
             {
-                    new LeftMenuItem("Kullanıcı Yönetimi", "UserAdministration", "Index"),
-                    new LeftMenuItem("Ürünler", "Product", "Index"),
-                    new LeftMenuItem("Müşteriler", "Customer", "Index"),
-                    new LeftMenuItem("Satış Yönetimi", "Order", "Index"),
+                    new LeftMenu(new LeftMenuItem("Kullanıcı Yönetimi", "UserAdministration", "Index"),null),
+                    new LeftMenu(new LeftMenuItem("Ürünler", "Product", "Index"),null),
+                    new LeftMenu(new LeftMenuItem("Müşteriler", "Customer", "Index"),null),
+                    new LeftMenu(new LeftMenuItem("Satış Yönetimi", "", ""), 
+                        new List<LeftMenuItem>{ new LeftMenuItem("Satışları Listele","Order","Index"),
+                        new LeftMenuItem("Yeni Satış","Order","Index")}),
+                    new LeftMenu(new LeftMenuItem("Stok Listesi", "Stock", "Index"),null)
 
             }
         };
 
         private LeftMenuViewModel SalesNavigations = new LeftMenuViewModel
         {
-            Navigations = new List<LeftMenuItem>
+            Navigations = new List<LeftMenu>
             {
-                new LeftMenuItem("Satış Yönetimi", "Order", "Index"),
-                new LeftMenuItem("Ürünler", "Product", "Index"),
+                  new LeftMenu(new LeftMenuItem("Satış Yönetimi", "", ""),
+                        new List<LeftMenuItem>{ new LeftMenuItem("Satışları Listele","Order","Index"),
+                        new LeftMenuItem("Yeni Satış","Order","Index")}),
+                 new LeftMenu(new LeftMenuItem("Ürünler", "Product", "Index"),null)
             }
         };
 
         LeftMenuViewModel AnynomousNavigations = new LeftMenuViewModel
         {
-            Navigations = new List<LeftMenuItem> {
-                                                        new LeftMenuItem("Home", "Home", "Index"),
-                                                        new LeftMenuItem("About", "Home", "About"),
-                                                        new LeftMenuItem("Contact", "Home", "Contact"),
-                                                    }
+            Navigations = new List<LeftMenu> {
+                new LeftMenu(new LeftMenuItem("Home", "Home", "Index"),null),
+                new LeftMenu(new LeftMenuItem("About", "Home", "About"),null),
+                new LeftMenu(new LeftMenuItem("Contact", "Home", "Contact"),null),
+            }
         };
 
         [Authorize]

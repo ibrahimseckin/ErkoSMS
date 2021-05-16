@@ -1,11 +1,35 @@
 ﻿@model ErkoSMS.ViewModels.LeftMenuViewModel
 <div class="w3-sidebar w3-light-grey w3-bar-block">
     <div style="padding:20px">
+
         @foreach (var nav in Model.Navigations)
         {
-            var navLinkClass = ViewBag.SelectedMenu == nav.DisplayText ? "w3-bar-item w3-button leftMenu w3-green" : "w3-bar-item w3-button leftMenu";
-            @Html.ActionLink(nav.DisplayText, nav.Action, nav.Controller, new { area = "" }, htmlAttributes: new { @class = navLinkClass, data_nav = nav.DisplayText })
+            if (nav.subMenuItems.Any() == false)
+            {
+                var navLinkClass = ViewBag.SelectedMenu == nav.menuItem.DisplayText ? "w3-bar-item w3-button leftMenu w3-green" : "w3-bar-item w3-button leftMenu";
+                @Html.ActionLink(nav.menuItem.DisplayText, nav.menuItem.Action, nav.menuItem.Controller, new { area = "" }, htmlAttributes: new { @class = navLinkClass, data_nav = nav.menuItem.DisplayText })
+            }
+            else
+            {
+        <div class="w3-dropdown-hover">
+            @{
+                var navLinkClassDropdown = nav.subMenuItems.Any(x => x.DisplayText == ViewBag.SelectedMenu) ? "w3-bar-item w3-button leftMenu w3-green" : "w3-bar-item w3-button leftMenu";
+                <button class="@navLinkClassDropdown">@nav.menuItem.DisplayText <i class="fa fa-caret-down"></i></button>
+            }
+            <div class="w3-dropdown-content w3-bar-block">
+                @foreach (var submenu in nav.subMenuItems)
+                {
+                    var navLinkClass = ViewBag.SelectedMenu == submenu.DisplayText ? "w3-bar-item w3-button leftMenu w3-green" : "w3-bar-item w3-button leftMenu";
+                    @Html.ActionLink(submenu.DisplayText, submenu.Action, submenu.Controller, new { area = "" }, htmlAttributes: new { @class = navLinkClass, data_nav = submenu.DisplayText })
+                }
+            </div>
+        </div>
+            }
         }
     </div>
 
 </div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
