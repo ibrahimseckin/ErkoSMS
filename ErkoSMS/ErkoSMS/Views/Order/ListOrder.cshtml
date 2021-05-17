@@ -8,6 +8,8 @@
 
 @{
     var customers = (List<SelectListItem>)ViewBag.Customers;
+    var salesState = (List<SelectListItem>)ViewBag.SaleStates;
+    var currencies = (List<SelectListItem>)ViewBag.Currencies;
 }
 
 <div id="listSalesDiv" style="display:block">
@@ -33,7 +35,7 @@
                     <label>Satış Durumu:</label>
                 </div>
                 <div class="col-md-8">
-                    @Html.EnumDropDownListFor(x => x.State, new { multiple = "multiple", id = "statedropdown", @class = "chosen-select form-control" })
+                    @Html.DropDownListFor(x => x.State, salesState, new { multiple = "multiple", id = "statedropdown", @class = "chosen-select form-control" })
                 </div>
             </div>
         </div>
@@ -43,7 +45,7 @@
                     <label>Kur:</label>
                 </div>
                 <div class="col-md-10">
-                    @Html.EnumDropDownListFor(x => x.Currency, new { multiple = "multiple", id = "currencydropdown", @class = "chosen-select form-control" })
+                    @Html.DropDownListFor(x => x.Currency, currencies, new { multiple = "multiple", id = "currencydropdown", @class = "chosen-select form-control" })
                 </div>
             </div>
             <div class="form-group col-md-6">

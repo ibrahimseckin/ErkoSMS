@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Mvc.Html;
 using ErkoSMS.DataAccess;
 using ErkoSMS.DataAccess.Model;
 using ErkoSMS.ViewModels;
@@ -74,7 +75,7 @@ namespace ErkoSMS.Controllers
 
             new SalesDataService().CreateOrder(sales);
             return new JsonResult();
-            
+
         }
 
         public ActionResult ListOrder()
@@ -90,11 +91,11 @@ namespace ErkoSMS.Controllers
             var salesByPerson = new SalesDataService().GetSalesBySalesPerson(User.Identity.GetUserId());
 
             var filteredSales = salesByPerson;
-            if(customerIds != null)
+            if (customerIds != null)
             {
                 filteredSales = salesByPerson.Where(x => customerIds.Contains(x.Customer.Id)).ToList();
             }
-            if(states != null)
+            if (states != null)
             {
                 filteredSales = filteredSales.Where(x => states.Contains(x.SalesState)).ToList();
             }
@@ -102,7 +103,7 @@ namespace ErkoSMS.Controllers
             {
                 filteredSales = filteredSales.Where(x => currencies.Contains(x.Currency)).ToList();
             }
-            if(string.IsNullOrEmpty(invoiceNo) == false)
+            if (string.IsNullOrEmpty(invoiceNo) == false)
             {
                 filteredSales = filteredSales.Where(x => invoiceNo == x.InvoiceNumber).ToList();
             }
@@ -129,6 +130,11 @@ namespace ErkoSMS.Controllers
                                 Value = x.Id.ToString()
                             })
                     .ToList();
+
+            ViewBag.SaleStates = EnumHelper.GetSelectList(typeof(SalesState));
+            ViewBag.Currencies = EnumHelper.GetSelectList(typeof(Currency));
+
+
         }
     }
 }
