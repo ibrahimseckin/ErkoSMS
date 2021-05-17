@@ -28,6 +28,7 @@ namespace ErkoSMS
                       "~/CustomContent/Scripts/base.js",
                       "~/Scripts/moment-with-locales.js",
                       "~/Scripts/select2.min.js",
+                     "~/Scripts/jquery-ui-1.12.1.min.js",
                       "~/Scripts/DataTables/jquery.dataTables.min.js"));
 
 
@@ -38,6 +39,7 @@ namespace ErkoSMS
                       "~/Content/vex/css/vex.css",
                       "~/CustomContent/Styles/vex-theme-metro.css",
                       "~/Content/css/select2.min.css",
+                      "~/Content/themes/base/jquery-ui.min.css",
                       "~/Content/DataTables/css/jquery.dataTables.min.css"));
 
             bundles.Add(new StyleBundle("~/Content/login").Include(

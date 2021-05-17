@@ -50,8 +50,7 @@ namespace ErkoSMS.Controllers
         {
             FillViewBag();
 
-            var orderViewModel = new OrderViewModel { OrderLines = new List<OrderLine>() };
-
+            var orderViewModel = new OrderViewModel {OrderLines = new List<OrderLine>(), InvoiceDate = DateTime.Now};
             return View(orderViewModel);
         }
 
@@ -62,16 +61,21 @@ namespace ErkoSMS.Controllers
         {
             var sales = new Sales();
             var salesDetails = new List<SalesDetail>();
+            double totalPrice = 0;
             foreach (var orderLine in order.OrderLines)
             {
+                totalPrice += orderLine.TotalPrice;
                 salesDetails.Add(new SalesDetail { ProductCode = orderLine.ProductCode, Quantity = orderLine.Quantity, UnitPrice = orderLine.UnitPrice });
             }
             sales.Currency = order.Currency;
             sales.Customer = new CustomerDataService().GetCustomerById(order.CustomerId);
-            sales.IsActive = order.IsActive;
             sales.SalesStartDate = DateTime.Now;
             sales.SalesUserName = User.Identity.Name;
             sales.SalesDetails = salesDetails;
+            sales.TotalPrice = totalPrice;
+            sales.InvoiceNumber = order.InvoiceNumber;
+            sales.SalesState = order.State;
+            sales.InvoiceDate = order.InvoiceDate;
 
             new SalesDataService().CreateOrder(sales);
             return new JsonResult();

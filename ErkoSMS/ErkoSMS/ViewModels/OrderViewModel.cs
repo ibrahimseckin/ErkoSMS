@@ -15,8 +15,10 @@ namespace ErkoSMS.ViewModels
         public DateTime OrderDate { get; set; }
         public IEnumerable<OrderLine> OrderLines { get; set; }
         public SalesState State { get; set; }
-        [Display(Name = "Aktif mi?")]
-        public bool IsActive { get; set; }
+        [Display(Name = "Fatura No:")]
+        public string InvoiceNumber { get; set; }
+        [Display(Name = "Fatura Tarihi:")]
+        public DateTime InvoiceDate { get; set; }
     }
 
     public class OrderLine

@@ -34,15 +34,16 @@ namespace ErkoSMS.DataAccess
 
         public void CreateOrder(Sales sales)
         {
-            string query = "Insert into Sales (CustomerName,SalesPeople,TotalPrice,Currency,State,IsActive) values (@customerName,@username," +
-                "@totalPrice,@currency,@state,@isActive);";
+            string query = "Insert into Sales (CustomerName,SalesPeople,TotalPrice,Currency,State,InvoiceNumber,InvoiceDate) values (@customerName,@username," +
+                "@totalPrice,@currency,@state,@invoiceNumber,@invoiceDate);";
             query += Environment.NewLine + "SELECT LAST_INSERT_ROWID();";
             _sqliteDataProvider.AddParameter("@customerName",sales.Customer.Name);
             _sqliteDataProvider.AddParameter("@username", sales.SalesUserName);
             _sqliteDataProvider.AddParameter("@totalPrice", sales.TotalPrice);
             _sqliteDataProvider.AddParameter("@currency", sales.Currency);
             _sqliteDataProvider.AddParameter("@state", sales.SalesState);
-            _sqliteDataProvider.AddParameter("@isActive", sales.IsActive);
+            _sqliteDataProvider.AddParameter("@invoiceNumber", sales.InvoiceNumber);
+            _sqliteDataProvider.AddParameter("@invoiceDate", sales.InvoiceDate);
 
             var salesId = _sqliteDataProvider.ExecuteScalar(query);
             foreach (var salesDetail in sales.SalesDetails)
