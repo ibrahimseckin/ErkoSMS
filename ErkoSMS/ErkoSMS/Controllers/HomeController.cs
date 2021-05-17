@@ -33,7 +33,7 @@ namespace ErkoSMS.Controllers
             Navigations = new List<LeftMenu>
             {
                   new LeftMenu(new LeftMenuItem("Satış Yönetimi", "", ""),
-                        new List<LeftMenuItem>{ new LeftMenuItem("Satışları Listele","Order","Index"),
+                        new List<LeftMenuItem>{ new LeftMenuItem("Satışları Listele","Order","ListOrder"),
                         new LeftMenuItem("Yeni Satış","Order","Index")}),
                  new LeftMenu(new LeftMenuItem("Ürünler", "Product", "Index"),null)
             }
