@@ -8,9 +8,9 @@ namespace ErkoSMS
 {
     public class OrderFilterParameters
     {
-        public SalesState? State { get; set; }
+        public SalesState State { get; set; }
         public IEnumerable<string> Customers { get; set; }
-        public Currency? Currency { get; set; }
+        public Currency Currency { get; set; }
         public string InvoiceNumber { get; set; }
 
     }

@@ -96,15 +96,15 @@ namespace ErkoSMS.Controllers
             }
             if(states != null)
             {
-                filteredSales = salesByPerson.Where(x => states.Contains(x.SalesState)).ToList();
+                filteredSales = filteredSales.Where(x => states.Contains(x.SalesState)).ToList();
             }
             if (currencies != null)
             {
-                filteredSales = salesByPerson.Where(x => currencies.Contains(x.Currency)).ToList();
+                filteredSales = filteredSales.Where(x => currencies.Contains(x.Currency)).ToList();
             }
             if(string.IsNullOrEmpty(invoiceNo) == false)
             {
-                filteredSales = salesByPerson.Where(x => invoiceNo == x.InvoiceNumber).ToList();
+                filteredSales = filteredSales.Where(x => invoiceNo == x.InvoiceNumber).ToList();
             }
             return new JsonResult()
             {

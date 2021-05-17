@@ -21,22 +21,38 @@
         @Html.AntiForgeryToken()
         <div class="row">
             <div class="form-group col-md-6">
-                <label>Müşteri:</label>
-                @Html.DropDownListFor(x => x.Customers, customers, new { multiple = "multiple", id = "customerdropdown", @class = "chosen-select form-control" })
+                <div class="col-md-2">
+                    <label>Müşteri:</label>
+                </div>
+                <div class="col-md-10">
+                    @Html.DropDownListFor(x => x.Customers, customers, new { multiple = "multiple", id = "customerdropdown", @class = "chosen-select form-control" })
+                </div>
             </div>
             <div class="form-group col-md-6">
-                <label>Satış Durumu:</label>
-                @Html.EnumDropDownListFor(x => x.State, new { multiple = "multiple", id = "statedropdown", @class = "chosen-select form-control" })
+                <div class="col-md-4">
+                    <label>Satış Durumu:</label>
+                </div>
+                <div class="col-md-8">
+                    @Html.EnumDropDownListFor(x => x.State, new { multiple = "multiple", id = "statedropdown", @class = "chosen-select form-control" })
+                </div>
             </div>
         </div>
         <div class="row">
             <div class="form-group col-md-6">
-                <label>Kur:</label>
-                @Html.EnumDropDownListFor(x => x.Currency, new { multiple = "multiple", id = "currencydropdown", @class = "chosen-select form-control" })
+                <div class="col-md-2">
+                    <label>Kur:</label>
+                </div>
+                <div class="col-md-10">
+                    @Html.EnumDropDownListFor(x => x.Currency, new { multiple = "multiple", id = "currencydropdown", @class = "chosen-select form-control" })
+                </div>
             </div>
             <div class="form-group col-md-6">
-                <label>Fatura No:</label>
-                @Html.TextBoxFor(x => x.InvoiceNumber, new { @class = "form-control", id = "invoiceTextbox", style = "display:inline-block" })
+                <div class="col-md-4">
+                    <label>Fatura No:</label>
+                </div>
+                <div class="col-md-8">
+                    @Html.TextBoxFor(x => x.InvoiceNumber, new { @class = "form-control", id = "invoiceTextbox", style = "display:inline-block" })
+                </div>
             </div>
         </div>
 
@@ -55,6 +71,7 @@
     var tb = $("#salesTable");
 
     $('#listSalesButton').on('click', function () {
+        debugger;
         document.getElementById("listSalesDiv").style.display = "block";
     });
 
@@ -220,10 +237,19 @@
     });
 
     $('#searchButton').on('click', function () {
-        document.getElementById("SalesFilterForm").style.display = "block";
-        $('#customerdropdown').select2({ placeholder: "Müşteri Seçin" });
-        $('#statedropdown').select2({ placeholder: "Durum Seçin" });
-        $('#currencydropdown').select2({ placeholder: "Kur Seçin" });
+
+        var visibility = document.getElementById("SalesFilterForm").style.display;
+        if (visibility === "none") {
+            document.getElementById("SalesFilterForm").style.display = "block";
+            $('#customerdropdown').select2({ placeholder: "Müşteri Seçin" });
+            $('#statedropdown').select2({ placeholder: "Durum Seçin" });
+            $('#currencydropdown').select2({ placeholder: "Kur Seçin" });
+        }
+        else {
+            document.getElementById("SalesFilterForm").style.display = "none";
+        }
+
+
     });
 
 
