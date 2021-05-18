@@ -653,6 +653,7 @@
     <Content Include="Views\Order\CreateOrder.cshtml" />
     <Content Include="Views\Order\ListOrder.cshtml" />
     <Content Include="Views\Stock\Index.cshtml" />
+    <Content Include="Views\Order\UpdateOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\StockHistory\" />
