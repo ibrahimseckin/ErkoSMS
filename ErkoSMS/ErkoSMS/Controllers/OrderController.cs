@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using ErkoSMS.DataAccess;
 using ErkoSMS.DataAccess.Model;
+using ErkoSMS.Objects;
 using ErkoSMS.ViewModels;
 using Microsoft.AspNet.Identity;
 
@@ -85,7 +86,7 @@ namespace ErkoSMS.Controllers
             sales.InvoiceDate = order.InvoiceDate;
 
             new SalesDataService().CreateOrder(sales);
-            return new JsonResult();
+            return Json(new AjaxResult(true));
 
         }
 
