@@ -4,11 +4,24 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using ErkoSMS.Models;
 
 namespace ErkoSMS.ViewModels
 {
     public class OrderViewModel
     {
+        public OrderViewModel()
+        {
+        }
+        public OrderViewModel(Sales sales)
+        {
+            this.TotalPrice = sales.TotalPrice;
+            this.InvoiceNumber = sales.InvoiceNumber;
+            this.CustomerId = sales.Customer.Id;
+            this.State = sales.SalesState;
+            this.Currency = sales.Currency;
+        }
+        public int OrderId { get; set; }
         public int CustomerId { get; set; }
         public Currency Currency { get; set; }
         public double TotalPrice { get; set; }
@@ -32,4 +45,5 @@ namespace ErkoSMS.ViewModels
         [Display(Name = "Top.Fiyat")]
         public double TotalPrice { get; set; }
     }
+
 }

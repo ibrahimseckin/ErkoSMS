@@ -95,6 +95,15 @@ namespace ErkoSMS.Controllers
             return View(new OrderFilterParameters());
         }
 
+        public ActionResult UpdateOrder(int orderId)
+        {
+            var salesDataService = new SalesDataService();
+            var order = salesDataService.GetSalesById(orderId);
+
+            FillViewBag();
+            return PartialView(new OrderViewModel(order));
+        }
+
         [HttpPost]
         public ActionResult GetFilteredSales(IEnumerable<int> customerIds, IEnumerable<SalesState> states,
                                             IEnumerable<Currency> currencies, string invoiceNo)

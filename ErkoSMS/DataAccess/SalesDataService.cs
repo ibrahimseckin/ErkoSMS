@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using AspNet.Identity.SQLite;
@@ -29,6 +30,36 @@ namespace ErkoSMS.DataAccess
                 sales.Add(CreateSales(row));
             }
 
+            return sales;
+        }
+
+        public Sales GetSalesById(int id)
+        {
+            const string query = "SELECT * From sales Where id = @id";
+            _sqliteDataProvider.AddParameter("@id", id);
+            var dataRow = _sqliteDataProvider.ExecuteDataRows(query).First();
+            var sales = CreateSales(dataRow);
+
+            const string salesDetailsQuery = "Select * from Sales_Product where SalesId = @salesid";
+            _sqliteDataProvider.AddParameter("@salesid", id);
+            DataSet dataSet = _sqliteDataProvider.ExecuteDataSet(salesDetailsQuery);
+            var salesDetails = new List<SalesDetail>();
+            foreach (DataRow row in dataSet.Tables[0].Rows)
+            {
+                var productId = Convert.ToInt32(row["ProductId"]);
+                var productCode = new ProductDataService().GetProductById(productId).Code;
+                var quantity = Convert.ToInt32(row["Quantity"]);
+                var unitPrice = Convert.ToDouble(row["UnitPrice"]);
+                salesDetails.Add(new SalesDetail
+                {
+                    ProductCode = productCode,
+                    Quantity = quantity,
+                    SalesId = id,
+                    UnitPrice = unitPrice
+                });
+            }
+
+            sales.SalesDetails = salesDetails;
             return sales;
         }
 
