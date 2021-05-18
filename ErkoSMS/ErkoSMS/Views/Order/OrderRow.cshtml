@@ -1,10 +1,15 @@
 ﻿@model ErkoSMS.ViewModels.OrderLine
 
+<hr style="margin: 10px 0;" />
 <div class="orderRow" style="overflow: hidden;">
     <div class="row form-group-sm" style="padding-top: 5px;">
         <div class="col-md-2">
             @Html.LabelFor(x => x.ProductCode)
             @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control productCode", Name = "OrderLines[].ProductCode", @id = Guid.NewGuid(), style = "display:inline-block" })
+        </div>
+        <div class="col-md-3">
+            <label>Ürün</label>
+            <textarea class="form-control productDescription" style="width:-webkit-fill-available"/>
         </div>
         <div class="col-md-1">
             @Html.LabelFor(x => x.Quantity)
@@ -14,17 +19,17 @@
             <label>Stok</label>
             <input class="form-control stockQuantity" type="text">
         </div>
-        <div class="col-md-1">
+        <div class="col-md-2">
             <label>Fiyat</label>
             <input class="form-control stockPrice" type="text">
         </div>
-        <div class="col-md-1">
+        <div class="col-md-2">
             @Html.LabelFor(x => x.UnitPrice)
-            @Html.TextBoxFor(x => x.UnitPrice, new { @class = "form-control unitPrice", Name = "OrderLines[].UnitPrice",id = "UnitPriceTextBox", style = "display:inline-block" })
+            @Html.TextBoxFor(x => x.UnitPrice, new { @class = "form-control unitPrice", Name = "OrderLines[].UnitPrice", id = "UnitPriceTextBox", style = "display:inline-block" })
         </div>
-        <div class="col-md-1">
+        <div class="col-md-2">
             @Html.LabelFor(x => x.TotalPrice)
-            @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", Name = "OrderLines[].TotalPrice",id = "TotalPriceTextBox", style = "display:inline-block" })
+            @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", Name = "OrderLines[].TotalPrice", id = "TotalPriceTextBox", style = "display:inline-block" })
         </div>
 
 

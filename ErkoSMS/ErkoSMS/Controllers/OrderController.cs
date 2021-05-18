@@ -46,6 +46,13 @@ namespace ErkoSMS.Controllers
             };
         }
 
+        [HttpGet]
+        public string GetProductDescriptionByProductCode(string productCode)
+        {
+            var description = new ProductDataService().GetProductByCode(productCode).Description;
+            return description;
+        }
+
         public ActionResult CreateOrder()
         {
             FillViewBag();
@@ -70,7 +77,7 @@ namespace ErkoSMS.Controllers
             sales.Currency = order.Currency;
             sales.Customer = new CustomerDataService().GetCustomerById(order.CustomerId);
             sales.SalesStartDate = DateTime.Now;
-            sales.SalesUserName = User.Identity.Name;
+            sales.SalesUserGuid = User.Identity.GetUserId();
             sales.SalesDetails = salesDetails;
             sales.TotalPrice = totalPrice;
             sales.InvoiceNumber = order.InvoiceNumber;

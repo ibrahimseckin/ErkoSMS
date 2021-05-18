@@ -34,16 +34,17 @@ namespace ErkoSMS.DataAccess
 
         public void CreateOrder(Sales sales)
         {
-            string query = "Insert into Sales (CustomerName,SalesPeople,TotalPrice,Currency,State,InvoiceNumber,InvoiceDate) values (@customerName,@username," +
-                "@totalPrice,@currency,@state,@invoiceNumber,@invoiceDate);";
+            string query = "Insert into Sales (CustomerName,SalesPeople,TotalPrice,Currency,State,InvoiceNumber,InvoiceDate,StartDate) values (@customerName,@salesPeopleGuid," +
+                "@totalPrice,@currency,@state,@invoiceNumber,@invoiceDate,@salesStartDate);";
             query += Environment.NewLine + "SELECT LAST_INSERT_ROWID();";
             _sqliteDataProvider.AddParameter("@customerName",sales.Customer.Name);
-            _sqliteDataProvider.AddParameter("@username", sales.SalesUserName);
+            _sqliteDataProvider.AddParameter("@salesPeopleGuid", sales.SalesUserGuid);
             _sqliteDataProvider.AddParameter("@totalPrice", sales.TotalPrice);
             _sqliteDataProvider.AddParameter("@currency", sales.Currency);
             _sqliteDataProvider.AddParameter("@state", sales.SalesState);
             _sqliteDataProvider.AddParameter("@invoiceNumber", sales.InvoiceNumber);
             _sqliteDataProvider.AddParameter("@invoiceDate", sales.InvoiceDate);
+            _sqliteDataProvider.AddParameter("@salesStartDate", DateTime.Now);
 
             var salesId = _sqliteDataProvider.ExecuteScalar(query);
             foreach (var salesDetail in sales.SalesDetails)
@@ -73,7 +74,7 @@ namespace ErkoSMS.DataAccess
             var InvoiceNumber = row["InvoiceNumber"]?.ToString();
             var LastModifiedDate = string.IsNullOrEmpty(row["lastmodifieddate"].ToString()) ? (DateTime?)null : DateTime.Parse(row["lastmodifieddate"].ToString());
             var SalesStartDate = DateTime.Parse(row["startdate"].ToString());
-            var SalesUser = GetUserByGuid(row["salespeople"]?.ToString());
+            var SalesUserGuid = row["salespeople"]?.ToString();
 
             return new Sales
             {
@@ -86,7 +87,7 @@ namespace ErkoSMS.DataAccess
                 InvoiceNumber = InvoiceNumber,
                 LastModifiedDate = LastModifiedDate,
                 SalesStartDate = SalesStartDate,
-                SalesUserName = SalesUser.UserName
+                SalesUserGuid = SalesUserGuid
             };
         }
 
