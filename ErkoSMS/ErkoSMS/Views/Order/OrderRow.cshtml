@@ -1,7 +1,7 @@
 ﻿@model ErkoSMS.ViewModels.OrderLine
 
-<hr style="margin: 10px 0;" />
 <div class="orderRow" style="overflow: hidden;">
+    <hr style="margin: 10px 0;" />
     <div class="row form-group-sm" style="padding-top: 5px;">
         <div class="col-md-2">
             @Html.LabelFor(x => x.ProductCode)
@@ -9,12 +9,9 @@
         </div>
         <div class="col-md-3">
             <label>Ürün</label>
-            <textarea class="form-control productDescription" style="width:-webkit-fill-available"/>
+            <textarea class="form-control productDescription" style="width:-webkit-fill-available" />
         </div>
-        <div class="col-md-1">
-            @Html.LabelFor(x => x.Quantity)
-            @Html.TextBoxFor(x => x.Quantity, new { @class = "form-control quantity", Name = "OrderLines[].Quantity", id = "QuantityTextBox", style = "display:inline-block" })
-        </div>
+
         <div class="col-md-1">
             <label>Stok</label>
             <input class="form-control stockQuantity" type="text">
@@ -23,10 +20,25 @@
             <label>Fiyat</label>
             <input class="form-control stockPrice" type="text">
         </div>
+
+        <div class="col-md-2">
+            <label style="display:block">Stok Sorgula</label>
+            <button type="button" class="stockButton form-control">Stok Sorgula</button>
+        </div>
+
+    </div>
+
+    <div class="row">
         <div class="col-md-2">
             @Html.LabelFor(x => x.UnitPrice)
             @Html.TextBoxFor(x => x.UnitPrice, new { @class = "form-control unitPrice", Name = "OrderLines[].UnitPrice", id = "UnitPriceTextBox", style = "display:inline-block" })
         </div>
+
+        <div class="col-md-1">
+            @Html.LabelFor(x => x.Quantity)
+            @Html.TextBoxFor(x => x.Quantity, new { @class = "form-control quantity", Name = "OrderLines[].Quantity", id = "QuantityTextBox", style = "display:inline-block" })
+        </div>
+
         <div class="col-md-2">
             @Html.LabelFor(x => x.TotalPrice)
             @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", Name = "OrderLines[].TotalPrice", id = "TotalPriceTextBox", style = "display:inline-block" })
@@ -34,13 +46,14 @@
 
 
         <div class="col-md-2">
-            <label style="display:block">Stok Sorgula</label>
-            <button type="button" class="stockButton form-control">Stok Sorgula</button>
-        </div>
-        <div class="col-md-2">
             <label style="display:block">Fiyat Hesapla</label>
             <button type="button" class="calculatePriceButton form-control">Fiyat Hesapla</button>
         </div>
+
+        <span class="btn btn-danger orderRowDeleteButton pull-right" style="margin-right:20px">
+            <span class="glyphicon glyphicon-minus"></span>
+        </span>
+
     </div>
 </div>
 

@@ -36,7 +36,7 @@ namespace ErkoSMS.Controllers
             {
                   new LeftMenu(new LeftMenuItem("Satış Yönetimi", "", ""),
                         new List<LeftMenuItem>{ new LeftMenuItem("Satışları Listele","Order","ListOrder"),
-                        new LeftMenuItem("Yeni Satış","Order","Index")}),
+                        new LeftMenuItem("Yeni Satış","Order","CreateOrder")}),
                  new LeftMenu(new LeftMenuItem("Ürünler", "Product", "Index"),null)
             }
         };

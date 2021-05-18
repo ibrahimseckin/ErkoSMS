@@ -1,4 +1,7 @@
-﻿<h2>Yeni Satış Ekranı</h2>
+﻿@{
+    ViewBag.Title = "Yeni Satış";
+}
+
 
 <h2>@ViewBag.Title</h2>
 <hr style="margin: 10px 0;" />
@@ -10,47 +13,47 @@
 
 @using (Html.BeginForm("CreateOrder", "Order", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "CreateOrderForm" }))
 {
-    <div id="createSalesDiv" style="display:block">
-        @Html.AntiForgeryToken()
-        <div class="row">
-            <div class="form-group col-md-4">
-                <label>Müşteri:</label>
-                @Html.DropDownListFor(x => x.CustomerId, customers, new { id = "customerdropdown", @class = "chosen-select form-control" })
-            </div>
-            <div class="form-group col-md-4">
-                <label>Kur:</label>
-                @Html.EnumDropDownListFor(x => x.Currency, new { id = "currencydropdown", @class = "chosen-select form-control", style = "width:auto" })
-            </div>
-            <div class="form-group col-md-4">
-                <label>Durum:</label>
-                @Html.EnumDropDownListFor(x => x.State, new { id = "statedropdown", @class = "chosen-select form-control", style = "width:auto" })
-            </div>
+<div id="createSalesDiv" style="display:block">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="form-group col-md-3">
+            <label>Müşteri:</label>
+            @Html.DropDownListFor(x => x.CustomerId, customers, new { id = "customerdropdown", @class = "chosen-select form-control" })
         </div>
-        <div class="row">
-            <div class="form-group col-md-4">
-                @Html.LabelFor(x => x.InvoiceNumber)
-                @Html.TextBoxFor(x => x.InvoiceNumber, new { @class = "chosen-select form-control", Name = "InvoiceNumber", id = "InvoiceTextBox", style = "display:inline-block" })
-            </div>
-            <div class="form-group col-md-4">
-                @Html.LabelFor(model => model.InvoiceDate)
-                @Html.TextBoxFor(model => model.InvoiceDate, new { Name="InvoiceDate", @class = "form-control datepicker", placeholder = "Enter Drop-off date here..." })
-            </div>
+        <div class="form-group col-md-3">
+            <label>Durum:</label>
+            @Html.EnumDropDownListFor(x => x.State, new { id = "statedropdown", @class = "chosen-select form-control", style = "width:auto" })
         </div>
-        <hr style="margin: 10px 0;" />
-        <div class="row">
-            <div class="clearfix col-md-3">
-                <button type="button" id="addOrderLineButton" class="btn btn-primary pull-left">
-                    <span class="glyphicon glyphicon-plus"></span> Yeni Ürün Ekle
-                </button>
-            </div>
-            <div class="clearfix col-md-3">
-                <input type="submit" class="btn btn-primary pull-left" value="Kaydet" />
-            </div>
-        </div>
-
-        <div id="products">
+        <div class="form-group col-md-1">
+            <label>Kur:</label>
+            @Html.EnumDropDownListFor(x => x.Currency, new { id = "currencydropdown", @class = "chosen-select form-control", style = "width:auto" })
         </div>
     </div>
+
+    <div class="row">
+        <div class="form-group col-md-3">
+            @Html.LabelFor(x => x.InvoiceNumber)
+            @Html.TextBoxFor(x => x.InvoiceNumber, new { @class = "chosen-select form-control", Name = "InvoiceNumber", id = "InvoiceTextBox", style = "display:inline-block" })
+        </div>
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.InvoiceDate)
+            @Html.TextBoxFor(model => model.InvoiceDate, new { Name = "InvoiceDate", @class = "form-control datepicker", placeholder = "Enter Drop-off date here..." })
+        </div>
+    </div>
+    <hr style="margin: 10px 0;" />
+    <div class="row">
+        <div class="clearfix">
+            <button type="button" id="addOrderLineButton" class="btn btn-primary pull-right">
+                <span class="glyphicon glyphicon-plus"></span> Yeni Ürün Ekle
+            </button>
+        </div>
+    </div>
+    <div id="products"></div>
+    <hr />
+    <div class="clearfix">
+        <input type="submit" class="btn btn-primary pull-right" value="Kaydet" />
+    </div>
+</div>
 }
 
 <div id="summaryDiv">
@@ -64,30 +67,41 @@
     $('#currencydropdown').select2({ placeholder: "Kur Seçin" });
     $('#statedropdown').select2({ placeholder: "Durum Seçin" });
 
+    var addOrderRow = function () {
+        var html = $($.parseHTML(orderRowTemplate));
+        html.appendTo($("#products"));
+        $('.stockButton').off().on('click', function (e) {
+            var productCode = e.currentTarget.parentNode.parentNode.querySelector('.productCode').value;
+            ERKOSMS.AjaxAction("GetStockInformationByProductCode?productCode=" + productCode, {}, false).then(function (data) {
+                e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').value = data.RemainingAmount;
+                e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').readOnly = true;
+                e.currentTarget.parentNode.parentNode.querySelector('.stockPrice').value = data.Price;
+                e.currentTarget.parentNode.parentNode.querySelector('.stockPrice').readOnly = true;
+            });
+            ERKOSMS.AjaxAction("GetProductDescriptionByProductCode?productCode=" + productCode, {}, false).then(function (data) {
+                e.currentTarget.parentNode.parentNode.querySelector('.productDescription').value = data;
+                e.currentTarget.parentNode.parentNode.querySelector('.productDescription').readOnly = true;
+            });
+        });
+        $('.calculatePriceButton').off().on('click', function (e) {
+            var quantity = e.currentTarget.parentNode.parentNode.querySelector('.quantity').value;
+            var unitPrice = e.currentTarget.parentNode.parentNode.querySelector('.unitPrice').value;
+            e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').value = quantity * unitPrice;
+            e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').readOnly = true;
+        });
+    }
+
+
+    $(function () {
+        addOrderRow();
+    });
+
     var orderRowTemplate = '@Html.Template("OrderRow", null)';
     $("#addOrderLineButton")
-        .on('click',
-            function () {
-                var html = $($.parseHTML(orderRowTemplate));
-                html.appendTo($("#products"));
-                $('.stockButton').off().on('click', function (e) {
-                    var productCode = e.currentTarget.parentNode.parentNode.querySelector('.productCode').value;
-                    ERKOSMS.AjaxAction("GetStockInformationByProductCode?productCode=" + productCode, {}, false).then(function (data) {
-                        e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').value = data.RemainingAmount;
-                        e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').readOnly = true;
-                        e.currentTarget.parentNode.parentNode.querySelector('.stockPrice').value = data.Price;
-                        e.currentTarget.parentNode.parentNode.querySelector('.stockPrice').readOnly = true;
-                    });
-                    ERKOSMS.AjaxAction("GetProductDescriptionByProductCode?productCode=" + productCode, {}, false).then(function (data) {
-                        e.currentTarget.parentNode.parentNode.querySelector('.productDescription').value = data;
-                        e.currentTarget.parentNode.parentNode.querySelector('.productDescription').readOnly = true;
-                    });
-                });
-                $('.calculatePriceButton').off().on('click', function (e) {
-                    var quantity = e.currentTarget.parentNode.parentNode.querySelector('.quantity').value;
-                    var unitPrice = e.currentTarget.parentNode.parentNode.querySelector('.unitPrice').value;
-                    e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').value = quantity * unitPrice;
-                    e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').readOnly = true;
-                });
-            });
+        .on('click', addOrderRow)
+
+    $("#CreateOrderForm").off().on("click", ".orderRowDeleteButton", function () {
+        $(this).closest('.orderRow').remove();
+    });
+
 </script>
