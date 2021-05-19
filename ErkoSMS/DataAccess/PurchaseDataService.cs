@@ -8,11 +8,5 @@ namespace ErkoSMS.DataAccess
 {
     public class PurchaseDataService
     {
-        public IEnumerable<Purchase> GetAllPurchases()
-        {
-
-        }
-
-        
     }
 }

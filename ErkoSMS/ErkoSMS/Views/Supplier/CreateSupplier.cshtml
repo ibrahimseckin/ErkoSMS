@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Yeni Tedarikçi Girişi";
+}
+
+
+<h2>@ViewBag.Title</h2>
+<hr style="margin: 10px 0;" />
+@model ErkoSMS.ViewModels.SupplierViewModel
+
+
+
+@using (Html.BeginForm("CreateSupplier", "Supplier", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "CreateSupplierForm" }))
+{
+    <div id="createSupplierDiv" style="display:block">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="form-group col-md-3">
+                @Html.LabelFor(x => x.Name)
+                @Html.TextBoxFor(x => x.Name)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(x => x.Address)
+                @Html.TextBoxFor(x => x.Address)
+            </div>
+            <div class="form-group col-md-2">
+                @Html.LabelFor(x => x.Country)
+                @Html.TextBoxFor(x => x.Country)
+            </div>
+            <div class="form-group col-md-2">
+                @Html.LabelFor(x => x.PhoneNumber)
+                @Html.TextBoxFor(x => x.PhoneNumber)
+            </div>
+            <div class="form-group col-md-2">
+                <input type="submit" class="btn btn-primary pull-right" value="Kaydet" />
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $("#CreateSupplierForm").on('ajax-form:succeed', function () {
+        vex.dialog.alert("Tedarikçi kaydedildi.");
+    });
+
+</script>

@@ -184,8 +184,10 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\PurchaseController.cs" />
     <Compile Include="Controllers\StockController.cs" />
     <Compile Include="Controllers\StockHistoryController.cs" />
+    <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\UserAdministrationController.cs" />
     <Compile Include="Enums\UserTypes.cs" />
     <Compile Include="Global.asax.cs">
@@ -211,6 +213,7 @@
     <Compile Include="ViewModels\OrderViewModel.cs" />
     <Compile Include="ViewModels\ProductViewModel.cs" />
     <Compile Include="ViewModels\StockViewModel.cs" />
+    <Compile Include="ViewModels\SupplierViewModel.cs" />
     <Compile Include="ViewModels\UserAdministrationViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -654,8 +657,11 @@
     <Content Include="Views\Order\ListOrder.cshtml" />
     <Content Include="Views\Stock\Index.cshtml" />
     <Content Include="Views\Order\UpdateOrder.cshtml" />
+    <Content Include="Views\Supplier\ListSuppliers.cshtml" />
+    <Content Include="Views\Supplier\CreateSupplier.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Views\Purchase\" />
     <Folder Include="Views\StockHistory\" />
   </ItemGroup>
   <ItemGroup>

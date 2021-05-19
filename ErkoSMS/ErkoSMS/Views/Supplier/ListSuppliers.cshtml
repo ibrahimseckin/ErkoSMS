@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "Tedarikçileri Listele/Güncelle";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+<div style="margin-top: 20px">
+    <table id="supplierTable" class="table table-bordered table-condensed table-hover table-responsive table-striped"></table>
+</div>
+
+
+<script>
+    var tb = $("#supplierTable");
+
+    $('#supplierTable').on('click', 'td.editor-edit', function (e) {
+        e.preventDefault();
+        var rowToBeUpdated = $(this).closest('tr')[0];
+        var supplierId = rowToBeUpdated.cells[0].innerText;
+        ERKOSMS.GetAjaxDialog("UpdateSupplier?orderId=" + supplierId, {}, false).then(function () {
+        }), function (data) {
+            ERKOSMS.ShowWarning(data);
+        }
+    });
+
+    $('#listSalesButton').on('click', function () {
+        debugger;
+        document.getElementById("listSalesDiv").style.display = "block";
+    });
+
+    var listSuppliers = function () {
+        destroyTable();
+        ERKOSMS.AjaxAction("GetAllSuppliers", {}, false).then(function (data) {
+            var datatable = tb.DataTable({
+                autoWidth: true,
+                columns: [
+                    { title: "Id", data: "SupplierId" },
+                    { title: "Tedarikçi", data: "Name" },
+                    { title: "Adres", data: "Address" },
+                    { title: "Ülke", data: "Country" },
+                    { title: "Telefon", data: "PhoneNumber" },
+                    {
+                        data: null,
+                        className: "dt-center editor-edit",
+                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                        orderable: false
+                    }
+                ],
+                data: data,
+                sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
+                aaSorting: [], // Initial sorting
+                bInfo: true, // Info is not shown because the total count to show is not known
+                searching: true, // Disable searching TODO: Enable searching if necessary
+                paging: true, // Disable paging in outstanding
+                pageLength: 50,
+                deferRender: true
+            });
+        });
+    }
+
+
+    var destroyTable = function () {
+        var tb = $("#supplierTable");
+
+        if ($.fn.dataTable.isDataTable(tb))
+            tb.DataTable().destroy();
+
+        tb.empty();
+    };
+
+    listSuppliers();
+
+
+</script>
+
+
