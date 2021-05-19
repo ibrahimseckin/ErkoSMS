@@ -91,6 +91,17 @@ namespace ErkoSMS.DataAccess
             }
         }
 
+        public bool UpdateOrder(Sales sales)
+        {
+            string query = "Update Sales Set CustomerName = @customerName, State = @state, InvoiceNumber = @invoiceNumber, InvoiceDate = @invoiceDate where id= @id;";
+            _sqliteDataProvider.AddParameter("@id", sales.Id);
+            _sqliteDataProvider.AddParameter("@customerName", sales.Customer.Name);
+            _sqliteDataProvider.AddParameter("@state", sales.SalesState);
+            _sqliteDataProvider.AddParameter("@invoiceNumber", sales.InvoiceNumber);
+            _sqliteDataProvider.AddParameter("@invoiceDate", sales.InvoiceDate); 
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
+
         private Sales CreateSales(DataRow row)
         {
 

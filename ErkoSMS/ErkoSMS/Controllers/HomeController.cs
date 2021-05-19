@@ -21,9 +21,8 @@ namespace ErkoSMS.Controllers
                     new LeftMenu(new LeftMenuItem("Ürünler", "Product", "Index"),null),
                     new LeftMenu(new LeftMenuItem("Müşteriler", "Customer", "Index"),null),
                     new LeftMenu(new LeftMenuItem("Satış Yönetimi", "", ""),
-                        new List<LeftMenuItem>{new LeftMenuItem("Satışları Listele","Order","ListOrder"),
-                        new LeftMenuItem("Yeni Satış","Order","CreateOrder"),
-                        new LeftMenuItem("Satışları Güncelle","Order","UpdateOrder")
+                        new List<LeftMenuItem>{new LeftMenuItem("Satış Listele/Güncelle","Order","ListOrder"),
+                        new LeftMenuItem("Yeni Satış","Order","CreateOrder")
                         }),
                     new LeftMenu(new LeftMenuItem("Stok Listesi", "Stock", "Index"),null)
 
@@ -34,9 +33,10 @@ namespace ErkoSMS.Controllers
         {
             Navigations = new List<LeftMenu>
             {
-                  new LeftMenu(new LeftMenuItem("Satış Yönetimi", "", ""),
-                        new List<LeftMenuItem>{ new LeftMenuItem("Satışları Listele","Order","ListOrder"),
-                        new LeftMenuItem("Yeni Satış","Order","CreateOrder")}),
+                new LeftMenu(new LeftMenuItem("Satış Yönetimi", "", ""),
+                    new List<LeftMenuItem>{new LeftMenuItem("Satış Listele/Güncelle","Order","ListOrder"),
+                        new LeftMenuItem("Yeni Satış","Order","CreateOrder")
+                    }),
                  new LeftMenu(new LeftMenuItem("Ürünler", "Product", "Index"),null)
             }
         };

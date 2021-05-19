@@ -100,9 +100,32 @@ namespace ErkoSMS.Controllers
         {
             var salesDataService = new SalesDataService();
             var order = salesDataService.GetSalesById(orderId);
-
+            foreach (var orderDetail in order.SalesDetails)
+            {
+                orderDetail.ProductDescription = GetProductDescriptionByProductCode(orderDetail.ProductCode);
+            }
             FillViewBag();
             return PartialView(new OrderViewModel(order));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateOrder (OrderViewModel order)
+        {
+            var salesDataService = new SalesDataService();
+            var sales = new Sales
+            {
+                Id = order.OrderId,
+                Customer = new CustomerDataService().GetCustomerById(order.CustomerId),
+                InvoiceNumber = order.InvoiceNumber,
+                SalesState = order.State,
+                InvoiceDate = order.InvoiceDate
+            };
+            salesDataService.UpdateOrder(sales);
+            return new JsonResult()
+            {
+                ContentType = "application/json"
+            };
         }
 
         [HttpPost]
