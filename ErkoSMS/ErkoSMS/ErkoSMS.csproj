@@ -195,14 +195,8 @@
     </Compile>
     <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\Order.cs" />
-    <Compile Include="Models\Product.cs" />
-    <Compile Include="Models\Purchase.cs" />
-    <Compile Include="Models\Stock.cs" />
-    <Compile Include="Models\StockHistory.cs" />
     <Compile Include="Objects\AjaxResult.cs" />
     <Compile Include="Objects\AjaxResultCode.cs" />
     <Compile Include="OrderFilterParameters.cs" />
@@ -212,6 +206,7 @@
     <Compile Include="ViewModels\LeftMenuViewModel.cs" />
     <Compile Include="ViewModels\OrderViewModel.cs" />
     <Compile Include="ViewModels\ProductViewModel.cs" />
+    <Compile Include="ViewModels\PurchaseViewModel.cs" />
     <Compile Include="ViewModels\StockViewModel.cs" />
     <Compile Include="ViewModels\SupplierViewModel.cs" />
     <Compile Include="ViewModels\UserAdministrationViewModel.cs" />
@@ -660,9 +655,9 @@
     <Content Include="Views\Supplier\ListSuppliers.cshtml" />
     <Content Include="Views\Supplier\CreateSupplier.cshtml" />
     <Content Include="Views\Supplier\UpdateSupplier.cshtml" />
+    <Content Include="Views\Purchase\CreatePurchase.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Purchase\" />
     <Folder Include="Views\StockHistory\" />
   </ItemGroup>
   <ItemGroup>

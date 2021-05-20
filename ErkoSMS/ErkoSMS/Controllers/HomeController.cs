@@ -29,7 +29,10 @@ namespace ErkoSMS.Controllers
                         new List<LeftMenuItem>{new LeftMenuItem("Tedarikçi Listele/Güncelle","Supplier","ListSuppliers"),
                             new LeftMenuItem("Yeni Tedarikçi Girişi","Supplier","CreateSupplier")
                         }),
-
+                    new LeftMenu(new LeftMenuItem("Satın Alma Yönetimi", "", ""),
+                        new List<LeftMenuItem>{new LeftMenuItem("Satın Alma Listele/Güncelle","Purchase","ListPurchase"),
+                            new LeftMenuItem("Yeni Satın Alma","Purchase","CreatePurchase")
+                        }),
             }
         };
 
