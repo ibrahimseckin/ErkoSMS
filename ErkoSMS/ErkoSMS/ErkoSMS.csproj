@@ -659,6 +659,7 @@
     <Content Include="Views\Order\UpdateOrder.cshtml" />
     <Content Include="Views\Supplier\ListSuppliers.cshtml" />
     <Content Include="Views\Supplier\CreateSupplier.cshtml" />
+    <Content Include="Views\Supplier\UpdateSupplier.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Purchase\" />

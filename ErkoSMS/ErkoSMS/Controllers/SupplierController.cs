@@ -63,5 +63,31 @@ namespace ErkoSMS.Controllers
 
         }
 
+        public ActionResult UpdateSupplier(int supplierId)
+        {
+            var supplierDataService = new SupplierDataService();
+            var supplier = supplierDataService.GetSupplierById(supplierId);
+            return PartialView(new SupplierViewModel(supplier));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateSupplier(SupplierViewModel supplierViewModel)
+        {
+            var supplierDataService = new SupplierDataService();
+            var supplier = new Supplier()
+            {
+                SupplierId = supplierViewModel.SupplierId,
+                Name = supplierViewModel.Name,
+                Address = supplierViewModel.Address,
+                Country = supplierViewModel.Country,
+                PhoneNumber = supplierViewModel.PhoneNumber
+            };
+
+            var result = supplierDataService.UpdateSupplier(supplier);
+
+            return Json(result ? new AjaxResult(true) : new AjaxResult(false));
+        }
+
     }
 }

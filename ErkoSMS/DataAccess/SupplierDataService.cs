@@ -51,7 +51,7 @@ namespace ErkoSMS.DataAccess
 
         public bool UpdateSupplier(Supplier supplier)
         {
-            const string query = "Update Supplier " +
+            const string query = "Update Suppliers " +
                                  "Set Name = @Name, Address = @Address," +
                                  "Country = @Country, PhoneNumber = @PhoneNumber " +
                                  " Where Id = @Id";
