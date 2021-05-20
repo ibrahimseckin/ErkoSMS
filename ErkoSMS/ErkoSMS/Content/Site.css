@@ -71,3 +71,7 @@ textarea {
             display: none;
         }
 /*#endregion */
+
+.mt-10 {
+    margin-top:10px;
+}
