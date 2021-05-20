@@ -119,13 +119,12 @@ namespace ErkoSMS.Controllers
                 Customer = new CustomerDataService().GetCustomerById(order.CustomerId),
                 InvoiceNumber = order.InvoiceNumber,
                 SalesState = order.State,
-                InvoiceDate = order.InvoiceDate
+                InvoiceDate = order.InvoiceDate,
+                Currency = order.Currency,
+                LastModifiedDate = DateTime.Now
             };
             salesDataService.UpdateOrder(sales);
-            return new JsonResult()
-            {
-                ContentType = "application/json"
-            };
+            return Json(new AjaxResult(true));
         }
 
         [HttpPost]

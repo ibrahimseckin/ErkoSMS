@@ -94,4 +94,10 @@
         closeParentVexModal(tg);
     });
 
+    $("#UpdateOrderForm").on("ajax-form:succeed", function (ev, data) {
+        var tg = $(ev.currentTarget);
+        closeParentVexModal(tg);
+        $("#getAllSales").click();
+    });
+
 </script>

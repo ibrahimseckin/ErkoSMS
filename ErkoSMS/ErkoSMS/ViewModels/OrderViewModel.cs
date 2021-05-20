@@ -17,6 +17,7 @@ namespace ErkoSMS.ViewModels
         {
             this.TotalPrice = sales.TotalPrice;
             this.InvoiceNumber = sales.InvoiceNumber;
+            this.InvoiceDate = sales.InvoiceDate.Value;
             this.CustomerId = sales.Customer.Id;
             this.State = sales.SalesState;
             this.Currency = sales.Currency;
