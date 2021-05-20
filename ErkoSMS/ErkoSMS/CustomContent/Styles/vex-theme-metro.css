@@ -40,7 +40,7 @@ select.form-control.error:not(:hover) + .input-group-btn > .vex-theme-metro.vex 
   padding-top: 160px;padding-bottom: 160px;
 }
 .vex.vex-theme-metro .vex-content {
-  font-family: "Helvetica Neue", sans-serif;background: #fff;color: #444;padding: 1em;position: relative;margin: 0 auto;max-width: 100%;width: 450px;font-size: 1.1em;line-height: 1.5em;
+  font-family: "Helvetica Neue", sans-serif;background: #fff;color: #444;padding: 1em;position: relative;margin: 0 auto;max-width: 100%;width:auto;font-size: 1.1em;line-height: 1.5em;
 }
 .vex.vex-theme-metro .vex-content h1,
 .vex.vex-theme-metro .vex-content h2,

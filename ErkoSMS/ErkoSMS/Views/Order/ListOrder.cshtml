@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Satışları Listele";
+    ViewBag.Title = "Satış Listele/Güncelle";
 }
 
 <h2>@ViewBag.Title</h2>
@@ -216,10 +216,10 @@
                 currencies: currencies, invoiceNo: invoiceNo
             }
         }).then(function (data) {
-            debugger;
             var datatable = tb.DataTable({
                 autoWidth: true,
                 columns: [
+                    { title: "Id", data: "Id" },
                     { title: "Satış Başlangıç Tarihi", data: "SalesStartDate" },
                     { title: "Fatura Tarihi", data: "InvoiceDate" },
                     { title: "Fatura No", data: "InvoiceNumber" },
@@ -227,7 +227,13 @@
                     { title: "Müşteri Ülkesi", data: "Customer.Country" },
                     { title: "Tutar", data: "TotalPrice" },
                     { title: "Kur", data: "Currency" },
-                    { title: "Durum", data: "SalesState" }
+                    { title: "Durum", data: "SalesState" },
+                    {
+                        data: null,
+                        className: "dt-center editor-edit",
+                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                        orderable: false
+                    }
                 ],
                 data: data,
                 sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
@@ -239,15 +245,15 @@
                 deferRender: true,
                 columnDefs: [
                     {
-                        targets: [0, 1],
+                        targets: [1, 2],
                         render: formatDate
                     },
                     {
-                        targets: [6],
+                        targets: [7],
                         render: formatCurrency
                     },
                     {
-                        targets: [7],
+                        targets: [8],
                         render: formatState
                     }
                 ]
