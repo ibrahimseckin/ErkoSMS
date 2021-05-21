@@ -1,0 +1,268 @@
+﻿@{
+    ViewBag.Title = "Satın Alma Listele/Güncelle";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@model PurchaseFilterParameters
+
+@{
+    var suppliers = (List<SelectListItem>)ViewBag.Suppliers;
+}
+
+<div id="listPurchaseDiv" style="display: block;margin-top:20px;">
+    <input type="button" id="filterButton" value="Satın Almaları Filtrele" />
+    <input type="button" id="getPurchasesRequestedByOrders" value="Satışlara bağlı Satın Almaları Getir" />
+    <input type="button" id="getAllPurchases" value="Bütün Satışları Getir" />
+</div>
+<hr style="margin: 10px 0;" />
+
+<div id="PurchaseFilterDiv" style="display:none">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="form-group col-md-4">
+            @Html.LabelFor(x => x.State)
+            @Html.EnumDropDownListFor(x => x.State, new {id = "statedropdown", @class = "chosen-select form-control" })
+        </div>
+        <div class="form-group col-md-4">
+            @Html.LabelFor(x => x.SupplierId)
+            @Html.DropDownListFor(x => x.SupplierId, suppliers, new {id = "supplierdropdown", @class = "chosen-select form-control" })
+        </div>
+        <div class="form-group col-md-4">
+            <button type="button" id="getFilteredRecords" class="btn btn-primary pull-right">Filtrele</button>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 20px">
+    <table id="purchaseTable" class="table table-bordered table-condensed table-hover table-responsive table-striped"></table>
+</div>
+
+
+<script>
+    var tb = $("#purchaseTable");
+
+    $('#salesTable').on('click', 'td.editor-edit', function (e) {
+        e.preventDefault();
+        var rowToBeUpdated = $(this).closest('tr')[0];
+        var orderId = rowToBeUpdated.cells[0].innerText;
+        ERKOSMS.GetAjaxDialog("UpdateOrder?orderId=" + orderId, {}, false).then(function () {
+        }), function (data) {
+            ERKOSMS.ShowWarning(data);
+        }
+    });
+
+    $('#listSalesButton').on('click', function () {
+        document.getElementById("listSalesDiv").style.display = "block";
+    });
+
+    $("#getAllSales").on("click",
+        function () {
+            debugger;
+            document.getElementById("SalesFilterForm").style.display = "none";
+            destroyTable();
+            ERKOSMS.AjaxAction("GetAllSales", {}, false).then(function (data) {
+                var datatable = tb.DataTable({
+                    autoWidth: true,
+                    columns: [
+                        { title: "Id", data: "Id" },
+                        { title: "Satış Başlangıç Tarihi", data: "SalesStartDate" },
+                        { title: "Fatura Tarihi", data: "InvoiceDate" },
+                        { title: "Fatura No", data: "InvoiceNumber" },
+                        { title: "Müşteri", data: "Customer.Name" },
+                        { title: "Müşteri Ülkesi", data: "Customer.Country" },
+                        { title: "Tutar", data: "TotalPrice" },
+                        { title: "Kur", data: "Currency" },
+                        { title: "Durum", data: "SalesState" },
+                        {
+                            data: null,
+                            className: "dt-center editor-edit",
+                            defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                            orderable: false
+                        }
+                    ],
+                    data: data,
+                    sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
+                    aaSorting: [], // Initial sorting
+                    bInfo: true, // Info is not shown because the total count to show is not known
+                    searching: true, // Disable searching TODO: Enable searching if necessary
+                    paging: true, // Disable paging in outstanding
+                    pageLength: 50,
+                    deferRender: true
+                });
+            });
+        });
+
+    var destroyTable = function () {
+        var tb = $("#purchaseTable");
+
+        if ($.fn.dataTable.isDataTable(tb))
+            tb.DataTable().destroy();
+
+        tb.empty();
+    };
+
+    var formatDate = function (date) {
+        debugger;
+        if (date == null) {
+            return '';
+        }
+        else {
+            return window.moment(date).format("DD-MM-YYYY");
+        }
+
+    }
+
+    var formatCurrency = function (data) {
+        debugger;
+        if (data == 0) {
+            return "TL";
+        }
+        else if (data == 1) {
+            return "EUR";
+        }
+        else if (data == 2) {
+            return "USD";
+        }
+    }
+
+    var formatState = function (data) {
+        debugger;
+        if (data == -1) {
+            return "";
+        }
+        else if (data == 0) {
+            return "Satın Alma Talep Edildi";
+        }
+        else if (data == 1) {
+            return "Satın Alma İşleme Alındı";
+        }
+        else if (data == 2) {
+            return "Satın Alma Başarılı";
+        }
+        else if (data == 3) {
+            return "Satın Alma Başarısız";
+        }
+    }
+
+    $('#getFilteredRecords').on('click', function () {
+        destroyTable();
+        var supplierId = $('#supplierdropdown').val();
+        var state = $('#statedropdown').val();
+        ERKOSMS.AjaxAction("GetFilteredPurchases", {
+            type: 'POST', data: {
+                supplierId: supplierId, state: state
+            }
+        }).then(function (data) {
+            debugger;
+            var datatable = tb.DataTable({
+                autoWidth: true,
+                columns: [
+                    { title: "Id", data: "PurchaseId" },
+                    { title: "Satın Alma Giriş Tarihi", data: "PurchaseStartDate" },
+                    { title: "Durum", data: "PurchaseState" },
+                    { title: "Ürün Kodu", data: "ProductCode" },
+                    { title: "Adet", data: "Quantity" },
+                    { title: "Birim Fiyat", data: "UnitPrice" },
+                    { title: "Tutar", data: "TotalPrice" },
+                    { title: "Kur", data: "Currency" },
+                    {
+                        data: null,
+                        className: "dt-center editor-edit",
+                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                        orderable: false
+                    }
+                ],
+                data: data,
+                sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
+                aaSorting: [], // Initial sorting
+                bInfo: true, // Info is not shown because the total count to show is not known
+                searching: true, // Disable searching TODO: Enable searching if necessary
+                paging: true, // Disable paging in outstanding
+                pageLength: 50,
+                deferRender: true,
+                columnDefs: [
+                    {
+                        targets: [1],
+                        render: formatDate
+                    },
+                    {
+                        targets: [7],
+                        render: formatCurrency
+                    },
+                    {
+                        targets: [2],
+                        render: formatState
+                    }
+                ]
+            });
+        });
+    });
+
+    $('#getPurchasesRequestedByOrders').on('click', function () {
+        destroyTable();
+        ERKOSMS.AjaxAction("GetPurchasesRequestedByOrders", {
+            type: 'POST'
+        }).then(function (data) {
+            debugger;
+            var datatable = tb.DataTable({
+                autoWidth: true,
+                columns: [
+                    { title: "Id", data: "PurchaseId" },
+                    { title: "Satın Alma Giriş Tarihi", data: "PurchaseStartDate" },
+                    { title: "Durum", data: "PurchaseState" },
+                    { title: "Ürün Kodu", data: "ProductCode" },
+                    { title: "Adet", data: "Quantity" },
+                    { title: "Birim Fiyat", data: "UnitPrice" },
+                    { title: "Tutar", data: "TotalPrice" },
+                    { title: "Kur", data: "Currency" },
+                    {
+                        data: null,
+                        className: "dt-center editor-edit",
+                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                        orderable: false
+                    }
+                ],
+                data: data,
+                sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
+                aaSorting: [], // Initial sorting
+                bInfo: true, // Info is not shown because the total count to show is not known
+                searching: true, // Disable searching TODO: Enable searching if necessary
+                paging: true, // Disable paging in outstanding
+                pageLength: 50,
+                deferRender: true,
+                columnDefs: [
+                    {
+                        targets: [1],
+                        render: formatDate
+                    },
+                    {
+                        targets: [7],
+                        render: formatCurrency
+                    },
+                    {
+                        targets: [2],
+                        render: formatState
+                    }
+                ]
+            });
+        });
+    });
+
+    $('#filterButton').on('click', function () {
+
+        var visibility = document.getElementById("PurchaseFilterDiv").style.display;
+        if (visibility === "none") {
+            document.getElementById("PurchaseFilterDiv").style.display = "block";
+            $('#statedropdown').select2({ placeholder: "Durum Seçin" });
+            $('#supplierdropdown').select2({ placeholder: "Tedarikçi Seçin" });
+        }
+        else {
+            document.getElementById("PurchaseFilterDiv").style.display = "none";
+        }
+
+
+    });
+
+
+</script>

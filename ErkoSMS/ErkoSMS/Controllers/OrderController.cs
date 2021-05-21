@@ -16,7 +16,7 @@ namespace ErkoSMS.Controllers
     {
         public ActionResult Index()
         {
-            return View(new OrderFilterParameters());
+            return ListOrder();
         }
 
         [HttpGet]

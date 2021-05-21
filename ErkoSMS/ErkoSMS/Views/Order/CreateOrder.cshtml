@@ -98,13 +98,14 @@
 
     var orderRowTemplate = '@Html.Template("OrderRow", null)';
     $("#addOrderLineButton")
-        .on('click', addOrderRow)
+        .on('click', addOrderRow);
 
     $("#CreateOrderForm").off().on("click", ".orderRowDeleteButton", function () {
         $(this).closest('.orderRow').remove();
     });
 
-    $("#CreateOrderForm").on('ajax-form:succeed', function () {
+    $("#CreateOrderForm").on('ajax-form:succeed', function (message) {
+        debugger;
         vex.dialog.alert("Satış başarıyla kaydedildi.");
     });
 

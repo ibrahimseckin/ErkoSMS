@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using ErkoSMS.DataAccess;
@@ -64,6 +65,51 @@ namespace ErkoSMS.Controllers
             };
         }
 
+        public ActionResult ListPurchase()
+        {
+            FillViewBag();
+            return View(new PurchaseFilterParameters());
+        }
+
+        [HttpPost]
+        public ActionResult GetFilteredPurchases(int? supplierId, PurchaseState? state)
+        {
+            var allPurchases = new PurchaseDataService().GetAllPurchases();
+
+            var filteredPurchases = allPurchases;
+            if (supplierId != 0)
+            {
+                filteredPurchases = filteredPurchases.Where(x => x.SupplierId == supplierId).ToList();
+            }
+
+            if (state != null)
+            {
+                filteredPurchases = filteredPurchases.Where(x => x.PurchaseState == state).ToList();
+            }
+            return new JsonResult()
+            {
+                Data = filteredPurchases,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+        }
+
+        [HttpPost]
+        public ActionResult GetPurchasesRequestedByOrders()
+        {
+            var allPurchases = new PurchaseDataService().GetAllPurchases();
+
+            var filteredPurchases = allPurchases.Where(x => x.OrderId.HasValue);
+            return new JsonResult()
+            {
+                Data = filteredPurchases,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+        }
+
         private void FillViewBag()
         {
             var suppliers = new SupplierDataService().GetAllSuppliers().ToList();
@@ -75,7 +121,8 @@ namespace ErkoSMS.Controllers
                             new SelectListItem
                             {
                                 Text = x.Name,
-                                Value = x.SupplierId.ToString()
+                                Value = x.SupplierId.ToString(),
+                                Selected = false
                             })
                     .ToList();
         }

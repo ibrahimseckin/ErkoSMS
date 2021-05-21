@@ -57,6 +57,27 @@ namespace ErkoSMS.Controllers
             }
         };
 
+        LeftMenuViewModel PurchaserNavigations = new LeftMenuViewModel
+        {
+            Navigations = new List<LeftMenu>
+            {
+                new LeftMenu(new LeftMenuItem("Ürünler", "Product", "Index"),null),
+                new LeftMenu(new LeftMenuItem("Satış Yönetimi", "", ""),
+                    new List<LeftMenuItem>{new LeftMenuItem("Satış Listele/Güncelle","Order","ListOrder"),
+                        new LeftMenuItem("Yeni Satış","Order","CreateOrder")
+                    }),
+                new LeftMenu(new LeftMenuItem("Stok Listesi", "Stock", "Index"),null),
+                new LeftMenu(new LeftMenuItem("Tedarikçi Yönetimi", "", ""),
+                    new List<LeftMenuItem>{new LeftMenuItem("Tedarikçi Listele/Güncelle","Supplier","ListSuppliers"),
+                        new LeftMenuItem("Yeni Tedarikçi Girişi","Supplier","CreateSupplier")
+                    }),
+                new LeftMenu(new LeftMenuItem("Satın Alma Yönetimi", "", ""),
+                    new List<LeftMenuItem>{new LeftMenuItem("Satın Alma Listele/Güncelle","Purchase","ListPurchase"),
+                        new LeftMenuItem("Yeni Satın Alma","Purchase","CreatePurchase")
+                    }),
+            }
+        };
+
         [Authorize]
         public ActionResult Index()
         {
@@ -97,7 +118,7 @@ namespace ErkoSMS.Controllers
             }
             if (User.IsInRole(UserTypes.Purchaser.Name))
             {
-                return AnynomousNavigations;
+                return PurchaserNavigations;
             }
             if (User.IsInRole(UserTypes.SalesMan.Name))
             {
