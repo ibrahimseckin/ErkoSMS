@@ -53,7 +53,47 @@ namespace ErkoSMS.Controllers
 
             return new JsonResult()
             {
-                Data = customerStatistics.OrderByDescending(x => x.TotalCompletedOrderIncomeTL).ToList(),
+                Data = customerStatistics.OrderByDescending(x => (x.TotalCompletedOrderIncomeTL, x.TotalOngoingOrderIncomeTL)).ToList(),
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
+
+
+        public ActionResult GetProductStatistics(DateTime startDate, DateTime endDate)
+        {
+            var productStatistics = new List<ProductHitListViewModel>();
+
+            var orderDataService = new SalesDataService();
+            var sales = orderDataService.GetSales(startDate, endDate);
+
+
+            var productSales = sales.SelectMany(sale => sale.SalesDetails.Select(saleDetail => new { sale, saleDetail })).GroupBy(y => y.saleDetail.ProductCode).ToList();
+
+
+            foreach (var productSale in productSales)
+            {
+                var productStatistic = new ProductHitListViewModel();
+                productStatistic.ProductName = productSale.Key;
+                var completedOrders = productSale.Where(x => x.sale.SalesState == DataAccess.Model.SalesState.InvoiceDoneAndPacked).ToList();
+                productStatistic.TotalCompletedOrderNumber = completedOrders.Count();
+                productStatistic.TotalCompletedOrderIncomeTL = completedOrders.Where(x => x.sale.Currency == DataAccess.Model.Currency.Tl).Sum(y => y.saleDetail.Quantity*y.saleDetail.UnitPrice);
+                productStatistic.TotalCompletedOrderIncomeEuro = completedOrders.Where(x => x.sale.Currency == DataAccess.Model.Currency.Eur).Sum(y => y.saleDetail.Quantity * y.saleDetail.UnitPrice);
+                productStatistic.TotalCompletedOrderIncomeDollar = completedOrders.Where(x => x.sale.Currency == DataAccess.Model.Currency.Usd).Sum(y => y.saleDetail.Quantity * y.saleDetail.UnitPrice);
+
+                var ongoingOrders = productSale.Where(x => x.sale.SalesState != DataAccess.Model.SalesState.InvoiceDoneAndPacked && x.sale.SalesState != DataAccess.Model.SalesState.Rejected).ToList();
+                productStatistic.TotalOngoingOrderNumber = ongoingOrders.Count();
+                productStatistic.TotalOngoingOrderIncomeTL = ongoingOrders.Where(x => x.sale.Currency == DataAccess.Model.Currency.Tl).Sum(y => y.saleDetail.Quantity * y.saleDetail.UnitPrice);
+                productStatistic.TotalOngoingOrderIncomeEuro = ongoingOrders.Where(x => x.sale.Currency == DataAccess.Model.Currency.Eur).Sum(y => y.saleDetail.Quantity * y.saleDetail.UnitPrice);
+                productStatistic.TotalOngoingOrderIncomeDollar = ongoingOrders.Where(x => x.sale.Currency == DataAccess.Model.Currency.Usd).Sum(y => y.saleDetail.Quantity * y.saleDetail.UnitPrice);
+
+                productStatistics.Add(productStatistic);
+            }
+
+
+            return new JsonResult()
+            {
+                Data = productStatistics.OrderByDescending(x => (x.TotalCompletedOrderIncomeTL,x.TotalOngoingOrderIncomeTL)).ToList(),
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };

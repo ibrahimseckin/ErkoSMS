@@ -34,7 +34,7 @@ namespace ErkoSMS.DataAccess
         }
 
 
-        public IList<Sales> GetSales(DateTime startDate, DateTime endDate )
+        public IList<Sales> GetSales(DateTime startDate, DateTime endDate)
         {
             const string query = "SELECT * From sales Where StartDate BETWEEN @StartDate AND @EndDate ";
             _sqliteDataProvider.AddParameter("@StartDate", startDate);
@@ -43,13 +43,38 @@ namespace ErkoSMS.DataAccess
             IList<Sales> sales = new List<Sales>();
             foreach (DataRow row in dataSet.Tables[0].Rows)
             {
-                sales.Add(CreateSales(row));
+                var sale = CreateSales(row);
+                var saleId = Convert.ToInt32(row["Id"].ToString());
+                sale.SalesDetails = GetSalesDetails(saleId);
+                sales.Add(sale);
             }
 
             return sales;
         }
 
+        private IList<SalesDetail> GetSalesDetails(int salesId)
+        {
+            const string salesDetailsQuery = "Select * from Sales_Product where SalesId = @salesid";
+            _sqliteDataProvider.AddParameter("@salesid", salesId);
+            DataSet dataSet = _sqliteDataProvider.ExecuteDataSet(salesDetailsQuery);
+            var salesDetails = new List<SalesDetail>();
+            foreach (DataRow row in dataSet.Tables[0].Rows)
+            {
+                var productId = Convert.ToInt32(row["ProductId"]);
+                var productCode = new ProductDataService().GetProductById(productId).Code;
+                var quantity = Convert.ToInt32(row["Quantity"]);
+                var unitPrice = Convert.ToDouble(row["UnitPrice"]);
+                salesDetails.Add(new SalesDetail
+                {
+                    ProductCode = productCode,
+                    Quantity = quantity,
+                    SalesId = salesId,
+                    UnitPrice = unitPrice
+                });
+            }
 
+            return salesDetails;
+        }
 
         public Sales GetSalesById(int id)
         {
