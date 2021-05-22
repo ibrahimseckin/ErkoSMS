@@ -80,6 +80,7 @@
     <Compile Include="IDataProvider.cs" />
     <Compile Include="Interfaces\ICustomer.cs" />
     <Compile Include="Interfaces\IProduct.cs" />
+    <Compile Include="Interfaces\IStock.cs" />
     <Compile Include="Interfaces\IStockORKA.cs" />
     <Compile Include="Model\Purchase.cs" />
     <Compile Include="Model\Currency.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Model\Sales.cs" />
     <Compile Include="Model\SalesDetail.cs" />
     <Compile Include="Model\SalesState.cs" />
+    <Compile Include="Model\Stock.cs" />
     <Compile Include="Model\StockORKA.cs" />
     <Compile Include="Model\Supplier.cs" />
     <Compile Include="ORKADataService.cs" />
@@ -98,6 +100,7 @@
     <Compile Include="SalesDataService.cs" />
     <Compile Include="MsSqlDataProvider.cs" />
     <Compile Include="SqliteDataProvider.cs" />
+    <Compile Include="StockDataService.cs" />
     <Compile Include="SupplierDataService.cs" />
   </ItemGroup>
   <ItemGroup>

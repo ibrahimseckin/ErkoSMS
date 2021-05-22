@@ -30,13 +30,11 @@
         ERKOSMS.AjaxAction("Stock/GetAllStocks", {}, false).then(function (data) {
             var datatable = tb.DataTable({
                 autoWidth: true,
-                scrollX: true,
                 columns: [
                     { title: "Ürün Kodu", data: "Code" },
-                    { title: "Ürün Adı", data: "ProductName" },
                     { title: "Fiyat", data: "Price" },
                     { title: "Kalan Miktar", data: "RemainingAmount" },
-                    { title: "Rezerve Edilmiş Miktar", data: "ReservedAmount" }
+                    { title: "Rezerve", data: "ReservedAmount" }
                 ],
                 data: data,
                 sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
@@ -44,7 +42,7 @@
                 bInfo: true,       // Info is not shown because the total count to show is not known
                 searching: true,   // Disable searching TODO: Enable searching if necessary
                 paging: true, // Disable paging in outstanding
-                pageLength: 10,
+                pageLength: 50,
                 deferRender: true
             });
         });
@@ -58,10 +56,8 @@
         ERKOSMS.AjaxAction("Stock/GetStock?productCode=" + productCode, {}, false).then(function (data) {
             var datatable = tb.DataTable({
                 autoWidth: true,
-                scrollX: true,
                 columns: [
                     { title: "Ürün Kodu", data: "Code" },
-                    { title: "Ürün Adı", data: "ProductName" },
                     { title: "Fiyat", data: "Price" },
                     { title: "Kalan Miktar", data: "RemainingAmount" },
                     { title: "Rezerve Edilmiş Miktar", data: "ReservedAmount" }
