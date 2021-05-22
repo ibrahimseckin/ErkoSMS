@@ -49,9 +49,9 @@ namespace ErkoSMS.DataAccess
         public bool CreatePurchase(Purchase purchase)
         {
             const string query = "Insert into Purchases (ProductId,ProductCode,Amount,State,StartDate,SaleId,AssignedUser,TotalPrice," +
-                                 "UnitPrice,SupplierId,Currency,RequestedBySales) values " +
+                                 "UnitPrice,SupplierId,Currency,RequestedBySales,SalesUser) values " +
                                  "(@ProductId,@ProductCode,@Amount,@State,@StartDate,@SaleId,@AssignedUser,@TotalPrice,@UnitPrice," +
-                                 "@SupplierId,@Currency,@RequestedBySales);" +
+                                 "@SupplierId,@Currency,@RequestedBySales,@SalesUser);" +
                                  "select last_insert_rowid();";
             _sqliteDataProvider.AddParameter("@ProductId", purchase.ProductId);
             _sqliteDataProvider.AddParameter("@ProductCode", purchase.ProductCode);
@@ -59,8 +59,9 @@ namespace ErkoSMS.DataAccess
             _sqliteDataProvider.AddParameter("@State", purchase.PurchaseState);
             _sqliteDataProvider.AddParameter("@StartDate", purchase.PurchaseStartDate);
             _sqliteDataProvider.AddParameter("@SaleId", purchase.OrderId);
+            _sqliteDataProvider.AddParameter("@SalesUser", purchase.SalesUserName);
             _sqliteDataProvider.AddParameter("@AssignedUser", string.IsNullOrEmpty(purchase.PurchaserUserGuid) ?
-                DBNull.Value.ToString() : purchase.PurchaserUserGuid);
+                null : purchase.PurchaserUserGuid);
             _sqliteDataProvider.AddParameter("@TotalPrice", purchase.TotalPrice);
             _sqliteDataProvider.AddParameter("@UnitPrice", purchase.UnitPrice);
             _sqliteDataProvider.AddParameter("@SupplierId", purchase.SupplierId);

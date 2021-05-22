@@ -14,7 +14,7 @@
 
         <div class="col-md-1">
             <label>Stok</label>
-            <input class="form-control stockQuantity" type="text">
+            @Html.TextBoxFor(x => x.StokQuantity, new { @class = "form-control stockQuantity", Name = "OrderLines[].StokQuantity", @id = Guid.NewGuid(), style = "display:inline-block" })
         </div>
         <div class="col-md-2">
             <label>Fiyat</label>

@@ -15,7 +15,8 @@ namespace ErkoSMS.ViewModels
         [Display(Name = "Tedarikçi")]
         public int SupplierId { get; set; }
         public string PurchaserUser { get; set; }
-
+        [Display(Name = "Satış Elemanı")]
+        public string SalesUserName { get; set; }
         [Display(Name = "Başlangıç Tarihi")]
         public DateTime PurchaseStartDate { get; set; }
         [Display(Name = "Durum")]

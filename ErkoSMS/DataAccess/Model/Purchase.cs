@@ -13,6 +13,7 @@ namespace ErkoSMS.DataAccess.Model
         public PurchaseState PurchaseState { get; set; }
         public int SupplierId { get; set; }
         public string PurchaserUserGuid { get; set; }
+        public string SalesUserName { get; set; }
         public Currency Currency { get; set; }
         public double TotalPrice { get; set; }
         public int Quantity { get; set; }

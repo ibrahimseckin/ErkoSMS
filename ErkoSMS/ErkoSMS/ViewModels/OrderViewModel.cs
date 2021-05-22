@@ -60,6 +60,8 @@ namespace ErkoSMS.ViewModels
         public string ProductDescription { get; set; }
         [Display(Name = "Adet")]
         public int Quantity { get; set; }
+        [Display(Name = "Stok Adedi")]
+        public int StokQuantity { get; set; }
         [Display(Name = "Br.Fiyat")]
         public double UnitPrice { get; set; }
         [Display(Name = "Top.Fiyat")]

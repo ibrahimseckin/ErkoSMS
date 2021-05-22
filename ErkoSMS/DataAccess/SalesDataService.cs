@@ -63,7 +63,7 @@ namespace ErkoSMS.DataAccess
             return sales;
         }
 
-        public void CreateOrder(Sales sales)
+        public int CreateOrder(Sales sales)
         {
             string query = "Insert into Sales (CustomerName,SalesPeople,TotalPrice,Currency,State,InvoiceNumber,InvoiceDate,StartDate) values (@customerName,@salesPeopleGuid," +
                 "@totalPrice,@currency,@state,@invoiceNumber,@invoiceDate,@salesStartDate);";
@@ -89,6 +89,8 @@ namespace ErkoSMS.DataAccess
                 _sqliteDataProvider.AddParameter("@unitprice", salesDetail.UnitPrice);
                 _sqliteDataProvider.ExecuteScalar(salesDetailQuery);
             }
+
+            return Convert.ToInt32(salesId);
         }
 
         public bool UpdateOrder(Sales sales)

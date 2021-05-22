@@ -22,11 +22,11 @@
     <div class="row">
         <div class="form-group col-md-4">
             @Html.LabelFor(x => x.State)
-            @Html.EnumDropDownListFor(x => x.State, new {id = "statedropdown", @class = "chosen-select form-control" })
+            @Html.EnumDropDownListFor(x => x.State, new { id = "statedropdown", @class = "chosen-select form-control" })
         </div>
         <div class="form-group col-md-4">
             @Html.LabelFor(x => x.SupplierId)
-            @Html.DropDownListFor(x => x.SupplierId, suppliers, new {id = "supplierdropdown", @class = "chosen-select form-control" })
+            @Html.DropDownListFor(x => x.SupplierId, suppliers, new { id = "supplierdropdown", @class = "chosen-select form-control" })
         </div>
         <div class="form-group col-md-4">
             <button type="button" id="getFilteredRecords" class="btn btn-primary pull-right">Filtrele</button>
@@ -216,10 +216,17 @@
                     { title: "Birim Fiyat", data: "UnitPrice" },
                     { title: "Tutar", data: "TotalPrice" },
                     { title: "Kur", data: "Currency" },
+                    { title: "Satış Elemanı", data: "SalesUserName" },
                     {
                         data: null,
                         className: "dt-center editor-edit",
                         defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                        orderable: false
+                    },
+                    {
+                        data: null,
+                        className: "dt-center editor-edit",
+                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> İlgili Satışa Git</span>',
                         orderable: false
                     }
                 ],

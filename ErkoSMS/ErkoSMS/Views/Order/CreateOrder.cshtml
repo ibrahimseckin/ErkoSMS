@@ -104,9 +104,9 @@
         $(this).closest('.orderRow').remove();
     });
 
-    $("#CreateOrderForm").on('ajax-form:succeed', function (message) {
+    $("#CreateOrderForm").on('ajax-form:succeed', function (ev, data) {
         debugger;
-        vex.dialog.alert("Satış başarıyla kaydedildi.");
+        vex.dialog.alert({unsafeMessage:data.result.Data});
     });
 
 </script>

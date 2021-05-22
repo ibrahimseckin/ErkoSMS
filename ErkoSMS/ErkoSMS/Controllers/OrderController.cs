@@ -85,8 +85,30 @@ namespace ErkoSMS.Controllers
             sales.SalesState = order.State;
             sales.InvoiceDate = order.InvoiceDate;
 
-            new SalesDataService().CreateOrder(sales);
-            return Json(new AjaxResult(true));
+            var orderId = new SalesDataService().CreateOrder(sales);
+            var message = "Satış girişi başarıyla yapıldı.";
+            foreach (var orderLine in order.OrderLines)
+            {
+                if (orderLine.Quantity > orderLine.StokQuantity)
+                {
+                    var gap = orderLine.Quantity - orderLine.StokQuantity;
+                    var purchase = new Purchase
+                    {
+                        OrderId = orderId,
+                        ProductCode = orderLine.ProductCode,
+                        ProductId = new ProductDataService().GetProductByCode(orderLine.ProductCode).Id,
+                        PurchaseStartDate = DateTime.Now,
+                        PurchaseState = PurchaseState.PurchaseRequested,
+                        RequestedBySales = true,
+                        SalesUserName = User.Identity.Name,
+                        Quantity = gap
+                    };
+                    new PurchaseDataService().CreatePurchase(purchase);
+                    message +=
+                        $"<br> <b>{orderLine.ProductCode}</b> kodlu ürün yeteri kadar stokta bulunmadığı için <b>{gap}</b> adet satın alma talebi yapıldı.";
+                }
+            }
+            return Json(new AjaxResult(message));
 
         }
 
