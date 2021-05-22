@@ -33,6 +33,16 @@ namespace ErkoSMS.Controllers
                         new List<LeftMenuItem>{new LeftMenuItem("Satın Alma Listele/Güncelle","Purchase","ListPurchase"),
                             new LeftMenuItem("Yeni Satın Alma","Purchase","CreatePurchase")
                         }),
+
+                     new LeftMenu(new LeftMenuItem("İstatistik", "", ""),
+                        new List<LeftMenuItem>
+                        {
+                            new LeftMenuItem("Satış İstatistikleri","Statistics","OrderStatistics"),
+                            new LeftMenuItem("Satış Durum Genel Bakış","Statistics","OrderStatusOverview"),
+                            new LeftMenuItem("Satış Personeli İstatistikleri","Statistics","SalesManStatistics"),
+                            new LeftMenuItem("Ürün İstatistikleri","Statistics","ProductHitList"),
+                            new LeftMenuItem("Müşteri İstatistikleri","Statistics","CustomerHitList")
+                        }),
             }
         };
 

@@ -185,6 +185,7 @@
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\PurchaseController.cs" />
+    <Compile Include="Controllers\StatisticsController.cs" />
     <Compile Include="Controllers\StockController.cs" />
     <Compile Include="Controllers\StockHistoryController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
@@ -657,6 +658,11 @@
     <Content Include="Views\Supplier\UpdateSupplier.cshtml" />
     <Content Include="Views\Purchase\CreatePurchase.cshtml" />
     <Content Include="Views\Purchase\ListPurchase.cshtml" />
+    <Content Include="Views\Statistics\OrderStatistics.cshtml" />
+    <Content Include="Views\Statistics\SalesManStatistics.cshtml" />
+    <Content Include="Views\Statistics\OrderStatusOverview.cshtml" />
+    <Content Include="Views\Statistics\ProductHitList.cshtml" />
+    <Content Include="Views\Statistics\CustomerHitList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\StockHistory\" />
