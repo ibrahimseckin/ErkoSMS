@@ -157,6 +157,22 @@ namespace ErkoSMS.DataAccess
             return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
         }
 
+        public int GetReservedCountyProductId(int productId)
+        {
+            const string query = "SELECT quantity From sales s join sales_product sd on s.id = sd.salesid  " +
+                                 "Where s.state != @salesState and sd.productid = @productId";
+            _sqliteDataProvider.AddParameter("@salesState", SalesState.InvoiceDoneAndPacked);
+            _sqliteDataProvider.AddParameter("@productid", productId);
+            var dataSet = _sqliteDataProvider.ExecuteDataSet(query);
+            int reserved = 0;
+            foreach (DataRow row in dataSet.Tables[0].Rows)
+            {
+                reserved += Convert.ToInt32(row["quantity"].ToString());
+            }
+
+            return reserved;
+        }
+
         private Sales CreateSales(DataRow row)
         {
 

@@ -34,17 +34,14 @@ namespace ErkoSMS.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetStockInformationByProductCode(string productCode)
+        public int GetStockInformationByProductCode(string productCode)
         {
             var stock = new ORKADataService().GetStockByCode(productCode);
+            var productId = new ProductDataService().GetProductByCode(productCode).Id;
+            var reservedStock = new SalesDataService().GetReservedCountyProductId(productId);
 
-            return new JsonResult()
-            {
-                Data = stock,
-                ContentType = "application/json",
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                MaxJsonLength = Int32.MaxValue
-            };
+            var usableStock = stock.RemainingAmount - reservedStock;
+            return usableStock;
         }
 
         [HttpGet]
