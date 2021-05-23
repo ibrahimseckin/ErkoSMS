@@ -35,10 +35,10 @@ namespace ErkoSMS.Controllers
         [HttpGet]
         public ActionResult GetProductByCode(string productCode)
         {
-            var product = new ProductDataService().GetProductByCode(productCode);
+            var products = new ProductDataService().GetProductByCodeWithWildCard(productCode);
             return new JsonResult()
             {
-                Data = product != null ? new List<Product> { product } : new List<Product>(),
+                Data = products,
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };

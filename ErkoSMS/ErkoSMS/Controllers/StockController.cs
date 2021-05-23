@@ -48,26 +48,23 @@ namespace ErkoSMS.Controllers
         public ActionResult GetStock(string productCode)
         {
             var orkaDataService = new ORKADataService();
-            var stock = orkaDataService.GetStockByCode(productCode);
-            var stockViewModel = new StockViewModel();
-            if (stock != null)
+            var stocks = orkaDataService.GetStockByCodeWithWildCard(productCode).Select(x => new StockViewModel { Code = x.Code, Price = x.Price, RemainingAmount = x.RemainingAmount }).ToList();
+
+            var stockDataService = new StockDataService();
+            var reservedStocks = stockDataService.GetReservedStockByCodeWithWildCard(productCode);
+
+            foreach (var reservedStock in reservedStocks)
             {
-                stockViewModel.Code = stock.Code;
-                stockViewModel.Price = stock.Price;
-                stockViewModel.RemainingAmount = stock.RemainingAmount;
-
-                var stockDataService = new StockDataService();
-                var reservedStock = stockDataService.GetReservedStockByCode(productCode);
-                if (reservedStock != null)
+                var stock = stocks.FirstOrDefault(x => x.Code == reservedStock.Product.Code);
+                if (stock != null)
                 {
-                    stockViewModel.ReservedAmount = reservedStock.Reserved;
+                    stock.ReservedAmount = reservedStock.Reserved;
                 }
-
             }
 
             return new JsonResult()
             {
-                Data = stockViewModel != null ? new List<StockViewModel> { stockViewModel } : new List<StockViewModel>(),
+                Data = stocks,
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };

@@ -33,10 +33,10 @@ namespace ErkoSMS.Controllers
         [HttpGet]
         public ActionResult GetCustomer(string customerName)
         {
-            var customer = new CustomerDataService().GetCustomerByName(customerName);
+            var customers = new CustomerDataService().GetCustomerByNameWithWildCard(customerName);
             return new JsonResult()
             {
-                Data = customer != null ? new List<Customer> { customer } : new List<Customer>(),
+                Data = customers,
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
             };

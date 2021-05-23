@@ -46,6 +46,21 @@ namespace ErkoSMS.DataAccess
             return row != null ? CreateProduct(row) : null;
         }
 
+
+        public IList<Product> GetProductByCodeWithWildCard(string productCode)
+        {
+            const string query = "Select * From products Where code like @productCode";
+            _sqliteDataProvider.AddParameter("@productCode", $"%{productCode}%");
+            var rows = _sqliteDataProvider.ExecuteDataRows(query);
+            IList<Product> products = new List<Product>();
+            foreach (DataRow row in rows)
+            {
+                products.Add(CreateProduct(row));
+            }
+
+            return products;
+        }
+
         public bool DeleteProductByCode(string productCode)
         {
             const string query = "Delete From products Where code = @productCode";
@@ -119,7 +134,7 @@ namespace ErkoSMS.DataAccess
                 EnglishDescription = row["DescriptionEng"]?.ToString(),
                 Group = row["ProductGroup"]?.ToString(),
                 Model = row["Model"]?.ToString(),
-                LastPrice = Convert.ToDouble(row["LastPrice"])
+                LastPrice = Convert.IsDBNull(row["LastPrice"]) || string.IsNullOrEmpty(row["LastPrice"].ToString()) ? 0 : Convert.ToDouble(row["LastPrice"])
             };
         }
     }

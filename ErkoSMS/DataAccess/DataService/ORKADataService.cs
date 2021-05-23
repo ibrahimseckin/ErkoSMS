@@ -43,6 +43,24 @@ namespace ErkoSMS.DataAccess
         }
 
 
+        public IList<IStockORKA> GetStockByCodeWithWildCard(string stockCode)
+        {
+            const string query = "SELECT sm.stokkodu, sm.kalanmiktar, ss.fiyat FROM dbo.[STOK_MIZAN] sm " +
+                                "join dbo.STK_STOKSATIR ss on sm.stokkodu = ss.stokkodu " +
+                                "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) AND sm.stokkodu like @stokkodu";
+            _sqliteDataProvider.AddParameter("@stokkodu", $"%{stockCode}%");
+            var rows = _sqliteDataProvider.ExecuteDataRows(query);
+            IList<IStockORKA> stocks = new List<IStockORKA>();
+
+            foreach (var row in rows)
+            {
+                stocks.Add(CreateStockObject(row));
+            }
+            return stocks;
+        }
+
+
+
         private IStockORKA CreateStockObject(DataRow row)
         {
             return new StockORKA

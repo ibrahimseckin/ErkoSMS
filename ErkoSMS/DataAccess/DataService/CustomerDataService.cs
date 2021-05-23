@@ -40,6 +40,20 @@ namespace ErkoSMS.DataAccess
             return row != null ? CreateCustomerObject(row) : null;
         }
 
+        public IList<Customer> GetCustomerByNameWithWildCard(string customerName)
+        {
+            const string query = "select * from customers where Name like @name";
+            _sqliteDataProvider.AddParameter("@name", $"%{customerName}%");
+            var rows = _sqliteDataProvider.ExecuteDataRows(query);
+            IList<Customer> customers = new List<Customer>();
+            foreach (DataRow row in rows)
+            {
+                customers.Add(CreateCustomerObject(row));
+            }
+
+            return customers;
+        }
+
         public Customer GetCustomerById(int customerId)
         {
             const string query = "select * from customers where Id=@Id";

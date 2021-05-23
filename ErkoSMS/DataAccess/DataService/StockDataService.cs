@@ -21,13 +21,13 @@ namespace ErkoSMS.DataAccess
         {
             const string query = "select s.ID, p.Code, s.Reserved from Stock s join Products p on s.ProductId = p.Id";
             var dataset = _sqliteDataProvider.ExecuteDataSet(query);
-            IList<IStock> customers = new List<IStock>();
+            IList<IStock> stocks = new List<IStock>();
             foreach (DataRow row in dataset.Tables[0].Rows)
             {
-                customers.Add(CreateStockObject(row));
+                stocks.Add(CreateStockObject(row));
             }
 
-            return customers;
+            return stocks;
         }
 
 
@@ -40,12 +40,29 @@ namespace ErkoSMS.DataAccess
             return row != null ? CreateStockObject(row) : null;
         }
 
+
+        public IList<IStock> GetReservedStockByCodeWithWildCard(string productCode)
+        {
+            const string query = "select s.ID, p.Code, s.Reserved from Stock s join Products p on s.ProductId = p.Id where p.Code like  @productCode";
+            _sqliteDataProvider.AddParameter("@productCode", $"%{productCode}%");
+
+            var rows = _sqliteDataProvider.ExecuteDataRows(query);
+            IList<IStock> stocks = new List<IStock>();
+            foreach (DataRow row in rows)
+            {
+                stocks.Add(CreateStockObject(row));
+            }
+
+            return stocks;
+        }
+
+
         private IStock CreateStockObject(DataRow row)
         {
             var stock = new Stock
             {
                 Id = Convert.ToInt32(row["Id"]),
-                Product = new Product 
+                Product = new Product
                 {
                     Code = row["Code"]?.ToString()
                 },
