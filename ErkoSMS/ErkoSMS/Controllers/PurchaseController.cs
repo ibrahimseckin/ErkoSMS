@@ -36,7 +36,8 @@ namespace ErkoSMS.Controllers
                 Quantity = purchaseViewModel.Quantity,
                 RequestedBySales = false,
                 UnitPrice = purchaseViewModel.UnitPrice,
-                TotalPrice = purchaseViewModel.TotalPrice
+                TotalPrice = purchaseViewModel.TotalPrice,
+                OrderId = 0,
             };
 
             new PurchaseDataService().CreatePurchase(purchase);
@@ -161,6 +162,7 @@ namespace ErkoSMS.Controllers
 
             var filteredPurchases = allPurchases.Where(x => x.OrderId.HasValue)
                 .Where(x => string.IsNullOrEmpty(x.PurchaserUserGuid));
+            CalculateActiveTime(filteredPurchases);
             return new JsonResult()
             {
                 Data = filteredPurchases,
@@ -176,6 +178,7 @@ namespace ErkoSMS.Controllers
             var allPurchases = new PurchaseDataService().GetAllPurchases();
 
             var filteredPurchases = allPurchases.Where(x => x.PurchaserUserGuid == User.Identity.GetUserId());
+            CalculateActiveTime(filteredPurchases);
             return new JsonResult()
             {
                 Data = filteredPurchases,
@@ -189,6 +192,7 @@ namespace ErkoSMS.Controllers
         public ActionResult GetAllPurchases()
         {
             var allPurchases = new PurchaseDataService().GetAllPurchases();
+            CalculateActiveTime(allPurchases);
             return new JsonResult()
             {
                 Data = allPurchases,
@@ -223,6 +227,16 @@ namespace ErkoSMS.Controllers
                                 Selected = false
                             })
                     .ToList();
+        }
+
+        private void CalculateActiveTime(IEnumerable<Purchase> purchases)
+        {
+            foreach (var purchase in purchases)
+            {
+                purchase.ActiveTime = purchase.PurchaseCloseDate.HasValue ?
+                    purchase.PurchaseCloseDate.Value.Subtract(purchase.PurchaseStartDate).Days : 
+                    DateTime.Now.Subtract(purchase.PurchaseStartDate).Days;
+            }
         }
     }
 }
