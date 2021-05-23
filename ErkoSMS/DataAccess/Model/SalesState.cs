@@ -29,6 +29,10 @@ namespace ErkoSMS.DataAccess.Model
         [Display(Name = "Satın Alma Talep Edildi")]
         PurchaseRequested = 9,
         [Display(Name = "Satın Alma Talebi İşleme Alındı")]
-        PurchaseInProgress = 9,
+        PurchaseInProgress = 10,
+        [Display(Name = "Satın Alma Başarılı Tamamlandı")]
+        PurchaseSuccesful = 11,
+        [Display(Name = "Satın Alma Talebi Başarısız Sonuçlandı")]
+        PurchaseFailed = 12
     }
 }

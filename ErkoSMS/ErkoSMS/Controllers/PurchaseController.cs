@@ -102,9 +102,27 @@ namespace ErkoSMS.Controllers
                 RequestedBySales = purchaseViewModel.RequestedBySales
             };
             if (purchaseViewModel.PurchaseState == PurchaseState.PurchaseSuccesful ||
-                purchaseViewModel.PurchaseState == PurchaseState.PurchaseSuccesful)
+                purchaseViewModel.PurchaseState == PurchaseState.PurchaseFailed)
             {
                 purchase.PurchaseCloseDate = DateTime.Now;
+            }
+
+            if (purchaseViewModel.OrderId != 0)
+            {
+                var salesState = new SalesDataService().GetSalesById(purchaseViewModel.OrderId).SalesState;
+                if (salesState == SalesState.PurchaseInProgress)
+                {
+                    if (purchaseViewModel.PurchaseState == PurchaseState.PurchaseSuccesful)
+                    {
+                        new SalesDataService().UpdateOrderState(purchaseViewModel.OrderId,
+                            SalesState.PurchaseSuccesful);
+                    }
+                    else if (purchaseViewModel.PurchaseState == PurchaseState.PurchaseFailed)
+                    {
+                        new SalesDataService().UpdateOrderState(purchaseViewModel.OrderId,
+                            SalesState.PurchaseFailed);
+                    }
+                }
             }
 
             var result = PurchaseDataService.UpdatePurchase(purchase);
@@ -184,7 +202,9 @@ namespace ErkoSMS.Controllers
         {
             var purchaserUserGuid = User.Identity.GetUserId();
 
-            var result = new PurchaseDataService().AssignPurchase(purchaseId, purchaserUserGuid);
+            new PurchaseDataService().AssignPurchase(purchaseId, purchaserUserGuid,PurchaseState.PurchaseInProgress);
+            var orderId = new PurchaseDataService().GetAllPurchases().First(x => x.PurchaseId == purchaseId).OrderId;
+            new SalesDataService().UpdateOrderState(orderId.Value, SalesState.PurchaseInProgress);
             return true;
         }
 

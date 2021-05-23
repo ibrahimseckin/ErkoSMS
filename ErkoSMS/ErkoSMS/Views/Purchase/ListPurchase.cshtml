@@ -62,10 +62,8 @@
         e.preventDefault();
         var rowToBeUpdated = $(this).closest('tr')[0];
         var purchaseId = rowToBeUpdated.cells[0].innerText;
-        ERKOSMS.GetAjaxDialog("UpdatePurchase?purchaseId=" + purchaseId, {}, false).then(function () {
-        }), function (data) {
-            ERKOSMS.ShowWarning(data);
-        }
+        ERKOSMS.GetAjaxDialog("UpdatePurchase?purchaseId=" + purchaseId, {}, false).then(function() {
+        });
     });
 
     var destroyTable = function () {

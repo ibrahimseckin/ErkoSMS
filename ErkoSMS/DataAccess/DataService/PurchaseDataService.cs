@@ -77,34 +77,43 @@ namespace ErkoSMS.DataAccess
 
         public bool UpdatePurchase(Purchase purchase)
         {
-            string query = "Update Purchase " +
+            string query = "Update Purchases " +
                                  "Set State = @State, SupplierId = @SupplierId," +
-                                 "Country = @Country, PhoneNumber = @PhoneNumber," +
                                  "UnitPrice = @UnitPrice, TotalPrice = @TotalPrice," +
-                                 "Currency = @Currency, Quantity = @Quantity";
+                                 "Currency = @Currency, Amount = @Quantity";
             if (purchase.PurchaseCloseDate.HasValue)
             {
-                query += "CloseDate = @CloseDate";
+                query += ",CloseDate = @CloseDate";
                 _sqliteDataProvider.AddParameter("@CloseDate", purchase.PurchaseCloseDate);
             }
             query += " Where Id = @PurchaseId";
-            _sqliteDataProvider.AddParameter("@Id", purchase.PurchaseId);
+            _sqliteDataProvider.AddParameter("@PurchaseId", purchase.PurchaseId);
             _sqliteDataProvider.AddParameter("@State", purchase.PurchaseState);
             _sqliteDataProvider.AddParameter("@SupplierId", purchase.SupplierId);
             _sqliteDataProvider.AddParameter("@TotalPrice", purchase.TotalPrice);
             _sqliteDataProvider.AddParameter("@UnitPrice", purchase.UnitPrice);
             _sqliteDataProvider.AddParameter("@Currency", purchase.Currency);
             _sqliteDataProvider.AddParameter("@Quantity", purchase.Quantity);
-            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+            try
+            {
+                return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+            }
+            catch (Exception e)
+            {
+                var a = 5;
+            }
+
+            return true;
         }
 
-        public bool AssignPurchase(int purchaseId, string purchaserUserGuid)
+        public bool AssignPurchase(int purchaseId, string purchaserUserGuid, PurchaseState purchaseState)
         {
             const string query = "Update Purchases " +
-                                 "Set AssignedUser = @PurchaserUserGuid " +
+                                 "Set AssignedUser = @PurchaserUserGuid, State= @purchaseState" +
                                  " Where Id = @purchaseId";
             _sqliteDataProvider.AddParameter("@purchaseId", purchaseId);
             _sqliteDataProvider.AddParameter("@purchaserUserGuid", purchaserUserGuid);
+            _sqliteDataProvider.AddParameter("@purchaseState", purchaseState);
             return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
         }
 

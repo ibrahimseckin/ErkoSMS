@@ -85,6 +85,12 @@ namespace ErkoSMS.Controllers
             sales.SalesState = order.State;
             sales.InvoiceDate = order.InvoiceDate;
 
+            var isThereGap = order.OrderLines.Any(x => x.Quantity > x.StokQuantity);
+            if (isThereGap)
+            {
+                sales.SalesState = SalesState.PurchaseRequested;
+            }
+
             var orderId = new SalesDataService().CreateOrder(sales);
             var message = "Satış girişi başarıyla yapıldı.";
             foreach (var orderLine in order.OrderLines)

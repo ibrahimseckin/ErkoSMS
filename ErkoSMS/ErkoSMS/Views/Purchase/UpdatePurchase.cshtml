@@ -11,6 +11,7 @@
         @using (Html.BeginForm("UpdatePurchase", "Purchase", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "UpdatePurchaseForm", style = "width:1100px" }))
         {
             @Html.Hidden("PurchaseId", Model.PurchaseId)
+            @Html.Hidden("OrderId", Model.OrderId)
             @Html.AntiForgeryToken()
             @Html.ValidationSummary("", new { @class = "text-danger" })
             <div class="row mt-10">
@@ -104,6 +105,7 @@
         vex.dialog.alert("Satın alma güncellendi.");
         var tg = $(ev.currentTarget);
         closeParentVexModal(tg);
+        getPurchasesAssignedToMe();
     });
 
     getPurchasesAssignedToMe();

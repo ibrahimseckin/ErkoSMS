@@ -149,6 +149,14 @@ namespace ErkoSMS.DataAccess
             return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
         }
 
+        public bool UpdateOrderState(int orderId, SalesState salesState)
+        {
+            string query = "Update Sales Set State = @salesState where id= @id;";
+            _sqliteDataProvider.AddParameter("@id", orderId);
+            _sqliteDataProvider.AddParameter("@salesState", salesState);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
+
         private Sales CreateSales(DataRow row)
         {
 
