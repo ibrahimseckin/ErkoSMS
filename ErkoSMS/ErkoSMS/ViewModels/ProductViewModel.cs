@@ -29,7 +29,7 @@ namespace ErkoSMS.ViewModels
         public string Model { get; set; }
 
         [Display(Name = "Son Satış Fiyatı")]
-        public string LastPrice { get; set; }
+        public double LastPrice { get; set; }
 
         public ProductViewModel()
         {

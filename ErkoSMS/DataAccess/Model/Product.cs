@@ -12,7 +12,7 @@ namespace ErkoSMS.DataAccess.Model
         public string Group { get; set; }
         public string Brand { get; set; }
         public string Model { get; set; }
-        public string LastPrice { get; set; }
+        public double LastPrice { get; set; }
 
     }
 }

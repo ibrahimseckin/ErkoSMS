@@ -48,6 +48,12 @@ namespace ErkoSMS.Controllers
         }
 
         [HttpGet]
+        public double GetLatestPriceForProductCode(string productCode)
+        {
+            return new ProductDataService().GetProductByCode(productCode).LastPrice;
+        }
+
+        [HttpGet]
         public string GetProductDescriptionByProductCode(string productCode)
         {
             var description = new ProductDataService().GetProductByCode(productCode).Description;
@@ -74,6 +80,8 @@ namespace ErkoSMS.Controllers
             {
                 totalPrice += orderLine.TotalPrice;
                 salesDetails.Add(new SalesDetail { ProductCode = orderLine.ProductCode, Quantity = orderLine.Quantity, UnitPrice = orderLine.UnitPrice });
+                var productId = new ProductDataService().GetProductByCode(orderLine.ProductCode).Id;
+                new ProductDataService().UpdateProductLatestPrice(productId, orderLine.UnitPrice);
             }
             sales.Currency = order.Currency;
             sales.Customer = new CustomerDataService().GetCustomerById(order.CustomerId);

@@ -96,6 +96,15 @@ namespace ErkoSMS.DataAccess
             return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
         }
 
+        public bool UpdateProductLatestPrice(int productId, double price)
+        {
+            const string query = "Update Products " +
+                                 "Set LastPrice = @LastPrice" +
+                                 " Where Id = @Id";
+            _sqliteDataProvider.AddParameter("@Id", productId);
+            _sqliteDataProvider.AddParameter("@LastPrice", price);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
 
 
         private Product CreateProduct(DataRow row)
@@ -110,7 +119,7 @@ namespace ErkoSMS.DataAccess
                 EnglishDescription = row["DescriptionEng"]?.ToString(),
                 Group = row["ProductGroup"]?.ToString(),
                 Model = row["Model"]?.ToString(),
-                LastPrice = row["LastPrice"]?.ToString()
+                LastPrice = Convert.ToDouble(row["LastPrice"])
             };
         }
     }

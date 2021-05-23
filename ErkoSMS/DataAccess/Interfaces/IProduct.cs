@@ -16,6 +16,6 @@ namespace ErkoSMS.DataAccess.Interfaces
        string Group { get; set; }
        string Brand { get; set; }
        string Model { get; set; }
-       string LastPrice { get; set; }
+       double LastPrice { get; set; }
     }
 }
