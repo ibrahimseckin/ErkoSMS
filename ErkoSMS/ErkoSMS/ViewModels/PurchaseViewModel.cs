@@ -38,5 +38,21 @@ namespace ErkoSMS.ViewModels
         public PurchaseViewModel()
         {
         }
+
+        public PurchaseViewModel(Purchase purchase)
+        {
+            SupplierId = purchase.SupplierId;
+            PurchaseId = purchase.PurchaseId;
+            OrderId = purchase.OrderId.HasValue ? purchase.OrderId.Value : 0;
+            ProductCode = purchase.ProductCode;
+            PurchaseState = purchase.PurchaseState;
+            Quantity = purchase.Quantity;
+            Currency = purchase.Currency;
+            UnitPrice = purchase.UnitPrice;
+            TotalPrice = purchase.TotalPrice;
+            PurchaseStartDate = purchase.PurchaseStartDate;
+            RequestedBySales = purchase.RequestedBySales;
+            SalesUserName = purchase.SalesUserName;
+        }
     }
 }

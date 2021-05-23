@@ -664,6 +664,7 @@
     <Content Include="Views\Statistics\OrderStatusOverview.cshtml" />
     <Content Include="Views\Statistics\ProductHitList.cshtml" />
     <Content Include="Views\Statistics\CustomerHitList.cshtml" />
+    <Content Include="Views\Purchase\UpdatePurchase.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\StockHistory\" />

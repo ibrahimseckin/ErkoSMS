@@ -25,6 +25,10 @@ namespace ErkoSMS.DataAccess.Model
         [Display(Name = "Reddedildi")]
         Rejected = 7,
         [Display(Name = "Cevap Bekliyor")]
-        WaitForAnswer = 8
+        WaitForAnswer = 8,
+        [Display(Name = "Satın Alma Talep Edildi")]
+        PurchaseRequested = 9,
+        [Display(Name = "Satın Alma Talebi İşleme Alındı")]
+        PurchaseInProgress = 9,
     }
 }

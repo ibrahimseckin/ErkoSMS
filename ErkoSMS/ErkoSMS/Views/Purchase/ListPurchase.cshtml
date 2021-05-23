@@ -4,6 +4,7 @@
 
 <h2>@ViewBag.Title</h2>
 
+@using ErkoSMS.Enums
 @model PurchaseFilterParameters
 
 @{
@@ -12,8 +13,12 @@
 
 <div id="listPurchaseDiv" style="display: block;margin-top:20px;">
     <input type="button" id="filterButton" value="Satın Almaları Filtrele" />
-    <input type="button" id="getPurchasesRequestedByOrders" value="Satışlara bağlı Satın Almaları Getir" />
-    <input type="button" id="getAllPurchases" value="Bütün Satışları Getir" />
+    <input type="button" id="getPurchasesRequestedByOrders" value="İşleme Konulmamış Satın Alma Taleplerini Getir" />
+    <input type="button" id="getAllPurchasesAssignedToMe" value="Satın Almalarımı Getir" />
+    @if (User.IsInRole(UserTypes.Administrator.Name))
+    {
+        <input type="button" id="getAllPurchases" value="Bütün Satın Almaları Getir" />
+    }
 </div>
 <hr style="margin: 10px 0;" />
 
@@ -42,56 +47,26 @@
 <script>
     var tb = $("#purchaseTable");
 
-    $('#salesTable').on('click', 'td.editor-edit', function (e) {
+    $('#purchaseTable').on('click', 'td.editor-edit', function (e) {
+        e.preventDefault();
+        debugger;
+        var rowToBeUpdated = $(this).closest('tr')[0];
+        var purchaseId = rowToBeUpdated.cells[0].innerText;
+        ERKOSMS.GetAjaxDialog("AssignPurchase?purchaseId=" + purchaseId, {}, false).then(function(data) {
+            vex.dialog.alert("Satın alma sana atandı. Bütün satınalmalarımı getir diyerek listede görebilirsin");
+            getNonAssignedPurchases();
+        });
+    });
+
+    $('#purchaseTable').on('click', 'td.updateRecord', function (e) {
         e.preventDefault();
         var rowToBeUpdated = $(this).closest('tr')[0];
-        var orderId = rowToBeUpdated.cells[0].innerText;
-        ERKOSMS.GetAjaxDialog("UpdateOrder?orderId=" + orderId, {}, false).then(function () {
+        var purchaseId = rowToBeUpdated.cells[0].innerText;
+        ERKOSMS.GetAjaxDialog("UpdatePurchase?purchaseId=" + purchaseId, {}, false).then(function () {
         }), function (data) {
             ERKOSMS.ShowWarning(data);
         }
     });
-
-    $('#listSalesButton').on('click', function () {
-        document.getElementById("listSalesDiv").style.display = "block";
-    });
-
-    $("#getAllSales").on("click",
-        function () {
-            debugger;
-            document.getElementById("SalesFilterForm").style.display = "none";
-            destroyTable();
-            ERKOSMS.AjaxAction("GetAllSales", {}, false).then(function (data) {
-                var datatable = tb.DataTable({
-                    autoWidth: true,
-                    columns: [
-                        { title: "Id", data: "Id" },
-                        { title: "Satış Başlangıç Tarihi", data: "SalesStartDate" },
-                        { title: "Fatura Tarihi", data: "InvoiceDate" },
-                        { title: "Fatura No", data: "InvoiceNumber" },
-                        { title: "Müşteri", data: "Customer.Name" },
-                        { title: "Müşteri Ülkesi", data: "Customer.Country" },
-                        { title: "Tutar", data: "TotalPrice" },
-                        { title: "Kur", data: "Currency" },
-                        { title: "Durum", data: "SalesState" },
-                        {
-                            data: null,
-                            className: "dt-center editor-edit",
-                            defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
-                            orderable: false
-                        }
-                    ],
-                    data: data,
-                    sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
-                    aaSorting: [], // Initial sorting
-                    bInfo: true, // Info is not shown because the total count to show is not known
-                    searching: true, // Disable searching TODO: Enable searching if necessary
-                    paging: true, // Disable paging in outstanding
-                    pageLength: 50,
-                    deferRender: true
-                });
-            });
-        });
 
     var destroyTable = function () {
         var tb = $("#purchaseTable");
@@ -101,7 +76,6 @@
 
         tb.empty();
     };
-
     var formatDate = function (date) {
         debugger;
         if (date == null) {
@@ -112,7 +86,6 @@
         }
 
     }
-
     var formatCurrency = function (data) {
         debugger;
         if (data == 0) {
@@ -125,7 +98,6 @@
             return "USD";
         }
     }
-
     var formatState = function (data) {
         debugger;
         if (data == -1) {
@@ -198,38 +170,40 @@
             });
         });
     });
-
-    $('#getPurchasesRequestedByOrders').on('click', function () {
+    var getPurchases = function (ajaxAction) {
         destroyTable();
-        ERKOSMS.AjaxAction("GetPurchasesRequestedByOrders", {
+        ERKOSMS.AjaxAction(ajaxAction, {
             type: 'POST'
         }).then(function (data) {
-            debugger;
+            var columns = [
+                { title: "Id", data: "PurchaseId" },
+                { title: "Satın Alma Giriş Tarihi", data: "PurchaseStartDate" },
+                { title: "Durum", data: "PurchaseState" },
+                { title: "Ürün Kodu", data: "ProductCode" },
+                { title: "Adet", data: "Quantity" },
+                { title: "Birim Fiyat", data: "UnitPrice" },
+                { title: "Tutar", data: "TotalPrice" },
+                { title: "Kur", data: "Currency" },
+                { title: "Satış Elemanı", data: "SalesUserName" },
+                {
+                    data: null,
+                    className: "dt-center updateRecord",
+                    defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span>Güncelle</span>',
+                    orderable: false
+                }
+            ];
+
+            if (ajaxAction === "GetNonAssignedPurchases") {
+                columns.push({
+                    data: null,
+                    className: "dt-center editor-edit",
+                    defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span>Bana Ata</span>',
+                    orderable: false
+                });
+            }
             var datatable = tb.DataTable({
                 autoWidth: true,
-                columns: [
-                    { title: "Id", data: "PurchaseId" },
-                    { title: "Satın Alma Giriş Tarihi", data: "PurchaseStartDate" },
-                    { title: "Durum", data: "PurchaseState" },
-                    { title: "Ürün Kodu", data: "ProductCode" },
-                    { title: "Adet", data: "Quantity" },
-                    { title: "Birim Fiyat", data: "UnitPrice" },
-                    { title: "Tutar", data: "TotalPrice" },
-                    { title: "Kur", data: "Currency" },
-                    { title: "Satış Elemanı", data: "SalesUserName" },
-                    {
-                        data: null,
-                        className: "dt-center editor-edit",
-                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
-                        orderable: false
-                    },
-                    {
-                        data: null,
-                        className: "dt-center editor-edit",
-                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> İlgili Satışa Git</span>',
-                        orderable: false
-                    }
-                ],
+                columns: columns,
                 data: data,
                 sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
                 aaSorting: [], // Initial sorting
@@ -254,7 +228,20 @@
                 ]
             });
         });
-    });
+    }
+    var getNonAssignedPurchases = function() {
+        return getPurchases("GetNonAssignedPurchases");
+    }
+    var getPurchasesAssignedToMe = function() {
+        return getPurchases("GetPurchasesAssignedToMe");
+    }
+    var getAllPurchases = function() {
+        return getPurchases("GetAllPurchases");
+    }
+
+    $('#getPurchasesRequestedByOrders').on('click', getNonAssignedPurchases);
+    $('#getAllPurchasesAssignedToMe').on('click', getPurchasesAssignedToMe);
+    $('#getAllPurchases').on('click', getAllPurchases);
 
     $('#filterButton').on('click', function () {
 
@@ -267,9 +254,7 @@
         else {
             document.getElementById("PurchaseFilterDiv").style.display = "none";
         }
-
-
     });
 
-
+    getNonAssignedPurchases();
 </script>

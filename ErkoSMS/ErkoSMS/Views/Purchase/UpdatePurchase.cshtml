@@ -1,0 +1,111 @@
+﻿
+@model ErkoSMS.ViewModels.PurchaseViewModel
+
+@{
+    var suppliers = (List<SelectListItem>)ViewBag.Suppliers;
+}
+
+    <div>
+        <h3>Satın Alma Güncelle</h3>
+        <hr />
+        @using (Html.BeginForm("UpdatePurchase", "Purchase", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "UpdatePurchaseForm", style = "width:1100px" }))
+        {
+            @Html.Hidden("PurchaseId", Model.PurchaseId)
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="row mt-10">
+                <div class="form-group col-md-3">
+                    <label>Tedarikçi:</label>
+                    @Html.DropDownListFor(x => x.SupplierId, suppliers, new { id = "supplierdropdown", @class = "chosen-select form-control" })
+                </div>
+
+                <div class="form-group col-md-3">
+                    @Html.LabelFor(x => x.PurchaseState)
+                    @Html.EnumDropDownListFor(x => x.PurchaseState, new { id = "statedropdown", @class = "chosen-select form-control", style = "width:auto" })
+                </div>
+            </div>
+
+            <div class="row form-group-sm" style="padding-top: 5px;">
+                <div class="col-md-3">
+                    @Html.LabelFor(x => x.ProductCode)
+                    @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control productCode", style = "display:inline-block" })
+                </div>
+                <div class="col-md-3">
+                    <label>Ürün</label>
+                    <textarea class="form-control productDescription" style="width:-webkit-fill-available"></textarea>
+                </div>
+                <div class="col-md-2">
+                    <label>Stok</label>
+                    <input class="form-control stockQuantity" type="text">
+                </div>
+                <div class="col-md-2">
+                    <label style="display:block">Ürünü Sorgula</label>
+                    <button type="button" id="getProductInformationButton" class="form-control">Ürünü Sorgula</button>
+                </div>
+            </div>
+            <div class="row form-group-sm" style="padding-top: 5px;">
+                <div class="form-group col-md-1">
+                    <label>Kur:</label>
+                    @Html.EnumDropDownListFor(x => x.Currency, new { id = "currencydropdown", @class = "chosen-select form-control", style = "width:auto" })
+                </div>
+                <div class="col-md-2">
+                    @Html.LabelFor(x => x.UnitPrice)
+                    @Html.TextBoxFor(x => x.UnitPrice, new { @class = "form-control unitPrice", style = "display:inline-block" })
+                </div>
+                <div class="col-md-3">
+                    @Html.LabelFor(x => x.Quantity)
+                    @Html.TextBoxFor(x => x.Quantity, new { @class = "form-control quantity", style = "display:inline-block" })
+                </div>
+                <div class="col-md-2">
+                    @Html.LabelFor(x => x.TotalPrice)
+                    @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", style = "display:inline-block" })
+                </div>
+                <div class="col-md-2">
+                    <label style="display:block">Fiyat Hesapla</label>
+                    <button type="button" class="calculatePriceButton form-control">Fiyat Hesapla</button>
+                </div>
+            </div>
+
+            <div class="row mt-10">
+                <div class="col-md-9">
+                    <input type="submit" class="btn btn-primary pull-right" value="Kaydet" />
+                </div>
+            </div>
+        }
+
+    </div>
+
+<script>
+
+    $('#supplierdropdown').select2({ placeholder: "Tedarikçi Seçin" });
+    $('#currencydropdown').select2({ placeholder: "Kur Seçin" });
+    $('#statedropdown').select2({ placeholder: "Durum Seçin" });
+
+    $("#getProductInformationButton").on("click", function (e) {
+        var productCode = e.currentTarget.parentNode.parentNode.querySelector('.productCode').value;
+        ERKOSMS.AjaxAction("GetStockInformationByProductCode?productCode=" + productCode, {}, false).then(function (data) {
+            e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').value = data.RemainingAmount;
+            e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').readOnly = true;
+        });
+        ERKOSMS.AjaxAction("GetProductDescriptionByProductCode?productCode=" + productCode, {}, false).then(function (data) {
+            e.currentTarget.parentNode.parentNode.querySelector('.productDescription').value = data;
+            e.currentTarget.parentNode.parentNode.querySelector('.productDescription').readOnly = true;
+        });
+    });
+
+    $('.calculatePriceButton').off().on('click', function (e) {
+        var quantity = e.currentTarget.parentNode.parentNode.querySelector('.quantity').value;
+        var unitPrice = e.currentTarget.parentNode.parentNode.querySelector('.unitPrice').value;
+        e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').value = quantity * unitPrice;
+        e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').readOnly = true;
+    });
+
+    $("#UpdatePurchaseForm").on('ajax-form:succeed', function (ev, data) {
+        vex.dialog.alert("Satın alma güncellendi.");
+        var tg = $(ev.currentTarget);
+        closeParentVexModal(tg);
+    });
+
+    getPurchasesAssignedToMe();
+
+</script>

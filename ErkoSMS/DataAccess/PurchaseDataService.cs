@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using ErkoSMS.DataAccess.Model;
@@ -42,7 +43,9 @@ namespace ErkoSMS.DataAccess
                 PurchaseState = (PurchaseState)Convert.ToInt32(row["State"]),
                 UnitPrice = Convert.ToInt32(row["UnitPrice"]),
                 TotalPrice = Convert.ToInt32(row["TotalPrice"]),
-                Quantity = Convert.ToInt32(row["Amount"])
+                Quantity = Convert.ToInt32(row["Amount"]),
+                OrderId = Convert.ToInt32(row["SaleId"]),
+                SalesUserName = row["SalesUser"].ToString(),
             };
         }
 
@@ -67,16 +70,42 @@ namespace ErkoSMS.DataAccess
             _sqliteDataProvider.AddParameter("@SupplierId", purchase.SupplierId);
             _sqliteDataProvider.AddParameter("@Currency", purchase.Currency);
             _sqliteDataProvider.AddParameter("@RequestedBySales", purchase.RequestedBySales);
-            try
-            {
-                var queryResult = _sqliteDataProvider.ExecuteScalar(query);
-            }
-            catch (Exception e)
-            {
-                var a = 5;
-            }
 
-            return false;
+            var queryResult = _sqliteDataProvider.ExecuteScalar(query);
+            return queryResult != null;
+        }
+
+        public bool UpdatePurchase(Purchase purchase)
+        {
+            string query = "Update Purchase " +
+                                 "Set State = @State, SupplierId = @SupplierId," +
+                                 "Country = @Country, PhoneNumber = @PhoneNumber," +
+                                 "UnitPrice = @UnitPrice, TotalPrice = @TotalPrice," +
+                                 "Currency = @Currency, Quantity = @Quantity";
+            if (purchase.PurchaseCloseDate.HasValue)
+            {
+                query += "CloseDate = @CloseDate";
+                _sqliteDataProvider.AddParameter("@CloseDate", purchase.PurchaseCloseDate);
+            }
+            query += " Where Id = @PurchaseId";
+            _sqliteDataProvider.AddParameter("@Id", purchase.PurchaseId);
+            _sqliteDataProvider.AddParameter("@State", purchase.PurchaseState);
+            _sqliteDataProvider.AddParameter("@SupplierId", purchase.SupplierId);
+            _sqliteDataProvider.AddParameter("@TotalPrice", purchase.TotalPrice);
+            _sqliteDataProvider.AddParameter("@UnitPrice", purchase.UnitPrice);
+            _sqliteDataProvider.AddParameter("@Currency", purchase.Currency);
+            _sqliteDataProvider.AddParameter("@Quantity", purchase.Quantity);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
+
+        public bool AssignPurchase(int purchaseId, string purchaserUserGuid)
+        {
+            const string query = "Update Purchases " +
+                                 "Set AssignedUser = @PurchaserUserGuid " +
+                                 " Where Id = @purchaseId";
+            _sqliteDataProvider.AddParameter("@purchaseId", purchaseId);
+            _sqliteDataProvider.AddParameter("@purchaserUserGuid", purchaserUserGuid);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
         }
 
     }

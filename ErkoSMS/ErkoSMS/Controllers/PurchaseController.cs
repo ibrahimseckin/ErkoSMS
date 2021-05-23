@@ -15,7 +15,7 @@ namespace ErkoSMS.Controllers
         public ActionResult CreatePurchase()
         {
             FillViewBag();
-            var purchase = new PurchaseViewModel {};
+            var purchase = new PurchaseViewModel { };
             return View(purchase);
         }
 
@@ -71,6 +71,47 @@ namespace ErkoSMS.Controllers
             return View(new PurchaseFilterParameters());
         }
 
+        public ActionResult UpdatePurchase(int purchaseId)
+        {
+            var purchaseDataService = new PurchaseDataService();
+            var purchase = purchaseDataService.GetAllPurchases().First(x => x.PurchaseId == purchaseId);
+            FillViewBag();
+            return PartialView(new PurchaseViewModel(purchase));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdatePurchase(PurchaseViewModel purchaseViewModel)
+        {
+            var PurchaseDataService = new PurchaseDataService();
+            var purchase = new Purchase()
+            {
+                PurchaseState = purchaseViewModel.PurchaseState,
+                SupplierId = purchaseViewModel.SupplierId,
+                OrderId = purchaseViewModel.OrderId,
+                ProductCode = purchaseViewModel.ProductCode,
+                Quantity = purchaseViewModel.Quantity,
+                SalesUserName = purchaseViewModel.SalesUserName,
+                PurchaseStartDate = purchaseViewModel.PurchaseStartDate,
+                UnitPrice = purchaseViewModel.UnitPrice,
+                Currency = purchaseViewModel.Currency,
+                ProductId = purchaseViewModel.ProductId,
+                PurchaseId = purchaseViewModel.PurchaseId,
+                PurchaserUserGuid = purchaseViewModel.PurchaserUser,
+                TotalPrice = purchaseViewModel.TotalPrice,
+                RequestedBySales = purchaseViewModel.RequestedBySales
+            };
+            if (purchaseViewModel.PurchaseState == PurchaseState.PurchaseSuccesful ||
+                purchaseViewModel.PurchaseState == PurchaseState.PurchaseSuccesful)
+            {
+                purchase.PurchaseCloseDate = DateTime.Now;
+            }
+
+            var result = PurchaseDataService.UpdatePurchase(purchase);
+
+            return Json(result ? new AjaxResult(true) : new AjaxResult(false));
+        }
+
         [HttpPost]
         public ActionResult GetFilteredPurchases(int? supplierId, PurchaseState? state)
         {
@@ -96,11 +137,12 @@ namespace ErkoSMS.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetPurchasesRequestedByOrders()
+        public ActionResult GetNonAssignedPurchases()
         {
             var allPurchases = new PurchaseDataService().GetAllPurchases();
 
-            var filteredPurchases = allPurchases.Where(x => x.OrderId.HasValue);
+            var filteredPurchases = allPurchases.Where(x => x.OrderId.HasValue)
+                .Where(x => string.IsNullOrEmpty(x.PurchaserUserGuid));
             return new JsonResult()
             {
                 Data = filteredPurchases,
@@ -108,6 +150,42 @@ namespace ErkoSMS.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = Int32.MaxValue
             };
+        }
+
+        [HttpPost]
+        public ActionResult GetPurchasesAssignedToMe()
+        {
+            var allPurchases = new PurchaseDataService().GetAllPurchases();
+
+            var filteredPurchases = allPurchases.Where(x => x.PurchaserUserGuid == User.Identity.GetUserId());
+            return new JsonResult()
+            {
+                Data = filteredPurchases,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+        }
+
+        [HttpPost]
+        public ActionResult GetAllPurchases()
+        {
+            var allPurchases = new PurchaseDataService().GetAllPurchases();
+            return new JsonResult()
+            {
+                Data = allPurchases,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+        }
+
+        public bool AssignPurchase(int purchaseId)
+        {
+            var purchaserUserGuid = User.Identity.GetUserId();
+
+            var result = new PurchaseDataService().AssignPurchase(purchaseId, purchaserUserGuid);
+            return true;
         }
 
         private void FillViewBag()

@@ -10,6 +10,7 @@ namespace ErkoSMS.DataAccess.Model
     {
         public int PurchaseId { get; set; }
         public DateTime PurchaseStartDate { get; set; }
+        public DateTime? PurchaseCloseDate { get; set; }
         public PurchaseState PurchaseState { get; set; }
         public int SupplierId { get; set; }
         public string PurchaserUserGuid { get; set; }
