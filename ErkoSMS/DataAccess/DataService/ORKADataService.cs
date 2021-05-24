@@ -36,7 +36,7 @@ namespace ErkoSMS.DataAccess
         {
             const string query = "SELECT sm.stokkodu, sm.kalanmiktar, ss.fiyat FROM dbo.[STOK_MIZAN] sm " +
                                 "join dbo.STK_STOKSATIR ss on sm.stokkodu = ss.stokkodu " +
-                                "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) AND sm.stokkodu = @stokkodu";
+                                "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) AND lower(sm.stokkodu) = lower(@stokkodu)";
             _sqliteDataProvider.AddParameter("@stokkodu", stockCode);
             var row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
             return row != null ? CreateStockObject(row) : null;

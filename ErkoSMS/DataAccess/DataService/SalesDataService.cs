@@ -160,7 +160,7 @@ namespace ErkoSMS.DataAccess
         public int GetReservedCountyProductId(int productId)
         {
             const string query = "SELECT quantity From sales s join sales_product sd on s.id = sd.salesid  " +
-                                 "Where s.state != @salesState and sd.productid = @productId";
+                                 "Where s.state != @salesState and lower(sd.productid) = lower(@productId)";
             _sqliteDataProvider.AddParameter("@salesState", SalesState.InvoiceDoneAndPacked);
             _sqliteDataProvider.AddParameter("@productid", productId);
             var dataSet = _sqliteDataProvider.ExecuteDataSet(query);

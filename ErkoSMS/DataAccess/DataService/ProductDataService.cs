@@ -40,7 +40,7 @@ namespace ErkoSMS.DataAccess
 
         public Product GetProductByCode(string productCode)
         {
-            const string query = "Select * From products Where code = @productCode";
+            const string query = "Select * From products Where lower(code) = lower(@productCode)";
             _sqliteDataProvider.AddParameter("@productCode", productCode);
             DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
             return row != null ? CreateProduct(row) : null;
