@@ -18,15 +18,15 @@
         <div class="row">
             <div class="form-group col-md-4">
                 <label>Müşteri:</label>
-                @Html.DropDownListFor(x => x.CustomerId, customers, new { id = "customerdropdown", @class = "chosen-select form-control" })
+                @Html.DropDownListFor(x => x.CustomerId, customers, new { id = "updateOrderCustomerDropdown", @class = "chosen-select form-control" })
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>Durum:</label>
-                @Html.EnumDropDownListFor(x => x.State, new { id = "statedropdown", @class = "chosen-select form-control", style = "width:auto" })
+                @Html.EnumDropDownListFor(x => x.State, new { id = "updateOrderStateDropdown", @class = "chosen-select form-control", style = "width:auto" })
             </div>
-            <div class="form-group col-md-1">
+            <div class="form-group col-md-1" style="margin-left:75px">
                 <label>Kur:</label>
-                @Html.EnumDropDownListFor(x => x.Currency, new { id = "currencydropdown", @class = "chosen-select form-control", style = "width:auto" })
+                @Html.EnumDropDownListFor(x => x.Currency, new { id = "updateOrderCurrencyDropdown", @class = "chosen-select form-control", style = "width:auto" })
             </div>
         </div>
 
@@ -39,42 +39,25 @@
                 @Html.LabelFor(model => model.InvoiceDate)
                 @Html.TextBoxFor(model => model.InvoiceDate, new { Name = "InvoiceDate", @class = "form-control datepicker", placeholder = "Enter Drop-off date here..." })
             </div>
-        </div><div class="orderRow" style="overflow: hidden;">
+        </div>
+        <div id="products" style="overflow: hidden;">
             <h4> Ürünler</h4>
             <hr style="margin: 10px 0;" />
-            @if (Model.OrderLines.Any() == false)
-            {
-                <span> Satışa ekli bir ürün bulunmamaktadır</span>
-            }
+            <div class="row">
+                <div class="clearfix">
+                    <button type="button" id="addOrderLineButton" class="btn btn-primary pull-right" style="margin-right:15px">
+                        <span class="glyphicon glyphicon-plus"></span> Yeni Ürün Ekle
+                    </button>
+                </div>
+            </div>
+
+            <span id="noProductInfo" style="display:@(Model.OrderLines.Any() ? "none": "block" )"> Satışa ekli bir ürün bulunmamaktadır</span>
+
 
             @foreach (var orderLine in Model.OrderLines)
             {
 
-                <div class="row form-group-sm" style="padding-top: 5px;">
-                    <div class="col-md-2">
-                        @Html.LabelFor(x => orderLine.ProductCode)
-                        @Html.TextBoxFor(x => orderLine.ProductCode, new { @class = "form-control productCode", Name = "OrderLines[].ProductCode", @id = Guid.NewGuid(), style = "display:inline-block", @readonly = "true" })
-                    </div>
-                    <div class="col-md-3">
-                        @Html.LabelFor(x => orderLine.ProductDescription)
-                        @Html.TextAreaFor(x => orderLine.ProductDescription, new { @class = "form-control productDescription", Name = "OrderLines[].ProductDescription", @readonly = "true" })
-                    </div>
-
-                    <div class="col-md-2">
-                        @Html.LabelFor(x => orderLine.UnitPrice)
-                        @Html.TextBoxFor(x => orderLine.UnitPrice, new { @class = "form-control unitPrice", Name = "OrderLines[].UnitPrice", id = "UnitPriceTextBox", style = "display:inline-block", @readonly = "true" })
-                    </div>
-
-                    <div class="col-md-1">
-                        @Html.LabelFor(x => orderLine.Quantity)
-                        @Html.TextBoxFor(x => orderLine.Quantity, new { @class = "form-control quantity", Name = "OrderLines[].Quantity", id = "QuantityTextBox", style = "display:inline-block", @readonly = "true" })
-                    </div>
-
-                    <div class="col-md-2">
-                        @Html.LabelFor(x => orderLine.TotalPrice)
-                        @Html.TextBoxFor(x => orderLine.TotalPrice, new { @class = "form-control totalPrice", Name = "OrderLines[].TotalPrice", id = "TotalPriceTextBox", style = "display:inline-block", @readonly = "true" })
-                    </div>
-                </div>
+                @Html.Action("OrderRow", "Order", new { orderLine })
             }
         </div>
         <input type="submit" class="btn btn-primary pull-right" value="Güncelle" />
@@ -83,21 +66,66 @@
 </div>
 
 <script>
-
     $('.datepicker').datepicker({ dateFormat: 'dd.mm.yy' }); //Initialise any date pickers
-    $('#customerdropdown').select2({ placeholder: "Müşteri Seçin" });
-    $('#currencydropdown').select2({ placeholder: "Kur Seçin" });
-    $('#statedropdown').select2({ placeholder: "Durum Seçin" });
+    $('#updateOrderCustomerDropdown').select2({ placeholder: "Müşteri Seçin", dropdownParent: $('.vex') });
+    $('#updateOrderCurrencyDropdown').select2({ placeholder: "Kur Seçin", dropdownParent: $('.vex') });
+    $('#updateOrderStateDropdown').select2({ placeholder: "Durum Seçin", dropdownParent: $('.vex') });
 
-    $("#UpdateOrderForm").on("ajax-form:succeed", function (ev, data) {
-        var tg = $(ev.currentTarget);
-        closeParentVexModal(tg);
+    var InitializeScriptsForButtons = function () {
+        $('.stockButton').off().on('click', function (e) {
+            var productCode = e.currentTarget.parentNode.parentNode.querySelector('.productCode').value;
+            ERKOSMS.AjaxAction("GetStockInformationByProductCode?productCode=" + productCode, {}, false).then(function (data) {
+                e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').value = data;
+                e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').readOnly = true;
+            });
+            ERKOSMS.AjaxAction("GetLatestPriceForProductCode?productCode=" + productCode, {}, false).then(function (data) {
+                e.currentTarget.parentNode.parentNode.querySelector('.stockPrice').value = data;
+                e.currentTarget.parentNode.parentNode.querySelector('.stockPrice').readOnly = true;
+            });
+            ERKOSMS.AjaxAction("GetProductDescriptionByProductCode?productCode=" + productCode, {}, false).then(function (data) {
+                e.currentTarget.parentNode.parentNode.querySelector('.productDescription').value = data;
+                e.currentTarget.parentNode.parentNode.querySelector('.productDescription').readOnly = true;
+            });
+        });
+        $('.calculatePriceButton').off().on('click', function (e) {
+            var quantity = e.currentTarget.parentNode.parentNode.querySelector('.quantity').value;
+            var unitPrice = e.currentTarget.parentNode.parentNode.querySelector('.unitPrice').value;
+            e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').value = quantity * unitPrice;
+            e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').readOnly = true;
+        });
+
+        $("#UpdateOrderForm").off().on("click", ".orderRowDeleteButton", function () {
+            debugger;
+            $(this).closest('.orderRow').remove();
+            if ($(".orderRow").length === 0) {
+                $("#noProductInfo").show();
+            }
+        });
+
+        $("#UpdateOrderForm").on("ajax-form:succeed", function (ev, data) {
+            var tg = $(ev.currentTarget);
+            closeParentVexModal(tg);
+            $("#getAllSales").click();
+        });
+    }
+
+    $(function () {
+
+        InitializeScriptsForButtons();
+       
+        var orderRowTemplate = '@Html.Template("OrderRow", null)';
+        var addOrderRow = function () {
+            var html = $($.parseHTML(orderRowTemplate));
+            html.appendTo($("#products"));
+            InitializeScriptsForButtons();
+            $("#noProductInfo").hide();
+        }
+
+    $("#addOrderLineButton")
+        .on('click', addOrderRow);
+
+
     });
 
-    $("#UpdateOrderForm").on("ajax-form:succeed", function (ev, data) {
-        var tg = $(ev.currentTarget);
-        closeParentVexModal(tg);
-        $("#getAllSales").click();
-    });
 
 </script>

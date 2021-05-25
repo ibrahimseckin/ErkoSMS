@@ -19,6 +19,11 @@ namespace ErkoSMS.Controllers
             return ListOrder();
         }
 
+        public ActionResult OrderRow(OrderLine orderLine)
+        {
+            return PartialView(orderLine);
+        }
+
         [HttpGet]
         public ActionResult GetAllSales()
         {
@@ -61,7 +66,7 @@ namespace ErkoSMS.Controllers
         {
             FillViewBag();
 
-            var orderViewModel = new OrderViewModel {OrderLines = new List<OrderLine>(), InvoiceDate = DateTime.Now};
+            var orderViewModel = new OrderViewModel { OrderLines = new List<OrderLine>(), InvoiceDate = DateTime.Now };
             return View(orderViewModel);
         }
 
@@ -143,7 +148,7 @@ namespace ErkoSMS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult UpdateOrder (OrderViewModel order)
+        public ActionResult UpdateOrder(OrderViewModel order)
         {
             var salesDataService = new SalesDataService();
             var sales = new Sales
@@ -154,7 +159,16 @@ namespace ErkoSMS.Controllers
                 SalesState = order.State,
                 InvoiceDate = order.InvoiceDate,
                 Currency = order.Currency,
-                LastModifiedDate = DateTime.Now
+                LastModifiedDate = DateTime.Now,
+                SalesDetails = order.OrderLines?.Select(x => new SalesDetail()
+                {
+                    ProductCode = x.ProductCode,
+                    Quantity = x.Quantity,
+                    ProductDescription = x.ProductDescription,
+                    SalesId = order.OrderId,
+                    UnitPrice = x.UnitPrice
+                })?.ToList() ?? new List<SalesDetail>(),
+                TotalPrice = order.OrderLines?.Sum(x => x.TotalPrice) ?? 0
             };
             salesDataService.UpdateOrder(sales);
             return Json(new AjaxResult(true));

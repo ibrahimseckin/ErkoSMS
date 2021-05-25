@@ -9,7 +9,7 @@
         </div>
         <div class="col-md-3">
             <label>Ürün</label>
-            <textarea class="form-control productDescription" style="width:-webkit-fill-available" />
+            @Html.TextAreaFor(x => x.ProductDescription, new { @class = "form-control productDescription", Name = "OrderLines[].ProductDescription", @id = Guid.NewGuid(), @readonly = "true" })
         </div>
 
         <div class="col-md-1">
@@ -31,17 +31,17 @@
     <div class="row">
         <div class="col-md-2">
             @Html.LabelFor(x => x.UnitPrice)
-            @Html.TextBoxFor(x => x.UnitPrice, new { @class = "form-control unitPrice", Name = "OrderLines[].UnitPrice", id = "UnitPriceTextBox", style = "display:inline-block" })
+            @Html.TextBoxFor(x => x.UnitPrice, new { @class = "form-control unitPrice", Name = "OrderLines[].UnitPrice", @id = Guid.NewGuid(), style = "display:inline-block" })
         </div>
 
         <div class="col-md-1">
             @Html.LabelFor(x => x.Quantity)
-            @Html.TextBoxFor(x => x.Quantity, new { @class = "form-control quantity", Name = "OrderLines[].Quantity", id = "QuantityTextBox", style = "display:inline-block" })
+            @Html.TextBoxFor(x => x.Quantity, new { @class = "form-control quantity", Name = "OrderLines[].Quantity", @id = Guid.NewGuid(), style = "display:inline-block" })
         </div>
 
         <div class="col-md-2">
             @Html.LabelFor(x => x.TotalPrice)
-            @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", Name = "OrderLines[].TotalPrice", id = "TotalPriceTextBox", style = "display:inline-block" })
+            @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", Name = "OrderLines[].TotalPrice", @id = Guid.NewGuid(), style = "display:inline-block" })
         </div>
 
 

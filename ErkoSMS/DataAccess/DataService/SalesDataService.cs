@@ -111,7 +111,7 @@ namespace ErkoSMS.DataAccess
             string query = "Insert into Sales (CustomerName,SalesPeople,TotalPrice,Currency,State,InvoiceNumber,InvoiceDate,StartDate) values (@customerName,@salesPeopleGuid," +
                 "@totalPrice,@currency,@state,@invoiceNumber,@invoiceDate,@salesStartDate);";
             query += Environment.NewLine + "SELECT LAST_INSERT_ROWID();";
-            _sqliteDataProvider.AddParameter("@customerName",sales.Customer.Name);
+            _sqliteDataProvider.AddParameter("@customerName", sales.Customer.Name);
             _sqliteDataProvider.AddParameter("@salesPeopleGuid", sales.SalesUserGuid);
             _sqliteDataProvider.AddParameter("@totalPrice", sales.TotalPrice);
             _sqliteDataProvider.AddParameter("@currency", sales.Currency);
@@ -120,32 +120,58 @@ namespace ErkoSMS.DataAccess
             _sqliteDataProvider.AddParameter("@invoiceDate", sales.InvoiceDate);
             _sqliteDataProvider.AddParameter("@salesStartDate", DateTime.Now);
 
-            var salesId = _sqliteDataProvider.ExecuteScalar(query);
+            var salesId = Convert.ToInt32(_sqliteDataProvider.ExecuteScalar(query));
             foreach (var salesDetail in sales.SalesDetails)
             {
-                string salesDetailQuery = "Insert into Sales_Product (SalesId,ProductId,Quantity,UnitPrice) values (@salesid,@productid," +
-                "@quantity,@unitprice);";
-                _sqliteDataProvider.AddParameter("@salesid", salesId);
-                var productId = new ProductDataService().GetProductByCode(salesDetail.ProductCode).Id;
-                _sqliteDataProvider.AddParameter("@productid", productId);
-                _sqliteDataProvider.AddParameter("@quantity", salesDetail.Quantity);
-                _sqliteDataProvider.AddParameter("@unitprice", salesDetail.UnitPrice);
-                _sqliteDataProvider.ExecuteScalar(salesDetailQuery);
+                CreateSalesDetails(salesDetail, salesId);
+
             }
 
-            return Convert.ToInt32(salesId);
+            return salesId;
         }
 
-        public bool UpdateOrder(Sales sales)
+
+        private void CreateSalesDetails(SalesDetail salesDetail, int salesId)
         {
-            string query = "Update Sales Set CustomerName = @customerName, State = @state, InvoiceNumber = @invoiceNumber, InvoiceDate = @invoiceDate, Currency = @currency, LastModifiedDate = @lastModifiedDate where id= @id;";
+            string salesDetailQuery = "Insert into Sales_Product (SalesId,ProductId,Quantity,UnitPrice) values (@salesid,@productid," +
+               "@quantity,@unitprice);";
+            _sqliteDataProvider.AddParameter("@salesid", salesId);
+            var productId = new ProductDataService().GetProductByCode(salesDetail.ProductCode).Id;
+            _sqliteDataProvider.AddParameter("@productid", productId);
+            _sqliteDataProvider.AddParameter("@quantity", salesDetail.Quantity);
+            _sqliteDataProvider.AddParameter("@unitprice", salesDetail.UnitPrice);
+            _sqliteDataProvider.ExecuteScalar(salesDetailQuery);
+        }
+
+
+        public void UpdateOrder(Sales sales)
+        {
+            string query = "Update Sales Set CustomerName = @customerName, State = @state, InvoiceNumber = @invoiceNumber, InvoiceDate = @invoiceDate, Currency = @currency, TotalPrice = @totalPrice,  LastModifiedDate = @lastModifiedDate where id= @id;";
             _sqliteDataProvider.AddParameter("@id", sales.Id);
             _sqliteDataProvider.AddParameter("@customerName", sales.Customer.Name);
             _sqliteDataProvider.AddParameter("@state", sales.SalesState);
             _sqliteDataProvider.AddParameter("@invoiceNumber", sales.InvoiceNumber);
-            _sqliteDataProvider.AddParameter("@invoiceDate", sales.InvoiceDate); 
+            _sqliteDataProvider.AddParameter("@invoiceDate", sales.InvoiceDate);
             _sqliteDataProvider.AddParameter("@currency", sales.Currency);
+            _sqliteDataProvider.AddParameter("@totalPrice", sales.TotalPrice);
             _sqliteDataProvider.AddParameter("@lastModifiedDate", sales.LastModifiedDate);
+            _sqliteDataProvider.ExecuteNonQuery(query);
+
+
+            if (DeleteOrderDetails(sales.Id))
+            {
+                foreach (var salesDetail in sales.SalesDetails)
+                {
+                    CreateSalesDetails(salesDetail, sales.Id);
+                }
+            }
+
+        }
+
+        private bool DeleteOrderDetails(int salesId)
+        {
+            const string query = "Delete From Sales_Product Where SalesId = @salesId";
+            _sqliteDataProvider.AddParameter("@salesId", salesId);
             return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
         }
 
@@ -228,13 +254,13 @@ namespace ErkoSMS.DataAccess
             DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
             if (row == null)
             {
-                return new Customer {Name = customerName};
+                return new Customer { Name = customerName };
             }
             else
             {
                 return CreateCustomer(row);
             }
-            
+
         }
 
         private Customer CreateCustomer(DataRow row)
