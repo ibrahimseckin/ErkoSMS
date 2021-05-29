@@ -28,6 +28,7 @@ namespace ErkoSMS
                       "~/CustomContent/Scripts/base.js",
                       "~/Scripts/moment-with-locales.js",
                       "~/Scripts/select2.min.js",
+                      "~/Scripts/Chart.js",
                      "~/Scripts/jquery-ui-1.12.1.min.js",
                       "~/Scripts/DataTables/jquery.dataTables.min.js"));
 

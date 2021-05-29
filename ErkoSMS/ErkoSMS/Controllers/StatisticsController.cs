@@ -1,16 +1,20 @@
 ﻿using ErkoSMS.DataAccess;
+using ErkoSMS.DataAccess.Model;
 using ErkoSMS.ViewModels;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Mvc.Html;
 
 namespace ErkoSMS.Controllers
 {
     public class StatisticsController : Controller
     {
+
         // GET: Statistics
         public ActionResult OrderStatistics()
         {
@@ -97,6 +101,36 @@ namespace ErkoSMS.Controllers
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
+        }
+
+        public ActionResult GetOrderStatusOverviewStatistics(DateTime startDate, DateTime endDate)
+        {
+            var orderstatusOverviewViewModel = new OrderStatusOverviewViewModel();
+
+            var orderDataService = new SalesDataService();
+            var sales = orderDataService.GetSales(startDate, endDate);
+            var saleStates = EnumHelper.GetSelectList(typeof(SalesState));
+
+            var orderStatusGroup = sales.GroupBy(sale => sale.SalesState).
+                                Select(saleStateGroup => new { Status = saleStates.FirstOrDefault(saleState => saleState.Value == Convert.ToInt32(saleStateGroup.Key).ToString()).Text, Count = saleStateGroup.Count(), Color = GetRandomColor() })
+                                .ToList();
+
+            orderstatusOverviewViewModel.Labels = orderStatusGroup.Select(x => x.Status).ToList();
+            orderstatusOverviewViewModel.Data = orderStatusGroup.Select(x => x.Count).ToList();
+            orderstatusOverviewViewModel.BackgroundColors = orderStatusGroup.Select(x => x.Color).ToList();
+
+            return new JsonResult()
+            {
+                Data = orderstatusOverviewViewModel,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
+
+        private string GetRandomColor()
+        {
+            var rnd = new Random(Guid.NewGuid().GetHashCode());
+            return $"#{rnd.Next(256).ToString("X2")}{rnd.Next(256).ToString("X2")}{rnd.Next(256).ToString("X2")}";
         }
 
         public ActionResult GetProductStatistics(DateTime startDate, DateTime endDate)

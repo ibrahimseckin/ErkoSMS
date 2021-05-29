@@ -73,5 +73,44 @@ textarea {
 /*#endregion */
 
 .mt-10 {
-    margin-top:10px;
+    margin-top: 10px;
 }
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+#orderStatusPieChartLegend {
+    margin-top: 30px;
+    text-align: center;
+}
+
+    #orderStatusPieChartLegend ul {
+        list-style: none;
+        font-size: 12px;
+        line-height: 20px;
+        font-weight: bold;
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+    }
+
+        #orderStatusPieChartLegend ul li {
+            height: 24px;
+            text-align: left;
+            display: inline-block;
+            overflow-wrap: break-word;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            margin-left: 10px;
+        }
+
+            #orderStatusPieChartLegend ul li span {
+                display: inline-block;
+                height: 20px;
+                width: 50px;
+                vertical-align: middle;
+                margin-right: 10px;
+                border: 1px solid #777;
+            }

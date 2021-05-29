@@ -3,3 +3,98 @@
 }
 
 <h2>@ViewBag.Title</h2>
+
+<div id="filter" style="display: block;margin-top:20px;">
+    <div class="row ">
+        <div class="col-md-3 pull-left"> @Html.TextBox("StarDate", "", new { @class = "form-control datepicker", placeholder = "Sorgu Başlangıç Tarihi", id = "startDate" })</div>
+        <div class="col-md-3">@Html.TextBox("EndDate", "", new { @class = "form-control datepicker", placeholder = "Sorgu Bitiş Tarihi", id = "endDate" })</div>
+        <div class="col-md-3"><input type="button" id="searchButton" style="height:34px" value="Sorgula" /></div>
+    </div>
+</div>
+
+
+<div id="orderStatusPieChartContainer" class="mt-20">
+    <canvas id="orderStatusPieChart"></canvas>
+    <div id="orderStatusPieChartLegend"></div>
+</div>
+
+<script>
+    var pieChart;
+
+    var createChart = function (data) {
+        var tooltips = {
+            callbacks: {
+                label: function (tooltipItem, data) {
+                    var allData = data.datasets[tooltipItem.datasetIndex].data;
+                    var tooltipLabel = data.labels[tooltipItem.index];
+                    var tooltipData = allData[tooltipItem.index];
+                    var total = 0;
+                    for (var i in allData) {
+                        if (allData.hasOwnProperty(i)) {
+                            total += allData[i];
+                        }
+                    }
+                    var tooltipPercentage = parseFloat(((tooltipData / total) * 100).toFixed(2));
+                    return tooltipLabel + ': ' + tooltipData + ' (' + tooltipPercentage + '%)';
+                }
+            }
+        };
+
+        var pieOptions = {
+            animation: {
+                duration: 0
+            },
+            hover: {
+                animationDuration: 0,
+                mode: 'label'
+            },
+            legend: {
+                display: false,
+                position: 'bottom',
+                onClick: null,
+                labels: {
+                    display: true,
+                    fontStyle: 'bold',
+                    fontSize: 12
+                }
+            },
+            tooltips: tooltips,
+            cutoutPercentage: 0 // 50 for Doughnut, Make 0 for pie
+        };
+
+        if (pieChart)
+            pieChart.destroy();
+
+        pieChart = new window.Chart($('#orderStatusPieChart'),
+            {
+                type: 'pie',
+                data: {
+                    labels: data.Labels,
+                    datasets: [{ data: data.Data, backgroundColor: data.BackgroundColors }],
+
+                },
+                options: pieOptions
+            });
+        pieChart.update();
+        $('#orderStatusPieChartLegend').html(pieChart.generateLegend());
+
+    };
+
+    //$(document).ready(function () {
+    //    createChart();
+    //});
+
+
+    $("#searchButton").on("click", function () {
+
+        var startDate = window.moment($("#startDate").val(), "DD.MM.YYYY").format("YYYY-MM-DD");
+        var endDate = window.moment($("#endDate").val(), "DD.MM.YYYY").format("YYYY-MM-DD");
+
+        ERKOSMS.AjaxAction("GetOrderStatusOverviewStatistics?startdate=" + startDate + "&enddate=" + endDate, {}, false).then(function (data) {
+            createChart(data)
+        });
+    });
+
+
+
+</script>
