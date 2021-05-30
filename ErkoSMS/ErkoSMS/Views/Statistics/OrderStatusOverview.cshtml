@@ -6,8 +6,8 @@
 
 <div id="filter" style="display: block;margin-top:20px;">
     <div class="row ">
-        <div class="col-md-3 pull-left"> @Html.TextBox("StarDate", "", new { @class = "form-control datepicker", placeholder = "Sorgu Başlangıç Tarihi", id = "startDate" })</div>
-        <div class="col-md-3">@Html.TextBox("EndDate", "", new { @class = "form-control datepicker", placeholder = "Sorgu Bitiş Tarihi", id = "endDate" })</div>
+        <div class="col-md-3 pull-left"> @Html.TextBox("StarDate", "", new { @class = "form-control datepicker", placeholder = "Sorgu Başlangıç Tarihi", id = "startDate", autocomplete = "off" })</div>
+        <div class="col-md-3">@Html.TextBox("EndDate", "", new { @class = "form-control datepicker", placeholder = "Sorgu Bitiş Tarihi", id = "endDate", autocomplete = "off" })</div>
         <div class="col-md-3"><input type="button" id="searchButton" style="height:34px" value="Sorgula" /></div>
     </div>
 </div>
@@ -80,10 +80,6 @@
 
     };
 
-    //$(document).ready(function () {
-    //    createChart();
-    //});
-
 
     $("#searchButton").on("click", function () {
 
@@ -95,6 +91,9 @@
         });
     });
 
+    $(function () {
+        $('.datepicker').datepicker({ dateFormat: 'dd.mm.yy' }); //Initialise any date pickers
+    });
 
 
 </script>

@@ -666,7 +666,6 @@
     <Content Include="Views\Supplier\UpdateSupplier.cshtml" />
     <Content Include="Views\Purchase\CreatePurchase.cshtml" />
     <Content Include="Views\Purchase\ListPurchase.cshtml" />
-    <Content Include="Views\Statistics\OrderStatistics.cshtml" />
     <Content Include="Views\Statistics\SalesManStatistics.cshtml" />
     <Content Include="Views\Statistics\OrderStatusOverview.cshtml" />
     <Content Include="Views\Statistics\ProductHitList.cshtml" />

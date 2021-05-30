@@ -37,7 +37,6 @@ namespace ErkoSMS.Controllers
                      new LeftMenu(new LeftMenuItem("İstatistik", "", ""),
                         new List<LeftMenuItem>
                         {
-                            new LeftMenuItem("Satış İstatistikleri","Statistics","OrderStatistics"),
                             new LeftMenuItem("Satış Durum Genel Bakış","Statistics","OrderStatusOverview"),
                             new LeftMenuItem("Satış Personeli İstatistikleri","Statistics","SalesManStatistics"),
                             new LeftMenuItem("Ürün İstatistikleri","Statistics","ProductHitList"),
