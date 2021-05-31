@@ -30,7 +30,9 @@ namespace ErkoSMS
                       "~/Scripts/select2.min.js",
                       "~/Scripts/Chart.js",
                      "~/Scripts/jquery-ui-1.12.1.min.js",
-                      "~/Scripts/DataTables/jquery.dataTables.min.js"));
+                      "~/Scripts/DataTables/jquery.dataTables.min.js",
+                      "~/Scripts/DataTables/dataTables.buttons.min.js",
+                      "~/Scripts/DataTables/buttons.html5.min.js"));
 
 
             bundles.Add(new StyleBundle("~/Content/css").Include(

@@ -83,13 +83,11 @@
     });
 
     $('#listSalesButton').on('click', function () {
-        debugger;
         document.getElementById("listSalesDiv").style.display = "block";
     });
 
     $("#getAllSales").on("click",
         function () {
-            debugger;
             document.getElementById("SalesFilterForm").style.display = "none";
             destroyTable();
             ERKOSMS.AjaxAction("GetAllSales", {}, false).then(function (data) {
@@ -113,7 +111,16 @@
                         }
                     ],
                     data: data,
-                    sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
+                    sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
+                    buttons: [
+                        {
+                            extend: 'csv',
+                            charset: 'UTF-8',
+                            fieldSeparator: ';',
+                            bom: true,
+                            text: '<button type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-export"></span>Dışa Aktar</button ><br>'
+                        },
+                    ],
                     aaSorting: [], // Initial sorting
                     bInfo: true, // Info is not shown because the total count to show is not known
                     searching: true, // Disable searching TODO: Enable searching if necessary
@@ -217,7 +224,6 @@
     $('#configurationSaveButton').on('click', function () {
         document.getElementById("SalesFilterForm").style.display = "none";
         destroyTable();
-        debugger;
         var customerIds = $('#customerdropdown').val();
         var states = $('#statedropdown').val();
         var currencies = $('#currencydropdown').val();
@@ -248,7 +254,16 @@
                     }
                 ],
                 data: data,
-                sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
+                sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
+                buttons: [
+                    {
+                        extend: 'csv',
+                        charset: 'UTF-8',
+                        fieldSeparator: ';',
+                        bom: true,
+                        text: '<button type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-export"></span>Dışa Aktar</button ><br>'
+                    },
+                ],
                 aaSorting: [], // Initial sorting
                 bInfo: true, // Info is not shown because the total count to show is not known
                 searching: true, // Disable searching TODO: Enable searching if necessary
