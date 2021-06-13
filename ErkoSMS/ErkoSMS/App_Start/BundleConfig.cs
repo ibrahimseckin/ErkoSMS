@@ -30,9 +30,9 @@ namespace ErkoSMS
                       "~/Scripts/select2.min.js",
                       "~/Scripts/Chart.js",
                      "~/Scripts/jquery-ui-1.12.1.min.js",
-                      "~/Scripts/DataTables/jquery.dataTables.min.js",
-                      "~/Scripts/DataTables/dataTables.buttons.min.js",
-                      "~/Scripts/DataTables/buttons.html5.min.js"));
+                      "~/Scripts/DataTables/media/js/jquery.dataTables.min.js",
+                      "~/Scripts/DataTables/extensions/Buttons/js/dataTables.buttons.min.js",
+                      "~/Scripts/DataTables/extensions/Buttons/js/buttons.html5.min.js"));
 
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
@@ -43,7 +43,7 @@ namespace ErkoSMS
                       "~/CustomContent/Styles/vex-theme-metro.css",
                       "~/Content/css/select2.min.css",
                       "~/Content/themes/base/jquery-ui.min.css",
-                      "~/Content/DataTables/css/jquery.dataTables.min.css"));
+                      "~/Content/DataTables/media/css/jquery.dataTables.min.css"));
 
             bundles.Add(new StyleBundle("~/Content/login").Include(
                      "~/CustomContent/Styles/login.css",
