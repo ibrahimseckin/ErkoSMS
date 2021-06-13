@@ -29,11 +29,11 @@
             @Html.LabelFor(x => x.State)
             @Html.EnumDropDownListFor(x => x.State, new { id = "statedropdown", @class = "chosen-select form-control" })
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-5">
             @Html.LabelFor(x => x.SupplierId)
-            @Html.DropDownListFor(x => x.SupplierId, suppliers, new { id = "supplierdropdown", @class = "chosen-select form-control" })
+            @Html.DropDownList("suppliers", suppliers, "Tedarikçi seçin", new { id = "supplierdropdown", @class = "chosen-select form-control" })
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-2">
             <button type="button" id="getFilteredRecords" class="btn btn-primary pull-right">Filtrele</button>
         </div>
     </div>
@@ -49,7 +49,6 @@
 
     $('#purchaseTable').on('click', 'td.editor-edit', function (e) {
         e.preventDefault();
-        debugger;
         var rowToBeUpdated = $(this).closest('tr')[0];
         var purchaseId = rowToBeUpdated.cells[0].innerText;
         ERKOSMS.GetAjaxDialog("AssignPurchase?purchaseId=" + purchaseId, {}, false).then(function (data) {
@@ -75,7 +74,6 @@
         tb.empty();
     };
     var formatDate = function (date) {
-        debugger;
         if (date == null) {
             return '';
         }
@@ -85,7 +83,6 @@
 
     }
     var formatCurrency = function (data) {
-        debugger;
         if (data == 0) {
             return "TL";
         }
@@ -97,7 +94,6 @@
         }
     }
     var formatState = function (data) {
-        debugger;
         if (data == -1) {
             return "";
         }
@@ -124,7 +120,6 @@
                 supplierId: supplierId, state: state
             }
         }).then(function (data) {
-            debugger;
             var datatable = tb.DataTable({
                 autoWidth: true,
                 columns: [
