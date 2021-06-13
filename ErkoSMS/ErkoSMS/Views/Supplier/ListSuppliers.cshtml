@@ -36,11 +36,11 @@
             var datatable = tb.DataTable({
                 autoWidth: true,
                 columns: [
-                    { title: "Id", data: "SupplierId" },
-                    { title: "Tedarikçi", data: "Name" },
-                    { title: "Adres", data: "Address" },
-                    { title: "Ülke", data: "Country" },
-                    { title: "Telefon", data: "PhoneNumber" },
+                    { title: "Id", data: "SupplierId", className: "data" },
+                    { title: "Tedarikçi", data: "Name", className: "data" },
+                    { title: "Adres", data: "Address", className: "data" },
+                    { title: "Ülke", data: "Country", className: "data" },
+                    { title: "Telefon", data: "PhoneNumber", className: "data" },
                     {
                         data: null,
                         className: "dt-center editor-edit",
@@ -49,7 +49,23 @@
                     }
                 ],
                 data: data,
-                sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
+                sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
+                buttons: [
+                    {
+                        extend: 'csv',
+                        charset: 'UTF-8',
+                        fieldSeparator: ';',
+                        bom: true,
+                        text: '<button type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-export"></span>Dışa Aktar</button ><br>',
+                        exportOptions: {
+                            columns: ".data"
+                        },
+                        filename: function () {
+                            var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
+                            return "Tedarikçiler_" + dateNow;
+                        },
+                    },
+                ],
                 aaSorting: [], // Initial sorting
                 bInfo: true, // Info is not shown because the total count to show is not known
                 searching: true, // Disable searching TODO: Enable searching if necessary
@@ -70,7 +86,7 @@
         tb.empty();
     };
 
-    $("#ListAllSuppliersButton").on("click",listSuppliers);
+    $("#ListAllSuppliersButton").on("click", listSuppliers);
 
     listSuppliers();
 
