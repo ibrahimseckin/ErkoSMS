@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewBag.Title = "Satın Alma Listele/Güncelle";
 }
 
@@ -52,7 +52,7 @@
         debugger;
         var rowToBeUpdated = $(this).closest('tr')[0];
         var purchaseId = rowToBeUpdated.cells[0].innerText;
-        ERKOSMS.GetAjaxDialog("AssignPurchase?purchaseId=" + purchaseId, {}, false).then(function(data) {
+        ERKOSMS.GetAjaxDialog("AssignPurchase?purchaseId=" + purchaseId, {}, false).then(function (data) {
             vex.dialog.alert("Satın alma sana atandı. Bütün satınalmalarımı getir diyerek listede görebilirsin");
             getNonAssignedPurchases();
         });
@@ -62,7 +62,7 @@
         e.preventDefault();
         var rowToBeUpdated = $(this).closest('tr')[0];
         var purchaseId = rowToBeUpdated.cells[0].innerText;
-        ERKOSMS.GetAjaxDialog("UpdatePurchase?purchaseId=" + purchaseId, {}, false).then(function() {
+        ERKOSMS.GetAjaxDialog("UpdatePurchase?purchaseId=" + purchaseId, {}, false).then(function () {
         });
     });
 
@@ -183,7 +183,7 @@
                 { title: "Tutar", data: "TotalPrice" },
                 { title: "Kur", data: "Currency" },
                 { title: "Satış Elemanı", data: "SalesUserName" },
-                {title:"Süre(gün)", data:"ActiveTime"},
+                { title: "Süre(gün)", data: "ActiveTime" },
                 {
                     data: null,
                     className: "dt-center updateRecord",
@@ -228,13 +228,13 @@
             });
         });
     }
-    var getNonAssignedPurchases = function() {
+    var getNonAssignedPurchases = function () {
         return getPurchases("GetNonAssignedPurchases");
     }
-    var getPurchasesAssignedToMe = function() {
+    var getPurchasesAssignedToMe = function () {
         return getPurchases("GetPurchasesAssignedToMe");
     }
-    var getAllPurchases = function() {
+    var getAllPurchases = function () {
         return getPurchases("GetAllPurchases");
     }
 
