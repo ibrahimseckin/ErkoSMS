@@ -24,5 +24,7 @@ namespace ErkoSMS.DataAccess.Model
         public Currency Currency { get; set; }
         public double TotalPrice { get; set; }
         public IEnumerable<SalesDetail> SalesDetails { get; set; }
+
+        public double ExchangeRate { get; set; }
     }
 }
