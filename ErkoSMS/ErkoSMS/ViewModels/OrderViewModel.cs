@@ -1,4 +1,4 @@
-﻿using ErkoSMS.DataAccess.Model;
+using ErkoSMS.DataAccess.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -21,6 +21,7 @@ namespace ErkoSMS.ViewModels
             this.CustomerId = sales.Customer.Id;
             this.State = sales.SalesState;
             this.Currency = sales.Currency;
+            this.ExchangeRate = sales.ExchangeRate;
             this.OrderId = sales.Id;
             this.OrderLines = new List<OrderLine>();
             foreach (var salesDetail in sales.SalesDetails)
@@ -31,7 +32,7 @@ namespace ErkoSMS.ViewModels
                 var productDescription = salesDetail.ProductDescription;
                 OrderLines.Add(new OrderLine
                 {
-                    TotalPrice = quantity * unitPrice,
+                    TotalPrice = quantity * unitPrice * (Currency != Currency.Tl ? ExchangeRate : 1.0),
                     ProductCode = productCode,
                     Quantity = quantity,
                     UnitPrice = unitPrice,
@@ -42,6 +43,7 @@ namespace ErkoSMS.ViewModels
         public int OrderId { get; set; }
         public int CustomerId { get; set; }
         public Currency Currency { get; set; }
+        public double ExchangeRate { get; set; }
         public double TotalPrice { get; set; }
         public DateTime OrderDate { get; set; }
         public IList<OrderLine> OrderLines { get; set; }
@@ -64,7 +66,7 @@ namespace ErkoSMS.ViewModels
         public int StokQuantity { get; set; }
         [Display(Name = "Br.Fiyat")]
         public double UnitPrice { get; set; }
-        [Display(Name = "Top.Fiyat")]
+        [Display(Name = "Top.Fiyat (TL)")]
         public double TotalPrice { get; set; }
     }
 

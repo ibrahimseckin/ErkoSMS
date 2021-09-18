@@ -28,6 +28,10 @@
                 <label>Kur:</label>
                 @Html.EnumDropDownListFor(x => x.Currency, new { id = "updateOrderCurrencyDropdown", @class = "chosen-select form-control", style = "width:auto" })
             </div>
+            <div class="form-group col-md-2" id="exchangeRateDiv" style="display:none">
+                <label>Doviz Kuru:</label>
+                <input id="exchangeRate" type="number" name="ExchangeRate" step="0.0001" placeholder="0.0000" value="@Model.ExchangeRate" />
+            </div>
         </div>
 
         <div class="row">
@@ -88,9 +92,10 @@
             });
         });
         $('.calculatePriceButton').off().on('click', function (e) {
+            var exchangeRate = IsSelectedCurrencyDifferentThaTL() ? parseFloat($("#exchangeRate").val()) : 1;
             var quantity = e.currentTarget.parentNode.parentNode.querySelector('.quantity').value;
             var unitPrice = e.currentTarget.parentNode.parentNode.querySelector('.unitPrice').value;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').value = quantity * unitPrice;
+            e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').value = quantity * unitPrice * exchangeRate;
             e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').readOnly = true;
         });
 
@@ -107,12 +112,39 @@
             closeParentVexModal(tg);
             $("#getAllSales").click();
         });
+
+        $("#updateOrderCurrencyDropdown").on('change', function (ev, data) {
+            if (IsSelectedCurrencyDifferentThaTL()) {
+                $("#exchangeRateDiv").show();
+            }
+            else {
+                $("#exchangeRateDiv").hide();
+
+            }
+        });
+
+        var IsSelectedCurrencyDifferentThaTL = function() {
+            var selectedCurrency = $('#updateOrderCurrencyDropdown').select2('data')[0].text;
+            return selectedCurrency.toLowerCase() !== "tl";
+        }
+
+        $("#exchangeRate").on("change", function (ev, data) {
+            this.value = parseFloat(this.value).toFixed(4);
+        });
+
+
+        $("#exchangeRate").val(parseFloat($("#exchangeRate").val()).toFixed(4));
+
+
+        if (IsSelectedCurrencyDifferentThaTL()) {
+            $("#exchangeRateDiv").show();
+        }
     }
 
     $(function () {
 
         InitializeScriptsForButtons();
-       
+
         var orderRowTemplate = '@Html.Template("OrderRow", null)';
         var addOrderRow = function () {
             var html = $($.parseHTML(orderRowTemplate));

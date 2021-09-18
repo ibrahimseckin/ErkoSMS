@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -90,6 +90,7 @@ namespace ErkoSMS.Controllers
                 new ProductDataService().UpdateProductLatestPrice(productId, orderLine.UnitPrice);
             }
             sales.Currency = order.Currency;
+            sales.ExchangeRate = order.ExchangeRate;
             sales.Customer = new CustomerDataService().GetCustomerById(order.CustomerId);
             sales.SalesStartDate = DateTime.Now;
             sales.SalesUserGuid = User.Identity.GetUserId();
@@ -169,6 +170,7 @@ namespace ErkoSMS.Controllers
                 SalesState = order.State,
                 InvoiceDate = order.InvoiceDate,
                 Currency = order.Currency,
+                ExchangeRate = order.ExchangeRate,
                 LastModifiedDate = DateTime.Now,
                 SalesDetails = order.OrderLines?.Select(x => new SalesDetail()
                 {
