@@ -79,6 +79,22 @@
     </div>
 }
 
+@using (Html.BeginForm("Import", "Purchase", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "ImportPurchaseForm" }))
+{
+    <div id="importPurchaseDiv" style="display: block">
+        @Html.AntiForgeryToken()
+        <span class="btn btn-success" id="importButton" href="Purchase/Import" style="min-width: 200px;">
+            <span class="glyphicon glyphicon-plus"></span> Excel
+            <input type="file" name="excelfile" title=@if (Request.Browser.Browser == "IE" || Request.Browser.Browser == "InternetExplorer") { <text> "" </text>  } else { <text> " " </text> }
+                   accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+        </span>
+        <div class="clearfix">
+            <input id="saveProductsButton" type="submit" class="btn btn-primary pull-right" value="Ürünleri Kaydet" />
+        </div>
+        }
+    </div>
+}
+
 <script>
 
     $('#supplierdropdown').select2({ placeholder: "Tedarikçi Seçin" });
@@ -88,7 +104,7 @@
     $("#getProductInformationButton").on("click", function (e) {
         var productCode = e.currentTarget.parentNode.parentNode.querySelector('.productCode').value;
         ERKOSMS.AjaxAction("GetStockInformationByProductCode?productCode=" + productCode, {}, false).then(function (data) {
-            e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').value = data.RemainingAmount;
+            e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').value = data;
             e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').readOnly = true;
         });
         ERKOSMS.AjaxAction("GetProductDescriptionByProductCode?productCode=" + productCode, {}, false).then(function (data) {
@@ -106,6 +122,19 @@
 
     $("#CreatePurchaseForm").on('ajax-form:succeed', function () {
         vex.dialog.alert("Satın alma kaydedildi.");
+    });
+
+    $("#ImportPurchaseForm").on('ajax-form:succeed', function (ev, data) {
+        $("#ImportPurchaseForm").hide();
+
+        for (let i = 0; i < data.result.length; i++) {
+            document.getElementsByClassName("productCode")[i].value = data.result[i].ProductCode;
+            document.getElementsByClassName("productDescription")[i].value = data.result[i].ProductDescription;
+            document.getElementsByClassName("stockQuantity")[i].value = data.result[i].StokQuantity;
+            document.getElementsByClassName("unitPrice")[i].value = data.result[i].UnitPrice;
+            document.getElementsByClassName("quantity")[i].value = data.result[i].Quantity;
+            document.getElementsByClassName("totalPrice")[i].value = data.result[i].TotalPrice;
+        }
     });
 
 </script>

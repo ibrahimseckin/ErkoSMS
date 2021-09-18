@@ -63,7 +63,7 @@
         @Html.AntiForgeryToken()
         <span class="btn btn-success" id="importButton" href="Order/Import" style="min-width: 200px;">
             <span class="glyphicon glyphicon-plus"></span> Excel
-            <input type="file" name="excelfile" id="restoreFileUpload" title=@if (Request.Browser.Browser == "IE" || Request.Browser.Browser == "InternetExplorer") { <text> "" </text>  } else { <text> " " </text> }
+            <input type="file" name="excelfile" title=@if (Request.Browser.Browser == "IE" || Request.Browser.Browser == "InternetExplorer") { <text> "" </text>  } else { <text> " " </text> }
                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
         </span>
         <div class="clearfix">
@@ -72,13 +72,6 @@
         }
     </div>
 }
-
-<div id="importedProductsDiv">
-</div>
-<div id="summaryDiv">
-
-</div>
-
 
 <script>
     $('.datepicker').datepicker({dateFormat: 'dd.mm.yy'}); //Initialise any date pickers
