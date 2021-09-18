@@ -43,6 +43,10 @@
             @Html.LabelFor(x => x.TotalPrice)
             @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", Name = "OrderLines[].TotalPrice", @id = Guid.NewGuid(), style = "display:inline-block" })
         </div>
+        <div class="col-md-2">
+            @Html.LabelFor(x => x.TotalPriceTL)
+            @Html.TextBoxFor(x => x.TotalPriceTL, new { @class = "form-control totalPriceTL", Name = "OrderLines[].TotalPriceTL", @id = Guid.NewGuid(), style = "display:inline-block" })
+        </div>
 
 
         <div class="col-md-2">

@@ -32,10 +32,10 @@ namespace ErkoSMS.Controllers
         public ActionResult GetAllSales()
         {
             var salesByPerson = new SalesDataService().GetSalesBySalesPerson(User.Identity.GetUserId());
-
+            var orderViewModel = salesByPerson.Select(x => new OrderViewModel(x));
             return new JsonResult()
             {
-                Data = salesByPerson,
+                Data = orderViewModel,
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = Int32.MaxValue
@@ -91,7 +91,7 @@ namespace ErkoSMS.Controllers
             }
             sales.Currency = order.Currency;
             sales.ExchangeRate = order.ExchangeRate;
-            sales.Customer = new CustomerDataService().GetCustomerById(order.CustomerId);
+            sales.Customer = order.Customer;
             sales.SalesStartDate = DateTime.Now;
             sales.SalesUserGuid = User.Identity.GetUserId();
             sales.SalesDetails = salesDetails;
@@ -165,7 +165,7 @@ namespace ErkoSMS.Controllers
             var sales = new Sales
             {
                 Id = order.OrderId,
-                Customer = new CustomerDataService().GetCustomerById(order.CustomerId),
+                Customer = new CustomerDataService().GetCustomerById(order.Customer.Id),
                 InvoiceNumber = order.InvoiceNumber,
                 SalesState = order.State,
                 InvoiceDate = order.InvoiceDate,
@@ -213,7 +213,7 @@ namespace ErkoSMS.Controllers
                         var product = new OrderLine();
                         for (int j = 1; j <= range.Columns.Count; j++)
                         {
-                            
+
                             //write the value to the console
                             if (range.Cells[i, j] != null && range.Cells[i, j].Value2 != null)
                             {
@@ -284,7 +284,7 @@ namespace ErkoSMS.Controllers
             }
             return new JsonResult()
             {
-                Data = filteredSales,
+                Data = filteredSales.Select(x => new OrderViewModel(x)),
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = Int32.MaxValue

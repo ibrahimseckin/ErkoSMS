@@ -112,7 +112,7 @@
                 var datatable = tb.DataTable({
                     autoWidth: true,
                     columns: [
-                        { title: "Id", data: "Id", className:"data" },
+                        { title: "Id", data: "OrderId", className: "data" },
                         { title: "Satış Başlangıç Tarihi", data: "SalesStartDate", className: "data" },
                         { title: "Fatura Tarihi", data: "InvoiceDate", className: "data" },
                         { title: "Fatura No", data: "InvoiceNumber", className: "data" },
@@ -120,6 +120,7 @@
                         { title: "Müşteri Ülkesi", data: "Customer.Country", className: "data" },
                         { title: "Tutar", data: "TotalPrice", className: "data" },
                         { title: "Kur", data: "Currency", className: "data" },
+                        { title: "Tutar(TL)", data: "TotalPriceTL", className: "data" },
                         { title: "Durum", data: "SalesState", className: "data" },
                         {
                             data: null,
@@ -168,7 +169,7 @@
                             render: formatCurrency
                         },
                         {
-                            targets: [8],
+                            targets: [9],
                             render: formatState
                         }
                     ]
@@ -268,7 +269,7 @@
             var datatable = tb.DataTable({
                 autoWidth: true,
                 columns: [
-                    { title: "Id", data: "Id", className: "data" },
+                    { title: "Id", data: "OrderId", className: "data" },
                     { title: "Satış Başlangıç Tarihi", data: "SalesStartDate", className: "data" },
                     { title: "Fatura Tarihi", data: "InvoiceDate", className: "data" },
                     { title: "Fatura No", data: "InvoiceNumber", className: "data" },
@@ -276,6 +277,7 @@
                     { title: "Müşteri Ülkesi", data: "Customer.Country", className: "data" },
                     { title: "Tutar", data: "TotalPrice", className: "data" },
                     { title: "Kur", data: "Currency", className: "data" },
+                    { title: "Tutar(TL)", data: "TotalPriceTL", className: "data" },
                     { title: "Durum", data: "SalesState", className: "data" },
                     {
                         data: null,
@@ -324,7 +326,7 @@
                         render: formatCurrency
                     },
                     {
-                        targets: [8],
+                        targets: [9],
                         render: formatState
                     }
                 ]

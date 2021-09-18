@@ -16,35 +16,42 @@ namespace ErkoSMS.ViewModels
         public OrderViewModel(Sales sales)
         {
             this.TotalPrice = sales.TotalPrice;
+            this.TotalPriceTL = sales.TotalPrice * (sales.Currency != Currency.Tl ? sales.ExchangeRate : 1.0);
             this.InvoiceNumber = sales.InvoiceNumber;
             this.InvoiceDate = sales.InvoiceDate.Value;
-            this.CustomerId = sales.Customer.Id;
+            this.Customer = sales.Customer;
             this.State = sales.SalesState;
             this.Currency = sales.Currency;
             this.ExchangeRate = sales.ExchangeRate;
             this.OrderId = sales.Id;
+            this.SalesState = sales.SalesState;
             this.OrderLines = new List<OrderLine>();
-            foreach (var salesDetail in sales.SalesDetails)
+            if (sales.SalesDetails != null)
             {
-                var productCode = salesDetail.ProductCode;
-                var quantity = salesDetail.Quantity;
-                var unitPrice = salesDetail.UnitPrice;
-                var productDescription = salesDetail.ProductDescription;
-                OrderLines.Add(new OrderLine
+                foreach (var salesDetail in sales.SalesDetails)
                 {
-                    TotalPrice = quantity * unitPrice * (Currency != Currency.Tl ? ExchangeRate : 1.0),
-                    ProductCode = productCode,
-                    Quantity = quantity,
-                    UnitPrice = unitPrice,
-                    ProductDescription = productDescription
-                });
+                    var productCode = salesDetail.ProductCode;
+                    var quantity = salesDetail.Quantity;
+                    var unitPrice = salesDetail.UnitPrice;
+                    var productDescription = salesDetail.ProductDescription;
+                    OrderLines.Add(new OrderLine
+                    {
+                        TotalPriceTL = quantity * unitPrice * (Currency != Currency.Tl ? ExchangeRate : 1.0),
+                        TotalPrice = quantity * unitPrice,
+                        ProductCode = productCode,
+                        Quantity = quantity,
+                        UnitPrice = unitPrice,
+                        ProductDescription = productDescription
+                    });
+                }
             }
         }
         public int OrderId { get; set; }
-        public int CustomerId { get; set; }
+        public Customer Customer { get; set; }
         public Currency Currency { get; set; }
         public double ExchangeRate { get; set; }
         public double TotalPrice { get; set; }
+        public double TotalPriceTL { get; set; }
         public DateTime OrderDate { get; set; }
         public IList<OrderLine> OrderLines { get; set; }
         public SalesState State { get; set; }
@@ -52,6 +59,7 @@ namespace ErkoSMS.ViewModels
         public string InvoiceNumber { get; set; }
         [Display(Name = "Fatura Tarihi:")]
         public DateTime InvoiceDate { get; set; }
+        public SalesState SalesState { get; set; }
     }
 
     public class OrderLine
@@ -66,8 +74,10 @@ namespace ErkoSMS.ViewModels
         public int StokQuantity { get; set; }
         [Display(Name = "Br.Fiyat")]
         public double UnitPrice { get; set; }
-        [Display(Name = "Top.Fiyat (TL)")]
+        [Display(Name = "Top.Fiyat")]
         public double TotalPrice { get; set; }
+        [Display(Name = "Top.Fiyat (TL)")]
+        public double TotalPriceTL { get; set; }
     }
 
 }
