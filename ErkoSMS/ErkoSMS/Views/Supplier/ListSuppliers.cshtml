@@ -26,6 +26,24 @@
         }
     });
 
+    $('#supplierTable').on('click', 'td.deleteSupplier', function (e) {
+        e.preventDefault();
+        var rowToBeDelleted = $(this).closest('tr')[0]
+        var supplierId = rowToBeDelleted.cells[0].innerText;
+        vex.dialog.confirm({
+            message: "Seçilen tedarikçi silinecektir. Emin misiniz? ",
+            callback: function (result) {
+                if (result) {
+                    ERKOSMS.AjaxAction("DeleteSupplier?supplierId=" + supplierId, {}, false).then(function () {
+                        rowToBeDelleted.remove();
+                    }), function (data) {
+                        ERKOSMS.ShowWarning(data);
+                    }
+                }
+            }
+        });
+    });
+
     $('#listSalesButton').on('click', function () {
         document.getElementById("listSalesDiv").style.display = "block";
     });
@@ -45,6 +63,12 @@
                         data: null,
                         className: "dt-center editor-edit",
                         defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                        orderable: false
+                    },
+                    {
+                        data: null,
+                        className: "dt-center deleteSupplier",
+                        defaultContent: '<span class="btn btn-danger"><span class="glyphicon glyphicon-pencil"></span>Sil</span>',
                         orderable: false
                     }
                 ],

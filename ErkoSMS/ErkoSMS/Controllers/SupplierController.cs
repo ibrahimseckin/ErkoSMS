@@ -89,5 +89,18 @@ namespace ErkoSMS.Controllers
             return Json(result ? new AjaxResult(true) : new AjaxResult(false));
         }
 
+        [HttpGet]
+        public ActionResult DeleteSupplier (int supplierId)
+        {
+            var result = new SupplierDataService().DeleteSupplier(supplierId);
+            return new JsonResult()
+            {
+                Data = result,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+
+        }
+
     }
 }

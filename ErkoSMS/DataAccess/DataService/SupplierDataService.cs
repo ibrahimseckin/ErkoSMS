@@ -74,5 +74,12 @@ namespace ErkoSMS.DataAccess
                 PhoneNumber = row["PhoneNumber"]?.ToString()
             };
         }
+
+        public bool DeleteSupplier(int supplierId)
+        {
+            const string query = "Delete From suppliers Where Id = @supplierId";
+            _sqliteDataProvider.AddParameter("@supplierId", supplierId);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
     }
 }
