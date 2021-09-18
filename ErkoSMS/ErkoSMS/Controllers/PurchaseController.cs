@@ -276,6 +276,18 @@ namespace ErkoSMS.Controllers
             return new JsonResult();
         }
 
+        [HttpGet]
+        public ActionResult DeletePurchase(int purchaseId)
+        {
+            var result = new PurchaseDataService().DeletePurchase(purchaseId);
+            return new JsonResult()
+            {
+                Data = result,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
+
         public bool AssignPurchase(int purchaseId)
         {
             var purchaserUserGuid = User.Identity.GetUserId();

@@ -106,6 +106,13 @@ namespace ErkoSMS.DataAccess
             return true;
         }
 
+        public bool DeletePurchase(int purchaseId)
+        {
+            const string query = "Delete From Purchases Where Id = @purchaseId";
+            _sqliteDataProvider.AddParameter("@purchaseId", purchaseId);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
+
         public bool AssignPurchase(int purchaseId, string purchaserUserGuid, PurchaseState purchaseState)
         {
             const string query = "Update Purchases " +

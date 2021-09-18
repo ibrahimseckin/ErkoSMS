@@ -62,6 +62,27 @@
         var rowToBeUpdated = $(this).closest('tr')[0];
         var purchaseId = rowToBeUpdated.cells[0].innerText;
         ERKOSMS.GetAjaxDialog("UpdatePurchase?purchaseId=" + purchaseId, {}, false).then(function () {
+            debugger;
+        });
+    });
+
+    $('#purchaseTable').on('click', 'td.deleteRecord', function (e) {
+        e.preventDefault();
+        debugger;
+        var rowToBeDeleted = $(this).closest('tr')[0]
+        var purchaseId = rowToBeDeleted.cells[0].innerText;
+        vex.dialog.confirm({
+            message: "Seçilen satın alma silinecektir. Emin misiniz? ",
+            callback: function (result) {
+                if (result) {
+                    debugger;
+                    ERKOSMS.AjaxAction("DeletePurchase?purchaseId=" + purchaseId, {}, false).then(function () {
+                        rowToBeDeleted.remove();
+                    }), function (data) {
+                        ERKOSMS.ShowWarning(data);
+                    }
+                }
+            }
         });
     });
 
@@ -133,8 +154,14 @@
                     { title: "Kur", data: "Currency" },
                     {
                         data: null,
-                        className: "dt-center editor-edit",
-                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                        className: "dt-center updateRecord",
+                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span>Güncelle</span>',
+                        orderable: false
+                    },
+                    {
+                        data: null,
+                        className: "dt-center deleteRecord",
+                        defaultContent: '<span class="btn btn-danger"><span class="glyphicon glyphicon-pencil"></span>Sil</span>',
                         orderable: false
                     }
                 ],
@@ -183,6 +210,12 @@
                     data: null,
                     className: "dt-center updateRecord",
                     defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span>Güncelle</span>',
+                    orderable: false
+                },
+                {
+                    data: null,
+                    className: "dt-center deleteRecord",
+                    defaultContent: '<span class="btn btn-danger"><span class="glyphicon glyphicon-pencil"></span>Sil</span>',
                     orderable: false
                 }
             ];
