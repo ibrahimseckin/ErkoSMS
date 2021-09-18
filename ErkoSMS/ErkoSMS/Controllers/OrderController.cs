@@ -289,6 +289,19 @@ namespace ErkoSMS.Controllers
             };
         }
 
+        [HttpGet]
+        public ActionResult DeleteOrder(int orderId)
+        {
+            var result = new SalesDataService().DeleteSales(orderId);
+            return new JsonResult()
+            {
+                Data = result,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+
+        }
+
         private void FillViewBag()
         {
             var allCustomers = new CustomerDataService().GetAllCustomers().ToList();

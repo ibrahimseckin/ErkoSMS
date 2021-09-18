@@ -68,14 +68,12 @@
 
     $('#purchaseTable').on('click', 'td.deleteRecord', function (e) {
         e.preventDefault();
-        debugger;
         var rowToBeDeleted = $(this).closest('tr')[0]
         var purchaseId = rowToBeDeleted.cells[0].innerText;
         vex.dialog.confirm({
             message: "Seçilen satın alma silinecektir. Emin misiniz? ",
             callback: function (result) {
                 if (result) {
-                    debugger;
                     ERKOSMS.AjaxAction("DeletePurchase?purchaseId=" + purchaseId, {}, false).then(function () {
                         rowToBeDeleted.remove();
                     }), function (data) {

@@ -82,6 +82,24 @@
         }
     });
 
+    $('#salesTable').on('click', 'td.deleteOrder', function (e) {
+        e.preventDefault();
+        var rowToBeDeleted = $(this).closest('tr')[0];
+        var orderId = rowToBeDeleted.cells[0].innerText;
+        vex.dialog.confirm({
+            message: "Seçilen satış silinecektir. Emin misiniz? ",
+            callback: function (result) {
+                if (result) {
+                    ERKOSMS.AjaxAction("DeleteOrder?orderId=" + orderId, {}, false).then(function () {
+                        rowToBeDeleted.remove();
+                    }), function (data) {
+                        ERKOSMS.ShowWarning(data);
+                    }
+                }
+            }
+        });
+    });
+
     $('#listSalesButton').on('click', function () {
         document.getElementById("listSalesDiv").style.display = "block";
     });
@@ -107,6 +125,12 @@
                             data: null,
                             className: "dt-center editor-edit",
                             defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                            orderable: false
+                        },
+                        {
+                            data: null,
+                            className: "dt-center deleteOrder",
+                            defaultContent: '<span class="btn btn-danger"><span class="glyphicon glyphicon-pencil"></span>Sil</span>',
                             orderable: false
                         }
                     ],
@@ -257,6 +281,12 @@
                         data: null,
                         className: "dt-center editor-edit",
                         defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                        orderable: false
+                    },
+                    {
+                        data: null,
+                        className: "dt-center deleteOrder",
+                        defaultContent: '<span class="btn btn-danger"><span class="glyphicon glyphicon-pencil"></span>Sil</span>',
                         orderable: false
                     }
                 ],

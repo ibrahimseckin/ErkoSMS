@@ -307,5 +307,12 @@ namespace ErkoSMS.DataAccess
                 Id = Id
             };
         }
+
+        public bool DeleteSales(int salesId)
+        {
+            const string query = "Delete From Sales Where Id = @salesId";
+            _sqliteDataProvider.AddParameter("@salesId", salesId);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
     }
 }
