@@ -115,6 +115,11 @@
             $("#getAllSales").click();
         });
 
+        $("#UpdateOrderForm").on("submit", function () {
+            $(".calculatePriceButton").click();
+            return true;
+        });
+
         $("#updateOrderCurrencyDropdown").on('change', function (ev, data) {
             if (IsSelectedCurrencyDifferentThaTL()) {
                 $("#exchangeRateDiv").show();
@@ -157,7 +162,6 @@
 
     $("#addOrderLineButton")
         .on('click', addOrderRow);
-
 
     });
 

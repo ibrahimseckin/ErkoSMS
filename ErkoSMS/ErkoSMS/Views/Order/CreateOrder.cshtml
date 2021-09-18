@@ -128,8 +128,10 @@
         vex.dialog.alert({unsafeMessage:data.result.Data});
     });
 
-    $("#CreateOrderForm").on('ajax-form:succeed', function (ev, data) {
-        vex.dialog.alert({unsafeMessage:data.result.Data});
+
+    $("#CreateOrderForm").on("submit", function () {
+        $(".calculatePriceButton").click();
+        return true;
     });
 
     $("#ImportProductsForm").on('ajax-form:succeed', function (ev, data) {

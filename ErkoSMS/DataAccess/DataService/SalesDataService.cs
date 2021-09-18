@@ -119,7 +119,7 @@ namespace ErkoSMS.DataAccess
             _sqliteDataProvider.AddParameter("@invoiceNumber", sales.InvoiceNumber);
             _sqliteDataProvider.AddParameter("@invoiceDate", sales.InvoiceDate);
             _sqliteDataProvider.AddParameter("@salesStartDate", DateTime.Now);
-            _sqliteDataProvider.AddParameter("@exchangeRate",sales.ExchangeRate);
+            _sqliteDataProvider.AddParameter("@exchangeRate", sales.ExchangeRate);
 
             var salesId = Convert.ToInt32(_sqliteDataProvider.ExecuteScalar(query));
             foreach (var salesDetail in sales.SalesDetails)
@@ -160,25 +160,21 @@ namespace ErkoSMS.DataAccess
             _sqliteDataProvider.AddParameter("@currency", sales.Currency);
             _sqliteDataProvider.AddParameter("@totalPrice", sales.TotalPrice);
             _sqliteDataProvider.AddParameter("@lastModifiedDate", sales.LastModifiedDate);
-            _sqliteDataProvider.AddParameter("@exchangeRate",sales.ExchangeRate);
+            _sqliteDataProvider.AddParameter("@exchangeRate", sales.ExchangeRate);
             _sqliteDataProvider.ExecuteNonQuery(query);
 
-
-            if (DeleteOrderDetails(sales.Id))
+            DeleteOrderDetails(sales.Id);
+            foreach (var salesDetail in sales.SalesDetails)
             {
-                foreach (var salesDetail in sales.SalesDetails)
-                {
-                    CreateSalesDetails(salesDetail, sales.Id);
-                }
+                CreateSalesDetails(salesDetail, sales.Id);
             }
-
         }
 
-        private bool DeleteOrderDetails(int salesId)
+        private void DeleteOrderDetails(int salesId)
         {
             const string query = "Delete From Sales_Product Where SalesId = @salesId";
             _sqliteDataProvider.AddParameter("@salesId", salesId);
-            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+            _sqliteDataProvider.ExecuteNonQuery(query);
         }
 
         public bool UpdateOrderState(int orderId, SalesState salesState)
