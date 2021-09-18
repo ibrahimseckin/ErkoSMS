@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
+using System.Web.SessionState;
 using ErkoSMS.DataAccess;
 using ErkoSMS.DataAccess.Model;
 using ErkoSMS.Objects;
 using ErkoSMS.ViewModels;
 using Microsoft.AspNet.Identity;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace ErkoSMS.Controllers
 {
     public class OrderController : Controller
     {
+        private static IList<OrderLine> _orderLine = new List<OrderLine>();
         public ActionResult Index()
         {
             return ListOrder();
@@ -143,10 +147,16 @@ namespace ErkoSMS.Controllers
                 orderDetail.ProductDescription = GetProductDescriptionByProductCode(orderDetail.ProductCode);
             }
             FillViewBag();
+
+            if (order.InvoiceDate.HasValue == false)
+            {
+                order.InvoiceDate = DateTime.MaxValue;
+            }
             return PartialView(new OrderViewModel(order));
         }
 
         [HttpPost]
+
         [ValidateAntiForgeryToken]
         public ActionResult UpdateOrder(OrderViewModel order)
         {
@@ -172,6 +182,79 @@ namespace ErkoSMS.Controllers
             };
             salesDataService.UpdateOrder(sales);
             return Json(new AjaxResult(true));
+        }
+
+        [HttpPost]
+        public ActionResult Import(HttpPostedFileBase excelfile)
+        {
+            if (excelfile.FileName.EndsWith("xls") || excelfile.FileName.EndsWith("xlsx") ||
+                excelfile.FileName.EndsWith("csv"))
+            {
+                string path = Server.MapPath("~/Content/" + excelfile.FileName);
+                excelfile.SaveAs(path);
+                // Read data from excel file
+
+                Excel.Application application = null;
+                Excel.Workbook workbook = null;
+                Excel.Worksheet worksheet = null;
+                Excel.Range range = null;
+                List<OrderLine> products = new List<OrderLine>();
+                try
+                {
+                    application = new Excel.Application();
+                    workbook = application.Workbooks.Open(path);
+                    worksheet = workbook.ActiveSheet;
+                    range = worksheet.UsedRange;
+
+                    for (int i = 2; i <= range.Rows.Count; i++)
+                    {
+                        var product = new OrderLine();
+                        for (int j = 1; j <= range.Columns.Count; j++)
+                        {
+                            
+                            //write the value to the console
+                            if (range.Cells[i, j] != null && range.Cells[i, j].Value2 != null)
+                            {
+                                if (j == 1)
+                                {
+                                    product.ProductCode = range.Cells[i, j].Value2;
+                                }
+                                else if (j == 2)
+                                {
+                                    product.Quantity = (int)range.Cells[i, j].Value2;
+                                }
+                                else if (j == 3)
+                                {
+                                    product.UnitPrice = Convert.ToDouble(range.Cells[i, j].Value2.ToString());
+                                }
+                            }
+                        }
+
+                        product.StokQuantity = GetStockInformationByProductCode(product.ProductCode);
+                        product.TotalPrice = product.UnitPrice * product.Quantity;
+                        product.ProductDescription = GetProductDescriptionByProductCode(product.ProductCode);
+                        products.Add(product);
+                    }
+                }
+                finally
+                {
+                    workbook.Close(0);
+                    application.Quit();
+
+                    if (range != null) Marshal.ReleaseComObject(range);
+                    if (worksheet != null) Marshal.ReleaseComObject(worksheet);
+                    if (workbook != null) Marshal.ReleaseComObject(workbook);
+                    if (application != null) Marshal.ReleaseComObject(application);
+                }
+                return new JsonResult
+                {
+                    Data = products,
+                    ContentType = "application/json",
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+            }
+            return new JsonResult();
         }
 
         [HttpPost]
