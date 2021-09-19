@@ -63,16 +63,17 @@
 
 @using (Html.BeginForm("Import", "Order", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "ImportProductsForm" }))
 {
-    <div id="importProductsDiv" style="display: block">
+    <div id="importProductsDiv" class="importProduct">
         @Html.AntiForgeryToken()
-        <span class="btn btn-success" id="importButton" href="Order/Import" style="min-width: 200px;">
+        <span class="btn btn-success" id="importButton" href="Order/Import" style="min-width: 250px;width: 250px">
             <span class="glyphicon glyphicon-plus"></span> Excel
-            <input type="file" name="excelfile" title=@if (Request.Browser.Browser == "IE" || Request.Browser.Browser == "InternetExplorer") { <text> "" </text>  } else { <text> " " </text> }
+            <input style="padding: 10px" type="file" name="excelfile" title=@if (Request.Browser.Browser == "IE" || Request.Browser.Browser == "InternetExplorer") { <text> "" </text>  } else { <text> " " </text> }
                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+            <input id="saveProductsButton" type="submit" class="btn btn-default" value="Ürünleri İçe Aktar" />
         </span>
-        <div class="clearfix">
+        @*<div class="clearfix">
             <input id="saveProductsButton" type="submit" class="btn btn-primary pull-right" value="Ürünleri Kaydet" />
-        </div>
+        </div>*@
     </div>
 }
 

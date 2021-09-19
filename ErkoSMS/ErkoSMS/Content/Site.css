@@ -114,3 +114,11 @@ textarea {
                 margin-right: 10px;
                 border: 1px solid #777;
             }
+
+.importProduct {
+    display: block;
+    width: 250px;
+    position: relative;
+    left: 934px;
+    bottom: 398px;
+}
