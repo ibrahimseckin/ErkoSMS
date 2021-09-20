@@ -113,8 +113,8 @@
                     autoWidth: true,
                     columns: [
                         { title: "Id", data: "OrderId", className: "data" },
-                        { title: "Satış Başlangıç Tarihi", data: "SalesStartDate", className: "data" },
-                        { title: "Fatura Tarihi", data: "InvoiceDate", className: "data" },
+                        { title: "Satış Başlangıç Tarihi", data: "SalesStartDate", className: "data", type: "date" },
+                        { title: "Fatura Tarihi", data: "InvoiceDate", className: "data", type: "date" },
                         { title: "Fatura No", data: "InvoiceNumber", className: "data" },
                         { title: "Müşteri", data: "Customer.Name", className: "data" },
                         { title: "Müşteri Ülkesi", data: "Customer.Country", className: "data" },
@@ -182,7 +182,7 @@
             return '';
         }
         else {
-            return window.moment(date).format("DD-MM-YYYY");
+            return window.moment(date).format("L");
         }
 
     }

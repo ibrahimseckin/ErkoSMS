@@ -60,7 +60,7 @@ namespace ErkoSMS.ViewModels
         [Display(Name = "Fatura No:")]
         public string InvoiceNumber { get; set; }
         [Display(Name = "Fatura Tarihi:")]
-        public DateTime InvoiceDate { get; set; }
+        public DateTime? InvoiceDate { get; set; }
         public DateTime SalesStartDate { get; set; }
         public SalesState SalesState { get; set; }
     }
