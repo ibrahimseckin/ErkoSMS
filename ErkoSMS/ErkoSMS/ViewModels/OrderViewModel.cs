@@ -18,7 +18,8 @@ namespace ErkoSMS.ViewModels
             this.TotalPrice = sales.TotalPrice;
             this.TotalPriceTL = sales.TotalPrice * (sales.Currency != Currency.Tl ? sales.ExchangeRate : 1.0);
             this.InvoiceNumber = sales.InvoiceNumber;
-            this.InvoiceDate = sales.InvoiceDate.Value;
+            if(sales.InvoiceDate.HasValue)
+                this.InvoiceDate = sales.InvoiceDate.Value;
             this.Customer = sales.Customer;
             this.State = sales.SalesState;
             this.Currency = sales.Currency;
