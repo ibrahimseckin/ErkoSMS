@@ -91,7 +91,7 @@ namespace ErkoSMS.Controllers
             }
             sales.Currency = order.Currency;
             sales.ExchangeRate = order.ExchangeRate;
-            sales.Customer = order.Customer;
+            sales.Customer = new CustomerDataService().GetCustomerById(order.Customer.Id);
             sales.SalesStartDate = DateTime.Now;
             sales.SalesUserGuid = User.Identity.GetUserId();
             sales.SalesDetails = salesDetails;

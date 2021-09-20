@@ -20,6 +20,7 @@ namespace ErkoSMS.ViewModels
             this.InvoiceNumber = sales.InvoiceNumber;
             if(sales.InvoiceDate.HasValue)
                 this.InvoiceDate = sales.InvoiceDate.Value;
+            this.SalesStartDate = sales.SalesStartDate;
             this.Customer = sales.Customer;
             this.State = sales.SalesState;
             this.Currency = sales.Currency;
@@ -60,6 +61,7 @@ namespace ErkoSMS.ViewModels
         public string InvoiceNumber { get; set; }
         [Display(Name = "Fatura Tarihi:")]
         public DateTime InvoiceDate { get; set; }
+        public DateTime SalesStartDate { get; set; }
         public SalesState SalesState { get; set; }
     }
 
