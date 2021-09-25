@@ -438,6 +438,7 @@
     <Content Include="Content\w3.css" />
     <Content Include="CustomContent\Scripts\Base.js" />
     <Content Include="CustomContent\Scripts\defaultComponentConfiguration.js" />
+    <Content Include="CustomContent\Styles\Layout.css" />
     <Content Include="CustomContent\Styles\Login.css" />
     <Content Include="CustomContent\Styles\vex-theme-metro.css" />
     <Content Include="favicon.ico" />

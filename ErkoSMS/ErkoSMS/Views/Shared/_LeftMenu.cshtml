@@ -16,7 +16,7 @@
                 var navLinkClassDropdown = nav.subMenuItems.Any(x => x.DisplayText == ViewBag.SelectedMenu) ? "w3-bar-item w3-button leftMenu w3-green" : "w3-bar-item w3-button leftMenu";
                 <button class="@navLinkClassDropdown">@nav.menuItem.DisplayText <i class="fa fa-caret-down"></i></button>
             }
-            <div class="w3-dropdown-content w3-bar-block">
+            <div class="w3-dropdown-content w3-bar-block w3-card-2">
                 @foreach (var submenu in nav.subMenuItems)
                 {
                     var navLinkClass = ViewBag.SelectedMenu == submenu.DisplayText ? "w3-bar-item w3-button leftMenu w3-green" : "w3-bar-item w3-button leftMenu";

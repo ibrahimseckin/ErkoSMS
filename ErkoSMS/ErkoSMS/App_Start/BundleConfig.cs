@@ -41,6 +41,7 @@ namespace ErkoSMS
                       "~/Content/w3.css",
                       "~/Content/vex/css/vex.css",
                       "~/CustomContent/Styles/vex-theme-metro.css",
+                      "~/CustomContent/Styles/Layout.css",
                       "~/Content/css/select2.min.css",
                       "~/Content/themes/base/jquery-ui.min.css",
                       "~/Content/DataTables/media/css/jquery.dataTables.min.css"));
