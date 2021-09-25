@@ -66,8 +66,8 @@ namespace ErkoSMS.DataAccess
             return new StockORKA
             {
                 Code = row["stokkodu"].ToString(),
-                RemainingAmount = Convert.ToInt32(row["kalanmiktar"].ToString()),
-                Price = Convert.ToDouble(row["fiyat"].ToString())
+                RemainingAmount = row.IsNull("kalanmiktar") ? -1 : Convert.ToInt32(row["kalanmiktar"].ToString()),
+                Price = row.IsNull("fiyat") ? -1 : Convert.ToDouble(row["fiyat"].ToString())
             };
         }
     }
