@@ -29,6 +29,8 @@ namespace ErkoSMS.Controllers
                 var productCode = new ProductDataService().GetProductById(reservedProductId).Code;
                 var reservedAmount = new SalesDataService().GetReservedCountyProductId(reservedProductId);
                 allStocks.First(x => x.Code == productCode).ReservedAmount = reservedAmount;
+                allStocks.First(x => x.Code == productCode).RemainingAmount =
+                    allStocks.First(x => x.Code == productCode).RemainingAmount - reservedAmount;
             }
 
             var orderedStocks = allStocks.OrderByDescending(x => x.ReservedAmount);
@@ -48,17 +50,17 @@ namespace ErkoSMS.Controllers
             var orkaDataService = new ORKADataService();
             var stocks = orkaDataService.GetStockByCodeWithWildCard(productCode).Select(x => new StockViewModel { Code = x.Code, Price = x.Price, RemainingAmount = x.RemainingAmount }).ToList();
 
-            var stockDataService = new StockDataService();
-            var reservedStocks = stockDataService.GetReservedStockByCodeWithWildCard(productCode);
+            var productIds = new ProductDataService().GetProductByCodeWithWildCard(productCode).Select(x => x.Id).ToList();
 
-            foreach (var reservedStock in reservedStocks)
+            foreach (var productId in productIds)
             {
-                var stock = stocks.FirstOrDefault(x => x.Code == reservedStock.Product.Code);
-                if (stock != null)
-                {
-                    stock.ReservedAmount = reservedStock.Reserved;
-                }
+                var code = new ProductDataService().GetProductById(productId).Code;
+                var reservedAmount = new SalesDataService().GetReservedCountyProductId(productId);
+                stocks.First(x => x.Code == code).ReservedAmount = reservedAmount;
+                stocks.First(x => x.Code == code).RemainingAmount =
+                    stocks.First(x => x.Code == code).RemainingAmount - reservedAmount;
             }
+
 
             return new JsonResult()
             {
