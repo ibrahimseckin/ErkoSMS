@@ -22,22 +22,20 @@ namespace ErkoSMS.Controllers
         {
             var orkaDataService = new ORKADataService();
             var allStocks = orkaDataService.GetAllStocks().Select(x => new StockViewModel { Code = x.Code, Price = x.Price, RemainingAmount = x.RemainingAmount }).ToList();
+            var reservedProductIds = new SalesDataService().GetAllProductsForActiveOrders();
 
-            var stockDataService = new StockDataService();
-            var reservedStocks = stockDataService.GetReservedStocks();
-
-            foreach (var reservedStock in reservedStocks)
+            foreach (var reservedProductId in reservedProductIds)
             {
-                var stock = allStocks.FirstOrDefault(x => x.Code == reservedStock.Product.Code);
-                if (stock != null)
-                {
-                    stock.ReservedAmount = reservedStock.Reserved;
-                }
+                var productCode = new ProductDataService().GetProductById(reservedProductId).Code;
+                var reservedAmount = new SalesDataService().GetReservedCountyProductId(reservedProductId);
+                allStocks.First(x => x.Code == productCode).ReservedAmount = reservedAmount;
             }
+
+            var orderedStocks = allStocks.OrderByDescending(x => x.ReservedAmount);
 
             return new JsonResult()
             {
-                Data = allStocks,
+                Data = orderedStocks,
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = Int32.MaxValue

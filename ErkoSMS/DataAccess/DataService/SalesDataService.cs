@@ -201,6 +201,21 @@ namespace ErkoSMS.DataAccess
             return reserved;
         }
 
+        public IList<int> GetAllProductsForActiveOrders()
+        {
+            const string query = "SELECT sd.ProductId as productid From sales s join sales_product sd on s.id = sd.salesid  " +
+                                 "Where s.state != @salesState";
+            _sqliteDataProvider.AddParameter("@salesState", SalesState.InvoiceDoneAndPacked);
+            var dataSet = _sqliteDataProvider.ExecuteDataSet(query);
+            var productIds = new List<int>();
+            foreach (DataRow row in dataSet.Tables[0].Rows)
+            {
+                 productIds.Add(Convert.ToInt32(row["productid"].ToString()));
+            }
+
+            return productIds;
+        }
+
         private Sales CreateSales(DataRow row)
         {
 
