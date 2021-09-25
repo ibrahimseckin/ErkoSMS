@@ -1,0 +1,20 @@
+﻿.w3-dropdown-content {
+    left: 100%;
+    top: 0;
+}
+
+.w3-sidebar {
+    overflow: visible;
+}
+
+#leftMenu {
+    width: 200px;
+}
+
+#mainContainer {
+    margin-left: 200px;
+}
+
+.erkosms-vex-dialog {
+    width: 600px !important;
+}
