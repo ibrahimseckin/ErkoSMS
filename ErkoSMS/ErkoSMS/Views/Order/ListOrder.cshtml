@@ -4,6 +4,7 @@
 
 <h2>@ViewBag.Title</h2>
 
+@using ErkoSMS.Enums
 @model OrderFilterParameters
 
 @{
@@ -13,54 +14,18 @@
 }
 
 <div id="listSalesDiv" style="display:block">
-    <div id="listSalesButtonDiv" style="margin-top:20px;">
-        <input type="button" id="searchButton" value="Satışları Filtrele" />
-        <input type="button" id="getAllSales" value="Bütün Satışları Getir" />
+    <div id="listSalesButtonDiv" style="margin-top: 20px;">
+        @if (User.IsInRole(UserTypes.Administrator.Name) || User.IsInRole(UserTypes.Purchaser.Name) || User.IsInRole(UserTypes.WareHouseMan.Name))
+        {
+            <input type="button" id="getAllActiveOrders" value="Aktif Satışları Getir" />
+            <input type="button" id="getAllOrders" value="Bütün Satışları Getir" />
+        }
+        else
+        {
+            <input type="button" id="getMyActiveOrders" value="Aktif Satışlarımı Getir" />
+            <input type="button" id="getMyOrders" value="Satışlarımı Getir" />
+        }
         <hr style="margin: 10px 0;" />
-    </div>
-
-    <div id="SalesFilterForm" style="display:none">
-        @Html.AntiForgeryToken()
-        <div class="row">
-            <div class="form-group col-md-6">
-                <div class="col-md-2">
-                    <label>Müşteri:</label>
-                </div>
-                <div class="col-md-10">
-                    @Html.DropDownListFor(x => x.Customers, customers, new { multiple = "multiple", id = "customerdropdown", @class = "chosen-select form-control" })
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                <div class="col-md-4">
-                    <label>Satış Durumu:</label>
-                </div>
-                <div class="col-md-8">
-                    @Html.DropDownListFor(x => x.State, salesState, new { multiple = "multiple", id = "statedropdown", @class = "chosen-select form-control" })
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <div class="col-md-2">
-                    <label>Kur:</label>
-                </div>
-                <div class="col-md-10">
-                    @Html.DropDownListFor(x => x.Currency, currencies, new { multiple = "multiple", id = "currencydropdown", @class = "chosen-select form-control" })
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                <div class="col-md-4">
-                    <label>Fatura No:</label>
-                </div>
-                <div class="col-md-8">
-                    @Html.TextBoxFor(x => x.InvoiceNumber, new { @class = "form-control", id = "invoiceTextbox", style = "display:inline-block" })
-                </div>
-            </div>
-        </div>
-
-        <div>
-            <button type="button" id="configurationSaveButton" class="btn btn-primary pull-right">Ara</button>
-        </div>
     </div>
 
     <div style="margin-top: 20px">
@@ -104,78 +69,112 @@
         document.getElementById("listSalesDiv").style.display = "block";
     });
 
-    $("#getAllSales").on("click",
-        function () {
-            document.getElementById("SalesFilterForm").style.display = "none";
-            destroyTable();
-            ERKOSMS.AjaxAction("GetAllSales", {}, false).then(function (data) {
-                var datatable = tb.DataTable({
-                    autoWidth: true,
-                    columns: [
-                        { title: "Id", data: "OrderId", className: "data" },
-                        { title: "Satış Başlangıç Tarihi", data: "SalesStartDate", className: "data", type: "date" },
-                        { title: "Fatura Tarihi", data: "InvoiceDate", className: "data", type: "date" },
-                        { title: "Fatura No", data: "InvoiceNumber", className: "data" },
-                        { title: "Müşteri", data: "Customer.Name", className: "data" },
-                        { title: "Müşteri Ülkesi", data: "Customer.Country", className: "data" },
-                        { title: "Tutar", data: "TotalPrice", className: "data" },
-                        { title: "Kur", data: "Currency", className: "data" },
-                        { title: "Tutar(TL)", data: "TotalPriceTL", className: "data" },
-                        { title: "Durum", data: "SalesState", className: "data" },
-                        {
-                            data: null,
-                            className: "dt-center editor-edit",
-                            defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
-                            orderable: false
+    var destroyTable = function () {
+        var tb = $("#salesTable");
+
+        if ($.fn.dataTable.isDataTable(tb))
+            tb.DataTable().destroy();
+
+        tb.empty();
+    };
+
+    function GetOrders(action) {
+        destroyTable();
+        var columns = [
+            { title: "Id", data: "OrderId", className: "data" },
+            { title: "Satış Başlangıç Tarihi", data: "SalesStartDate", className: "data", type: "date" },
+            { title: "Fatura Tarihi", data: "InvoiceDate", className: "data", type: "date" },
+            { title: "Fatura No", data: "InvoiceNumber", className: "data" },
+            { title: "Müşteri", data: "Customer.Name", className: "data" },
+            { title: "Müşteri Ülkesi", data: "Customer.Country", className: "data" },
+            { title: "Tutar", data: "TotalPrice", className: "data" },
+            { title: "Kur", data: "Currency", className: "data" },
+            { title: "Tutar(TL)", data: "TotalPriceTL", className: "data" },
+            { title: "Durum", data: "SalesState", className: "data" },
+            {
+                data: null,
+                className: "dt-center editor-edit",
+                defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                orderable: false
+            }
+        ];
+
+        if(@Json.Encode(User.IsInRole(UserTypes.Administrator.Name)))
+        {
+            columns.push({
+                data: null,
+                className: "dt-center deleteOrder",
+                defaultContent: '<span class="btn btn-danger"><span class="glyphicon glyphicon-pencil"></span>Sil</span>',
+                orderable: false
+            });
+        }
+
+        ERKOSMS.AjaxAction(action, {}, false).then(function (data) {
+            var datatable = tb.DataTable({
+                autoWidth: true,
+                columns: columns,
+                data: data,
+                sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
+                buttons: [
+                    {
+                        extend: 'csv',
+                        charset: 'UTF-8',
+                        fieldSeparator: ';',
+                        bom: true,
+                        text: '<button type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-export"></span>Dışa Aktar</button ><br>',
+                        exportOptions: {
+                            columns: ".data"
                         },
-                        {
-                            data: null,
-                            className: "dt-center deleteOrder",
-                            defaultContent: '<span class="btn btn-danger"><span class="glyphicon glyphicon-pencil"></span>Sil</span>',
-                            orderable: false
-                        }
-                    ],
-                    data: data,
-                    sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
-                    buttons: [
-                        {
-                            extend: 'csv',
-                            charset: 'UTF-8',
-                            fieldSeparator: ';',
-                            bom: true,
-                            text: '<button type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-export"></span>Dışa Aktar</button ><br>',
-                            exportOptions: {
-                                columns: ".data"
-                            },
-                            filename: function () {
-                                var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
-                                return "Satışlar_" + dateNow;
-                            },
+                        filename: function () {
+                            var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
+                            return "Satışlar_" + dateNow;
                         },
-                    ],
-                    aaSorting: [], // Initial sorting
-                    bInfo: true, // Info is not shown because the total count to show is not known
-                    searching: true, // Disable searching TODO: Enable searching if necessary
-                    paging: true, // Disable paging in outstanding
-                    pageLength: 50,
-                    deferRender: true,
-                    columnDefs: [
-                        {
-                            targets: [1, 2],
-                            render: formatDate
-                        },
-                        {
-                            targets: [7],
-                            render: formatCurrency
-                        },
-                        {
-                            targets: [9],
-                            render: formatState
-                        }
-                    ]
-                });
+                    },
+                ],
+                aaSorting: [], // Initial sorting
+                bInfo: true, // Info is not shown because the total count to show is not known
+                searching: true, // Disable searching TODO: Enable searching if necessary
+                paging: true, // Disable paging in outstanding
+                pageLength: 50,
+                deferRender: true,
+                columnDefs: [
+                    {
+                        targets: [1, 2],
+                        render: formatDate
+                    },
+                    {
+                        targets: [7],
+                        render: formatCurrency
+                    },
+                    {
+                        targets: [9],
+                        render: formatState
+                    }
+                ]
             });
         });
+    }
+
+
+    $("#getAllOrders").on("click", function () {
+        GetOrders("GetAllOrders");
+    }
+    );
+
+    $("#getAllActiveOrders").on("click", function () {
+            GetOrders("GetAllActiveOrders");
+        }
+    );
+
+    $("#getMyOrders").on("click", function() {
+            GetOrders("GetMyOrders");
+        }
+    );
+
+    $("#getMyActiveOrders").on("click", function() {
+            GetOrders("GetMyActiveOrders");
+        }
+    );
 
     var formatDate = function (date) {
         if (date == null) {
@@ -243,112 +242,6 @@
             return "Satın Alma Başarısız";
         }
     }
-
-    var destroyTable = function () {
-        var tb = $("#salesTable");
-
-        if ($.fn.dataTable.isDataTable(tb))
-            tb.DataTable().destroy();
-
-        tb.empty();
-    };
-
-    $('#configurationSaveButton').on('click', function () {
-        document.getElementById("SalesFilterForm").style.display = "none";
-        destroyTable();
-        var customerIds = $('#customerdropdown').val();
-        var states = $('#statedropdown').val();
-        var currencies = $('#currencydropdown').val();
-        var invoiceNo = $('#invoiceTextbox').val();
-        ERKOSMS.AjaxAction("GetFilteredSales", {
-            type: 'POST', data: {
-                customerIds: customerIds, states: states,
-                currencies: currencies, invoiceNo: invoiceNo
-            }
-        }).then(function (data) {
-            var datatable = tb.DataTable({
-                autoWidth: true,
-                columns: [
-                    { title: "Id", data: "OrderId", className: "data" },
-                    { title: "Satış Başlangıç Tarihi", data: "SalesStartDate", className: "data" },
-                    { title: "Fatura Tarihi", data: "InvoiceDate", className: "data" },
-                    { title: "Fatura No", data: "InvoiceNumber", className: "data" },
-                    { title: "Müşteri", data: "Customer.Name", className: "data" },
-                    { title: "Müşteri Ülkesi", data: "Customer.Country", className: "data" },
-                    { title: "Tutar", data: "TotalPrice", className: "data" },
-                    { title: "Kur", data: "Currency", className: "data" },
-                    { title: "Tutar(TL)", data: "TotalPriceTL", className: "data" },
-                    { title: "Durum", data: "SalesState", className: "data" },
-                    {
-                        data: null,
-                        className: "dt-center editor-edit",
-                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
-                        orderable: false
-                    },
-                    {
-                        data: null,
-                        className: "dt-center deleteOrder",
-                        defaultContent: '<span class="btn btn-danger"><span class="glyphicon glyphicon-pencil"></span>Sil</span>',
-                        orderable: false
-                    }
-                ],
-                data: data,
-                sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
-                buttons: [
-                    {
-                        extend: 'csv',
-                        charset: 'UTF-8',
-                        fieldSeparator: ';',
-                        bom: true,
-                        text: '<button type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-export"></span>Dışa Aktar</button ><br>',
-                        exportOptions: {
-                            columns: ".data"
-                        },
-                        filename: function () {
-                            var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
-                            return "Satışlar_" + dateNow;
-                        },
-                    },
-                ],
-                aaSorting: [], // Initial sorting
-                bInfo: true, // Info is not shown because the total count to show is not known
-                searching: true, // Disable searching TODO: Enable searching if necessary
-                paging: true, // Disable paging in outstanding
-                pageLength: 50,
-                deferRender: true,
-                columnDefs: [
-                    {
-                        targets: [1, 2],
-                        render: formatDate
-                    },
-                    {
-                        targets: [7],
-                        render: formatCurrency
-                    },
-                    {
-                        targets: [9],
-                        render: formatState
-                    }
-                ]
-            });
-        });
-    });
-
-    $('#searchButton').on('click', function () {
-
-        var visibility = document.getElementById("SalesFilterForm").style.display;
-        if (visibility === "none") {
-            document.getElementById("SalesFilterForm").style.display = "block";
-            $('#customerdropdown').select2({ placeholder: "Müşteri Seçin" });
-            $('#statedropdown').select2({ placeholder: "Durum Seçin" });
-            $('#currencydropdown').select2({ placeholder: "Kur Seçin" });
-        }
-        else {
-            document.getElementById("SalesFilterForm").style.display = "none";
-        }
-
-
-    });
 
 
 </script>

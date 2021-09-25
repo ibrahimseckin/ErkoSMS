@@ -33,6 +33,18 @@ namespace ErkoSMS.DataAccess
             return sales;
         }
 
+        public IList<Sales> GetAllSales()
+        {
+            const string query = "SELECT * From sales";
+            var dataSet = _sqliteDataProvider.ExecuteDataSet(query);
+            IList<Sales> sales = new List<Sales>();
+            foreach (DataRow row in dataSet.Tables[0].Rows)
+            {
+                sales.Add(CreateSales(row));
+            }
+
+            return sales;
+        }
 
         public IList<Sales> GetSales(DateTime startDate, DateTime endDate)
         {
@@ -229,7 +241,9 @@ namespace ErkoSMS.DataAccess
             var InvoiceDate = string.IsNullOrEmpty(row["InvoiceDate"].ToString()) ? (DateTime?)null : DateTime.Parse(row["InvoiceDate"].ToString());
             var InvoiceNumber = row["InvoiceNumber"]?.ToString();
             var LastModifiedDate = string.IsNullOrEmpty(row["lastmodifieddate"].ToString()) ? (DateTime?)null : DateTime.Parse(row["lastmodifieddate"].ToString());
-            var SalesStartDate = DateTime.Parse(row["startdate"].ToString());
+            var SalesStartDate = string.IsNullOrEmpty(row["startdate"].ToString())
+                ? DateTime.MinValue
+                : DateTime.Parse(row["startdate"].ToString());
             var SalesUserGuid = row["salespeople"]?.ToString();
             var ExchangeRate = DBNull.Value.Equals(row["ExchangeRate"]) ? 0.0 : Convert.ToDouble(row["ExchangeRate"]);
 

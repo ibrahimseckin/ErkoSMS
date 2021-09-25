@@ -29,10 +29,57 @@ namespace ErkoSMS.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetAllSales()
+        public ActionResult GetAllOrders()
         {
-            var salesByPerson = new SalesDataService().GetSalesBySalesPerson(User.Identity.GetUserId());
-            var orderViewModel = salesByPerson.Select(x => new OrderViewModel(x));
+            var allOrders = new SalesDataService().GetAllSales();
+            var orderedOrdersByTime = allOrders.OrderByDescending(x => x.SalesStartDate);
+            var orderViewModel = orderedOrdersByTime.Select(x => new OrderViewModel(x));
+            return new JsonResult()
+            {
+                Data = orderViewModel,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+        }
+
+        [HttpGet]
+        public ActionResult GetAllActiveOrders()
+        {
+            var allActiveOrders = new SalesDataService().GetAllSales().Where(x => x.SalesState != SalesState.InvoiceDoneAndPacked);
+            var orderedActiveOrders = allActiveOrders.OrderByDescending(x => x.SalesStartDate);
+            var orderViewModel = orderedActiveOrders.Select(x => new OrderViewModel(x));
+            return new JsonResult()
+            {
+                Data = orderViewModel,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+        }
+
+        [HttpGet]
+        public ActionResult GetMyOrders()
+        {
+            var myOrders = new SalesDataService().GetSalesBySalesPerson(User.Identity.GetUserId());
+            var myOrderedOrders = myOrders.OrderByDescending(x => x.SalesStartDate);
+            var orderViewModel = myOrderedOrders.Select(x => new OrderViewModel(x));
+            return new JsonResult()
+            {
+                Data = orderViewModel,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+        }
+
+        [HttpGet]
+        public ActionResult GetMyActiveOrders()
+        {
+            var myOrders = new SalesDataService().GetSalesBySalesPerson(User.Identity.GetUserId());
+            var myActiveOrders = myOrders.Where(x => x.SalesState != SalesState.InvoiceDoneAndPacked);
+            var myOrderedActiveOrders = myActiveOrders.OrderByDescending(x => x.SalesStartDate);
+            var orderViewModel = myOrderedActiveOrders.Select(x => new OrderViewModel(x));
             return new JsonResult()
             {
                 Data = orderViewModel,
