@@ -10,56 +10,69 @@
 @{
     var customers = (List<SelectListItem>)ViewBag.Customers;
 }
+<div class="row">
+    <div class="col-sm-12 col-lg-9">
 
-@using (Html.BeginForm("CreateOrder", "Order", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "CreateOrderForm" }))
-{
-    <div id="createSalesDiv" style="display:block">
-        @Html.AntiForgeryToken()
-        <div class="row">
-            <div class="form-group col-md-3">
-                <label>Müşteri:</label>
-                @Html.DropDownListFor(x => x.Customer.Id, customers, new { id = "customerdropdown", @class = "chosen-select form-control" })
+        @using (Html.BeginForm("CreateOrder", "Order", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "CreateOrderForm" }))
+        {
+            <div id="createSalesDiv" style="display:block">
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="col-sm-12 col-lg-9">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label>Müşteri:</label>
+                                @Html.DropDownListFor(x => x.Customer.Id, customers, new { id = "customerdropdown", @class = "chosen-select form-control" })
+                            </div>
+                            <div class="form-group col-md-4">
+                                @Html.LabelFor(x => x.InvoiceNumber)
+                                @Html.TextBoxFor(x => x.InvoiceNumber, new { @class = "chosen-select form-control", Name = "InvoiceNumber", id = "InvoiceTextBox", style = "display:inline-block" })
+                            </div>
+                            <div class="form-group col-md-4">
+                                @Html.LabelFor(model => model.InvoiceDate)
+                                @Html.TextBoxFor(model => model.InvoiceDate, new { Name = "InvoiceDate", @class = "form-control datepicker", placeholder = "Enter Drop-off date here..." })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label>Durum:</label>
+                                @Html.EnumDropDownListFor(x => x.State, new { id = "statedropdown", @class = "chosen-select form-control" })
+                            </div>
+                            <div class="form-group col-md-1">
+                                <label>Kur:</label>
+                                @Html.EnumDropDownListFor(x => x.Currency, new { id = "currencydropdown", @class = "chosen-select form-control" })
+                            </div>
+                            <div class="form-group col-md-3" id="exchangeRateDiv" style="display:none">
+                                <label>Doviz Kuru:</label>
+                                <input id="exchangeRate" name="ExchangeRate" type="number" step="0.0001" placeholder="0.0000" value="@Model.ExchangeRate" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr style="margin: 10px 0;" />
+                <div class="row">
+                    <div class="col-sm-9">
+                        <h3>Ürün Listesi</h3>
+                    </div>
+                    <div class="col-sm-3">
+                        <div id="addProductDiv">
+                            <div class="clearfix">
+                                <button type="button" id="addOrderLineButton" class="btn btn-primary">
+                                    <span class="glyphicon glyphicon-plus"></span> Yeni Ürün Ekle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="products"></div>
+                <hr />
+                <div id="saveOrderDiv" class="clearfix">
+                    <input id="saveOrderButton" type="submit" class="btn btn-primary pull-right" value="Satışı Kaydet" />
+                </div>
             </div>
-            <div class="form-group col-md-3">
-                <label>Durum:</label>
-                @Html.EnumDropDownListFor(x => x.State, new { id = "statedropdown", @class = "chosen-select form-control", style = "width:auto" })
-            </div>
-            <div class="form-group col-md-1">
-                <label>Kur:</label>
-                @Html.EnumDropDownListFor(x => x.Currency, new { id = "currencydropdown", @class = "chosen-select form-control", style = "width:auto" })
-            </div>
-            <div class="form-group col-md-2" id="exchangeRateDiv" style="display:none">
-                <label>Doviz Kuru:</label>
-                <input id="exchangeRate" name="ExchangeRate" type="number" step="0.0001" placeholder="0.0000" value="@Model.ExchangeRate" />
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-md-3">
-                @Html.LabelFor(x => x.InvoiceNumber)
-                @Html.TextBoxFor(x => x.InvoiceNumber, new { @class = "chosen-select form-control", Name = "InvoiceNumber", id = "InvoiceTextBox", style = "display:inline-block" })
-            </div>
-            <div class="form-group col-md-4">
-                @Html.LabelFor(model => model.InvoiceDate)
-                @Html.TextBoxFor(model => model.InvoiceDate, new { Name = "InvoiceDate", @class = "form-control datepicker", placeholder = "Enter Drop-off date here..." })
-            </div>
-        </div>
-        <hr style="margin: 10px 0;" />
-        <div id="addProductDiv" class="row">
-            <div class="clearfix">
-
-                <button type="button" id="addOrderLineButton" class="btn btn-primary pull-right">
-                    <span class="glyphicon glyphicon-plus"></span> Yeni Ürün Ekle
-                </button>
-            </div>
-        </div>
-        <div id="products"></div>
-        <hr />
-        <div id="saveOrderDiv" class="clearfix">
-            <input id="saveOrderButton" type="submit" class="btn btn-primary pull-right" value="Satışı Kaydet" />
-        </div>
+        }
     </div>
-}
+</div>
 
 @using (Html.BeginForm("Import", "Order", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "ImportProductsForm" }))
 {
@@ -71,9 +84,6 @@
                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
             <input id="saveProductsButton" type="submit" class="btn btn-default" value="Ürünleri İçe Aktar" />
         </span>
-        @*<div class="clearfix">
-            <input id="saveProductsButton" type="submit" class="btn btn-primary pull-right" value="Ürünleri Kaydet" />
-        </div>*@
     </div>
 }
 
@@ -89,26 +99,26 @@
         $('.stockButton').off().on('click', function (e) {
             var productCode = e.currentTarget.parentNode.parentNode.querySelector('.productCode').value;
             ERKOSMS.AjaxAction("GetStockInformationByProductCode?productCode=" + productCode, {}, false).then(function (data) {
-                e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').value = data;
-                e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').readOnly = true;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.stockQuantity').value = data;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.stockQuantity').readOnly = true;
             });
             ERKOSMS.AjaxAction("GetLatestPriceForProductCode?productCode=" + productCode, {}, false).then(function (data) {
-                e.currentTarget.parentNode.parentNode.querySelector('.stockPrice').value = data;
-                e.currentTarget.parentNode.parentNode.querySelector('.stockPrice').readOnly = true;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.stockPrice').value = data;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.stockPrice').readOnly = true;
             });
             ERKOSMS.AjaxAction("GetProductDescriptionByProductCode?productCode=" + productCode, {}, false).then(function (data) {
-                e.currentTarget.parentNode.parentNode.querySelector('.productDescription').value = data;
-                e.currentTarget.parentNode.parentNode.querySelector('.productDescription').readOnly = true;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productDescription').value = data;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productDescription').readOnly = true;
             });
         });
         $('.calculatePriceButton').off().on('click', function (e) {
             var exchangeRate = IsSelectedCurrencyDifferentThaTL() ? parseFloat($("#exchangeRate").val()) : 1;
-            var quantity = e.currentTarget.parentNode.parentNode.querySelector('.quantity').value;
-            var unitPrice = e.currentTarget.parentNode.parentNode.querySelector('.unitPrice').value;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').value = quantity * unitPrice;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').readOnly = true;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPriceTL').value = quantity * unitPrice * exchangeRate;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPriceTL').readOnly = true;
+            var quantity = e.currentTarget.parentNode.parentNode.parentNode.querySelector('.quantity').value;
+            var unitPrice = e.currentTarget.parentNode.parentNode.parentNode.querySelector('.unitPrice').value;
+            e.currentTarget.parentNode.parentNode.parentNode.querySelector('.totalPrice').value = quantity * unitPrice;
+            e.currentTarget.parentNode.parentNode.parentNode.querySelector('.totalPrice').readOnly = true;
+            e.currentTarget.parentNode.parentNode.parentNode.querySelector('.totalPriceTL').value = quantity * unitPrice * exchangeRate;
+            e.currentTarget.parentNode.parentNode.parentNode.querySelector('.totalPriceTL').readOnly = true;
         });
     }
 

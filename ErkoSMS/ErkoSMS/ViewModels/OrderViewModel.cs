@@ -67,9 +67,9 @@ namespace ErkoSMS.ViewModels
 
     public class OrderLine
     {
-        [Display(Name = "Kod")]
+        [Display(Name = "Ürün Kodu")]
         public string ProductCode { get; set; }
-        [Display(Name = "Açıklama")]
+        [Display(Name = "Ürün Açıklaması")]
         public string ProductDescription { get; set; }
         [Display(Name = "Adet")]
         public int Quantity { get; set; }

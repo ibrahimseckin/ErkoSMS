@@ -102,7 +102,6 @@
         });
 
         $("#UpdateOrderForm").off().on("click", ".orderRowDeleteButton", function () {
-            debugger;
             $(this).closest('.orderRow').remove();
             if ($(".orderRow").length === 0) {
                 $("#noProductInfo").show();

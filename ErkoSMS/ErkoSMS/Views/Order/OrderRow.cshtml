@@ -1,63 +1,74 @@
 ﻿@model ErkoSMS.ViewModels.OrderLine
 
-<div class="orderRow" style="overflow: hidden;">
-    <hr style="margin: 10px 0;" />
-    <div class="row form-group-sm" style="padding-top: 5px;">
-        <div class="col-md-2">
-            @Html.LabelFor(x => x.ProductCode)
-            @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control productCode", Name = "OrderLines[].ProductCode", @id = Guid.NewGuid(), style = "display:inline-block" })
+<div class="orderRow row" style="overflow: hidden;">
+    <div class="row form-group-sm w3-card-2 w3-margin" style="padding: 10px;">
+        <div class="col-sm-6" style="border-right: 1px dashed #333;">
+            <div class="row">
+                <div class="col-sm-9">
+                    @Html.LabelFor(x => x.ProductCode)
+                    @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control productCode", Name = "OrderLines[].ProductCode", @id = Guid.NewGuid(), style = "display:inline-block" })
+                </div>
+                <div class="col-sm-3">
+                    <label style="display: block">Stok Sorgula</label>
+                    <button type="button" class="stockButton form-control">Stok Sorgula</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-9">
+                    @Html.LabelFor(x => x.ProductDescription)
+                    @Html.TextAreaFor(x => x.ProductDescription,
+                        new { @class = "form-control productDescription", Name = "OrderLines[].ProductDescription", @id = Guid.NewGuid(), @readonly = "true", style = "height: 100px;" })
+                </div>
+                <div class="col-sm-3 row">
+                    <div class="col-sm-12">
+                        <label>Stok</label>
+                        @Html.TextBoxFor(x => x.StokQuantity, new { @class = "form-control stockQuantity", Name = "OrderLines[].StokQuantity", @id = Guid.NewGuid(), style = "display:inline-block" })
+                    </div>
+                    <div class="col-sm-12">
+                        <label>Son Fiyat</label>
+                        <input class="form-control stockPrice" type="text">
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-3">
-            <label>Ürün</label>
-            @Html.TextAreaFor(x => x.ProductDescription, new { @class = "form-control productDescription", Name = "OrderLines[].ProductDescription", @id = Guid.NewGuid(), @readonly = "true" })
+        <div class="col-sm-6">
+            <div class="row" style="display: flex; align-items: center;">
+                <div class="col-sm-11">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            @Html.LabelFor(x => x.UnitPrice)
+                            @Html.TextBoxFor(x => x.UnitPrice, new { @class = "form-control unitPrice", Name = "OrderLines[].UnitPrice", @id = Guid.NewGuid(), style = "display:inline-block" })
+                        </div>
+
+                        <div class="col-sm-6">
+                            @Html.LabelFor(x => x.Quantity)
+                            @Html.TextBoxFor(x => x.Quantity, new { @class = "form-control quantity", Name = "OrderLines[].Quantity", @id = Guid.NewGuid(), style = "display:inline-block" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            @Html.LabelFor(x => x.TotalPrice)
+                            @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", Name = "OrderLines[].TotalPrice", @id = Guid.NewGuid(), style = "display:inline-block" })
+                        </div>
+                        <div class="col-sm-4">
+                            <label style="display: block">Fiyat Hesapla</label>
+                            <button type="button" class="calculatePriceButton form-control">Fiyat Hesapla</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            @Html.LabelFor(x => x.TotalPriceTL)
+                            @Html.TextBoxFor(x => x.TotalPriceTL, new { @class = "form-control totalPriceTL", Name = "OrderLines[].TotalPriceTL", @id = Guid.NewGuid(), style = "display:inline-block" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <span class="btn btn-danger orderRowDeleteButton pull-right">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </span>
+                </div>
+            </div>
         </div>
-
-        <div class="col-md-1">
-            <label>Stok</label>
-            @Html.TextBoxFor(x => x.StokQuantity, new { @class = "form-control stockQuantity", Name = "OrderLines[].StokQuantity", @id = Guid.NewGuid(), style = "display:inline-block" })
-        </div>
-        <div class="col-md-2">
-            <label>Son Fiyat</label>
-            <input class="form-control stockPrice" type="text">
-        </div>
-
-        <div class="col-md-2">
-            <label style="display:block">Stok Sorgula</label>
-            <button type="button" class="stockButton form-control">Stok Sorgula</button>
-        </div>
-
-    </div>
-
-    <div class="row">
-        <div class="col-md-2">
-            @Html.LabelFor(x => x.UnitPrice)
-            @Html.TextBoxFor(x => x.UnitPrice, new { @class = "form-control unitPrice", Name = "OrderLines[].UnitPrice", @id = Guid.NewGuid(), style = "display:inline-block" })
-        </div>
-
-        <div class="col-md-1">
-            @Html.LabelFor(x => x.Quantity)
-            @Html.TextBoxFor(x => x.Quantity, new { @class = "form-control quantity", Name = "OrderLines[].Quantity", @id = Guid.NewGuid(), style = "display:inline-block" })
-        </div>
-
-        <div class="col-md-2">
-            @Html.LabelFor(x => x.TotalPrice)
-            @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", Name = "OrderLines[].TotalPrice", @id = Guid.NewGuid(), style = "display:inline-block" })
-        </div>
-        <div class="col-md-2">
-            @Html.LabelFor(x => x.TotalPriceTL)
-            @Html.TextBoxFor(x => x.TotalPriceTL, new { @class = "form-control totalPriceTL", Name = "OrderLines[].TotalPriceTL", @id = Guid.NewGuid(), style = "display:inline-block" })
-        </div>
-
-
-        <div class="col-md-2">
-            <label style="display:block">Fiyat Hesapla</label>
-            <button type="button" class="calculatePriceButton form-control">Fiyat Hesapla</button>
-        </div>
-
-        <span class="btn btn-danger orderRowDeleteButton pull-right" style="margin-right:20px">
-            <span class="glyphicon glyphicon-minus"></span>
-        </span>
-
     </div>
 </div>
 
