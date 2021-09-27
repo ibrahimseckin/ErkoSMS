@@ -24,7 +24,7 @@ namespace ErkoSMS.Controllers
             var allStocks = orkaDataService.GetAllStocks().Select(x => new StockViewModel { Code = x.Code, Price = x.Price, RemainingAmount = x.RemainingAmount }).ToList();
             var reservedProductIds = new SalesDataService().GetAllProductsForActiveOrders();
 
-            foreach (var reservedProductId in reservedProductIds)
+            foreach (var reservedProductId in reservedProductIds.Distinct())
             {
                 var productCode = new ProductDataService().GetProductById(reservedProductId).Code;
                 var reservedAmount = new SalesDataService().GetReservedCountyProductId(reservedProductId);
