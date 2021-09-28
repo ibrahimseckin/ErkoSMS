@@ -79,9 +79,9 @@
 
 <script>
     $('.datepicker').datepicker({ dateFormat: 'dd.mm.yy' }); //Initialise any date pickers
-    $('#updateOrderCustomerDropdown').select2({ placeholder: "Müşteri Seçin", dropdownParent: $('.vex') });
-    $('#updateOrderCurrencyDropdown').select2({ placeholder: "Kur Seçin", dropdownParent: $('.vex') });
-    $('#updateOrderStateDropdown').select2({ placeholder: "Durum Seçin", dropdownParent: $('.vex') });
+    $('#customerdropdown').select2({ placeholder: "Müşteri Seçin", dropdownParent: $('.vex') });
+    $('#currencydropdown').select2({ placeholder: "Kur Seçin", dropdownParent: $('.vex') });
+    $('#statedropdown').select2({ placeholder: "Durum Seçin", dropdownParent: $('.vex') });
 
     var InitializeScriptsForButtons = function () {
         $('.stockButton').off().on('click', function (e) {
@@ -119,7 +119,7 @@
         $("#UpdateOrderForm").on("ajax-form:succeed", function (ev, data) {
             var tg = $(ev.currentTarget);
             closeParentVexModal(tg);
-            $("#getAllSales").click();
+            $("#getAllOrders").click();
         });
 
         $("#UpdateOrderForm").on("submit", function () {
@@ -127,7 +127,7 @@
             return true;
         });
 
-        $("#updateOrderCurrencyDropdown").on('change', function (ev, data) {
+        $("#currencydropdown").on('change', function (ev, data) {
             if (IsSelectedCurrencyDifferentThaTL()) {
                 $("#exchangeRateDiv").show();
             }
@@ -137,8 +137,8 @@
             }
         });
 
-        var IsSelectedCurrencyDifferentThaTL = function() {
-            var selectedCurrency = $('#updateOrderCurrencyDropdown').select2('data')[0].text;
+        var IsSelectedCurrencyDifferentThaTL = function () {
+            var selectedCurrency = $('#currencydropdown').select2('data')[0].text;
             return selectedCurrency.toLowerCase() !== "tl";
         }
 
