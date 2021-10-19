@@ -63,7 +63,7 @@
             </div>
             <div class="col-md-2">
                 @Html.LabelFor(x => x.TotalPrice)
-                @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", style = "display:inline-block" })
+                @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", style = "display:inline-block", @readonly = true })
             </div>
             <div class="col-md-2">
                 <label style="display:block">Fiyat Hesapla</label>

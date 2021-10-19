@@ -48,7 +48,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             @Html.LabelFor(x => x.TotalPrice)
-                            @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", Name = "OrderLines[].TotalPrice", @id = Guid.NewGuid(), style = "display:inline-block" })
+                            @Html.TextBoxFor(x => x.TotalPrice, new { @class = "form-control totalPrice", Name = "OrderLines[].TotalPrice", @id = Guid.NewGuid(), style = "display:inline-block", @readonly = true })
                         </div>
                         <div class="col-sm-4">
                             <label style="display: block">Fiyat Hesapla</label>
@@ -58,7 +58,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             @Html.LabelFor(x => x.TotalPriceTL)
-                            @Html.TextBoxFor(x => x.TotalPriceTL, new { @class = "form-control totalPriceTL", Name = "OrderLines[].TotalPriceTL", @id = Guid.NewGuid(), style = "display:inline-block" })
+                            @Html.TextBoxFor(x => x.TotalPriceTL, new { @class = "form-control totalPriceTL", Name = "OrderLines[].TotalPriceTL", @id = Guid.NewGuid(), style = "display:inline-block", @readonly = true })
                         </div>
                     </div>
                 </div>
