@@ -14,6 +14,7 @@ namespace ErkoSMS.ViewModels
 
         [Display(Name = "Tedarikçi")]
         public int SupplierId { get; set; }
+        public string SupplierName { get; set; }
         public string PurchaserUser { get; set; }
         [Display(Name = "Satış Elemanı")]
         public string SalesUserName { get; set; }
@@ -35,6 +36,8 @@ namespace ErkoSMS.ViewModels
         public bool RequestedBySales { get; set; }
         public int OrderId { get; set; }
 
+        public int ActiveTime { get; set; }
+
         public PurchaseViewModel()
         {
         }
@@ -53,6 +56,7 @@ namespace ErkoSMS.ViewModels
             PurchaseStartDate = purchase.PurchaseStartDate;
             RequestedBySales = purchase.RequestedBySales;
             SalesUserName = purchase.SalesUserName;
+            ActiveTime = purchase.ActiveTime;
         }
     }
 }

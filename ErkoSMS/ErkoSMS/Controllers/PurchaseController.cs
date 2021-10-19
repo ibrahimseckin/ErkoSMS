@@ -147,9 +147,18 @@ namespace ErkoSMS.Controllers
             {
                 filteredPurchases = filteredPurchases.Where(x => x.PurchaseState == state).ToList();
             }
+
+            CalculateActiveTime(filteredPurchases);
+
+
+            var filteredPurchasesViewModels = filteredPurchases.Select(x => new PurchaseViewModel(x)
+            {
+                SupplierName = new SupplierDataService().GetSupplierById(x.SupplierId)?.Name ?? string.Empty
+            }).ToList();
+
             return new JsonResult()
             {
-                Data = filteredPurchases,
+                Data = filteredPurchasesViewModels,
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = Int32.MaxValue
@@ -162,11 +171,19 @@ namespace ErkoSMS.Controllers
             var allPurchases = new PurchaseDataService().GetAllPurchases();
 
             var filteredPurchases = allPurchases.Where(x => x.OrderId.HasValue)
-                .Where(x => string.IsNullOrEmpty(x.PurchaserUserGuid));
+                .Where(x => string.IsNullOrEmpty(x.PurchaserUserGuid)).ToList();
             CalculateActiveTime(filteredPurchases);
+
+
+            var filteredPurchasesViewModels = filteredPurchases.Select(x => new PurchaseViewModel(x)
+            {
+                SupplierName = new SupplierDataService().GetSupplierById(x.SupplierId)?.Name ?? string.Empty
+            }).ToList();
+
+
             return new JsonResult()
             {
-                Data = filteredPurchases,
+                Data = filteredPurchasesViewModels,
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = Int32.MaxValue
@@ -178,11 +195,17 @@ namespace ErkoSMS.Controllers
         {
             var allPurchases = new PurchaseDataService().GetAllPurchases();
 
-            var filteredPurchases = allPurchases.Where(x => x.PurchaserUserGuid == User.Identity.GetUserId());
+            var filteredPurchases = allPurchases.Where(x => x.PurchaserUserGuid == User.Identity.GetUserId()).ToList();
             CalculateActiveTime(filteredPurchases);
+
+            var filteredPurchasesViewModels = filteredPurchases.Select(x => new PurchaseViewModel(x)
+            {
+                SupplierName = new SupplierDataService().GetSupplierById(x.SupplierId)?.Name ?? string.Empty
+            }).ToList();
+
             return new JsonResult()
             {
-                Data = filteredPurchases,
+                Data = filteredPurchasesViewModels,
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = Int32.MaxValue
@@ -194,9 +217,13 @@ namespace ErkoSMS.Controllers
         {
             var allPurchases = new PurchaseDataService().GetAllPurchases();
             CalculateActiveTime(allPurchases);
+            var filteredPurchasesViewModels = allPurchases.Select(x => new PurchaseViewModel(x)
+            {
+                SupplierName = new SupplierDataService().GetSupplierById(x.SupplierId)?.Name ?? string.Empty
+            }).ToList();
             return new JsonResult()
             {
-                Data = allPurchases,
+                Data = filteredPurchasesViewModels,
                 ContentType = "application/json",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = Int32.MaxValue
@@ -292,7 +319,7 @@ namespace ErkoSMS.Controllers
         {
             var purchaserUserGuid = User.Identity.GetUserId();
 
-            new PurchaseDataService().AssignPurchase(purchaseId, purchaserUserGuid,PurchaseState.PurchaseInProgress);
+            new PurchaseDataService().AssignPurchase(purchaseId, purchaserUserGuid, PurchaseState.PurchaseInProgress);
             var orderId = new PurchaseDataService().GetAllPurchases().First(x => x.PurchaseId == purchaseId).OrderId;
             new SalesDataService().UpdateOrderState(orderId.Value, SalesState.PurchaseInProgress);
             return true;
@@ -320,7 +347,7 @@ namespace ErkoSMS.Controllers
             foreach (var purchase in purchases)
             {
                 purchase.ActiveTime = purchase.PurchaseCloseDate.HasValue ?
-                    purchase.PurchaseCloseDate.Value.Subtract(purchase.PurchaseStartDate).Days : 
+                    purchase.PurchaseCloseDate.Value.Subtract(purchase.PurchaseStartDate).Days :
                     DateTime.Now.Subtract(purchase.PurchaseStartDate).Days;
             }
         }
