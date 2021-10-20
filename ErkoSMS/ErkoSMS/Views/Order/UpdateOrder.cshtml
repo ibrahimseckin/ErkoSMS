@@ -98,16 +98,16 @@
         $('.stockButton').off().on('click', function (e) {
             var productCode = e.currentTarget.parentNode.parentNode.querySelector('.productCode').value;
             ERKOSMS.AjaxAction("GetStockInformationByProductCode?productCode=" + productCode, {}, false).then(function (data) {
-                e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').value = data;
-                e.currentTarget.parentNode.parentNode.querySelector('.stockQuantity').readOnly = true;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.stockQuantity').value = data;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.stockQuantity').readOnly = true;
             });
             ERKOSMS.AjaxAction("GetLatestPriceForProductCode?productCode=" + productCode, {}, false).then(function (data) {
-                e.currentTarget.parentNode.parentNode.querySelector('.stockPrice').value = data;
-                e.currentTarget.parentNode.parentNode.querySelector('.stockPrice').readOnly = true;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.stockPrice').value = data;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.stockPrice').readOnly = true;
             });
             ERKOSMS.AjaxAction("GetProductDescriptionByProductCode?productCode=" + productCode, {}, false).then(function (data) {
-                e.currentTarget.parentNode.parentNode.querySelector('.productDescription').value = data;
-                e.currentTarget.parentNode.parentNode.querySelector('.productDescription').readOnly = true;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productDescription').value = data;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productDescription').readOnly = true;
             });
         });
         $('.calculatePriceButton').off().on('click', function (e) {
