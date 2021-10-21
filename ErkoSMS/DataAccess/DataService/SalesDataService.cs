@@ -298,38 +298,35 @@ namespace ErkoSMS.DataAccess
 
         private Customer CreateCustomer(DataRow row)
         {
-            var Id = Convert.ToInt32(row["Id"]);
-            var Name = row["name"]?.ToString();
-            var Comment = row["comment"]?.ToString();
-            var Owner = row["owner"]?.ToString();
-            var OwnerMobile = row["ownermobile"]?.ToString();
-            var OwnerMail = row["ownermail"]?.ToString();
-            var Manager = row["manager"]?.ToString();
-            var ManagerMobile = row["managermobile"]?.ToString();
-            var ManagerEmail = row["managermobile"]?.ToString();
-            var ManagerTitle = row["managertitle"]?.ToString();
-            var Address = row["adress"]?.ToString();
-            var City = row["city"]?.ToString();
-            var Country = row["country"]?.ToString();
-            var PostalCode = row["postalcode"]?.ToString();
-            var PhoneNumber = row["phonenumber"]?.ToString();
-            var CountryCode = row["countrycode"]?.ToString();
-            var FaxNumber = row["faxnumber"]?.ToString();
-            var Condition = row["condition"]?.ToString();
-            var CommunicationMethod = row["communicationmethod"]?.ToString();
-            DateTime? StartDate = string.IsNullOrEmpty(row["startdate"].ToString()) ? (DateTime?)null : DateTime.Parse(row["startdate"].ToString());
-            var ContactPerson = row["contactperson"]?.ToString();
-            var TaxOffice = row["taxoffice"]?.ToString();
-            var TaxNumber = row["taxnumber"]?.ToString();
-            var Currency = row["currency"]?.ToString();
-            var Region = row["region"]?.ToString();
-            var DiscountRate = Convert.ToDouble(row["discountrate"]);
-            var SalesRepresentative = row["salesrepresentative"]?.ToString();
-
             return new Customer
             {
-                Name = Name,
-                Id = Id
+                Name = row["name"]?.ToString(),
+                Id = Convert.ToInt32(row["Id"]),
+                Currency = row["currency"]?.ToString(),
+                Address = row["adress"]?.ToString(),
+                City = row["city"]?.ToString(),
+                Comment = row["comment"]?.ToString(),
+                CommunicationMethod = row["communicationmethod"]?.ToString(),
+                Condition = row["condition"]?.ToString(),
+                ContactPerson = row["contactperson"]?.ToString(),
+                Country = row["country"]?.ToString(),
+                CountryCode = row["countrycode"]?.ToString(),
+                DiscountRate = Convert.ToDouble(row["discountrate"]),
+                FaxNumber = row["faxnumber"]?.ToString(),
+                Manager = row["manager"]?.ToString(),
+                ManagerEmail = row["managermobile"]?.ToString(),
+                ManagerMobile = row["managermobile"]?.ToString(),
+                ManagerTitle = row["managertitle"]?.ToString(),
+                Owner = row["owner"]?.ToString(),
+                OwnerMail = row["ownermail"]?.ToString(),
+                OwnerMobile = row["ownermobile"]?.ToString(),
+                PhoneNumber = row["phonenumber"]?.ToString(),
+                PostalCode = row["postalcode"]?.ToString(),
+                Region = row["region"]?.ToString(),
+                SalesRepresentative = row["salesrepresentative"]?.ToString(),
+                StartDate = string.IsNullOrEmpty(row["startdate"].ToString()) ? (DateTime?)null : DateTime.Parse(row["startdate"].ToString()),
+                TaxNumber = row["taxnumber"]?.ToString(),
+                TaxOffice = row["taxoffice"]?.ToString()
             };
         }
 
