@@ -31,6 +31,7 @@ namespace ErkoSMS
                       "~/Scripts/Chart.js",
                      "~/Scripts/jquery-ui-1.12.1.min.js",
                      "~/Scripts/jspdf.umd.min.js",
+                     "~/Scripts/jspdf-autotable.js",
                      "~/Scripts/DataTables/media/js/jquery.dataTables.min.js",
                       "~/Scripts/DataTables/extensions/Buttons/js/dataTables.buttons.min.js",
                       "~/Scripts/DataTables/extensions/Buttons/js/buttons.html5.min.js"));
