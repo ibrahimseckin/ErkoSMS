@@ -107,8 +107,12 @@
                 e.currentTarget.parentNode.parentNode.parentNode.querySelector('.stockPrice').readOnly = true;
             });
             ERKOSMS.AjaxAction("GetProductDescriptionByProductCode?productCode=" + productCode, {}, false).then(function (data) {
-                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productDescription').value = data;
+                var [description,englishDescription] = data.substr(1, data.length - 2).split(",");
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productDescription').value = description;
                 e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productDescription').readOnly = true;
+
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productEnglishDescription').value = englishDescription;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productEnglishDescription').readOnly = true;
             });
         });
         $('.calculatePriceButton').off().on('click', function (e) {
@@ -155,6 +159,7 @@
         for (let i = 0; i < data.result.length; i++) {
             document.getElementsByClassName("productCode")[i].value = data.result[i].ProductCode;
             document.getElementsByClassName("productDescription")[i].value = data.result[i].ProductDescription;
+            document.getElementsByClassName("productEnglishDescription")[i].value = data.result[i].ProductEnglishDescription;
             document.getElementsByClassName("stockQuantity")[i].value = data.result[i].StokQuantity;
             document.getElementsByClassName("unitPrice")[i].value = data.result[i].UnitPrice;
             document.getElementsByClassName("quantity")[i].value = data.result[i].Quantity;

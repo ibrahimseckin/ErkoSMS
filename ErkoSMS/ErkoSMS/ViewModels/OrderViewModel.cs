@@ -43,7 +43,8 @@ namespace ErkoSMS.ViewModels
                         ProductCode = productCode,
                         Quantity = quantity,
                         UnitPrice = unitPrice,
-                        ProductDescription = productDescription
+                        ProductDescription = productDescription,
+                        ProductEnglishDescription = salesDetail.ProductEnglishDescription
                     });
                 }
             }
@@ -71,6 +72,7 @@ namespace ErkoSMS.ViewModels
         public string ProductCode { get; set; }
         [Display(Name = "Ürün Açıklaması")]
         public string ProductDescription { get; set; }
+        public string ProductEnglishDescription { get; set; }
         [Display(Name = "Adet")]
         public int Quantity { get; set; }
         [Display(Name = "Stok Adedi")]

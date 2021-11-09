@@ -106,8 +106,12 @@
                 e.currentTarget.parentNode.parentNode.parentNode.querySelector('.stockPrice').readOnly = true;
             });
             ERKOSMS.AjaxAction("GetProductDescriptionByProductCode?productCode=" + productCode, {}, false).then(function (data) {
-                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productDescription').value = data;
+                var [description,englishDescription] = data.substr(1, data.length - 2).split(",");
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productDescription').value = description;
                 e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productDescription').readOnly = true;
+
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productEnglishDescription').value = englishDescription;
+                e.currentTarget.parentNode.parentNode.parentNode.querySelector('.productEnglishDescription').readOnly = true;
             });
         });
         $('.calculatePriceButton').off().on('click', function (e) {
@@ -284,7 +288,7 @@
             addFooter(doc);
 
             var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
-            var filename =  "Invoice_" + dateNow + ".pdf"
+            var filename = "Invoice_" + dateNow + ".pdf";
             doc.save(filename);
         });
 

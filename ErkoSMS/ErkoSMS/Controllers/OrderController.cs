@@ -107,10 +107,10 @@ namespace ErkoSMS.Controllers
         }
 
         [HttpGet]
-        public string GetProductDescriptionByProductCode(string productCode)
+        public (string Description, string EnglishDescription) GetProductDescriptionByProductCode(string productCode)
         {
-            var description = new ProductDataService().GetProductByCode(productCode).Description;
-            return description;
+            var product = new ProductDataService().GetProductByCode(productCode);
+            return (product.Description, product.EnglishDescription);
         }
 
         public ActionResult CreateOrder()
@@ -192,7 +192,9 @@ namespace ErkoSMS.Controllers
             var order = salesDataService.GetSalesById(orderId);
             foreach (var orderDetail in order.SalesDetails)
             {
-                orderDetail.ProductDescription = GetProductDescriptionByProductCode(orderDetail.ProductCode);
+                var (description, englishDescription) = GetProductDescriptionByProductCode(orderDetail.ProductCode);
+                orderDetail.ProductDescription = description;
+                orderDetail.ProductEnglishDescription = englishDescription;
             }
             FillViewBag();
 
@@ -224,6 +226,7 @@ namespace ErkoSMS.Controllers
                     ProductCode = x.ProductCode,
                     Quantity = x.Quantity,
                     ProductDescription = x.ProductDescription,
+                    ProductEnglishDescription = x.ProductEnglishDescription,
                     SalesId = order.OrderId,
                     UnitPrice = x.UnitPrice
                 })?.ToList() ?? new List<SalesDetail>(),
@@ -281,7 +284,9 @@ namespace ErkoSMS.Controllers
 
                         product.StokQuantity = GetStockInformationByProductCode(product.ProductCode);
                         product.TotalPrice = product.UnitPrice * product.Quantity;
-                        product.ProductDescription = GetProductDescriptionByProductCode(product.ProductCode);
+                        var (description, englishDescription) = GetProductDescriptionByProductCode(product.ProductCode);
+                        product.ProductDescription = description;
+                        product.ProductEnglishDescription = englishDescription;
                         products.Add(product);
                     }
                 }

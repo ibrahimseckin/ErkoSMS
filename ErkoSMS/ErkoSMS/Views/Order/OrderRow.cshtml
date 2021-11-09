@@ -15,9 +15,24 @@
             </div>
             <div class="row">
                 <div class="col-sm-9">
-                    @Html.LabelFor(x => x.ProductDescription)
-                    @Html.TextAreaFor(x => x.ProductDescription,
-                        new { @class = "form-control productDescription", Name = "OrderLines[].ProductDescription", @id = Guid.NewGuid(), @readonly = "true", style = "height: 90px; resize: none" })
+                    <div class="row">
+                        <div class="col-sm-9">
+                            @Html.LabelFor(x => x.ProductDescription)
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            @Html.TextAreaFor(x => x.ProductDescription,
+                                new { @class = "form-control productDescription", Name = "OrderLines[].ProductDescription", @id = Guid.NewGuid(), @readonly = "true", style = "height: 90px; resize: none" })
+                        </div>
+                        <div class="col-sm-6">
+                            @Html.TextAreaFor(x => x.ProductEnglishDescription,
+                                new { @class = "form-control productEnglishDescription", Name = "OrderLines[].ProductEnglishDescription", @id = Guid.NewGuid(), @readonly = "true", style = "height: 90px; resize: none" })
+                        </div>
+                    </div>
+
+
                 </div>
                 <div class="col-sm-3 row">
                     <div class="col-sm-12">
