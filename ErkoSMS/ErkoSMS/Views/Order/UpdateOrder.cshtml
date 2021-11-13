@@ -39,7 +39,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         @Html.LabelFor(model => model.InvoiceDate)
-                        @Html.TextBoxFor(model => model.InvoiceDate, new { Name = "InvoiceDate", @class = "form-control datepicker", placeholder = "Enter Drop-off date here..." })
+                        @Html.TextBoxFor(model => model.InvoiceDate, new { Name = "InvoiceDate", @class = "form-control datepicker", id = "invoiceDate", placeholder = "Enter Drop-off date here..." })
                     </div>
                 </div>
                 <div class="row">
@@ -196,9 +196,11 @@
             var width = doc.internal.pageSize.getWidth();
             doc.text(width / 2, 10, 'PROFORMA INVOICE', { align: 'center' });
 
+            var invoiceNo = $("#InvoiceTextBox").val();
+            var invoiceDate = moment($("#invoiceDate").val()).format("DD.MM.YYYY");
             doc.setFontSize(5);
-            doc.text(175, 12, 'Invoice No    : FLS2021000000064');
-            doc.text(175, 14, 'Invoice Date : 12.02.2021');
+            doc.text(175, 12, 'Invoice No    : ' + invoiceNo);
+            doc.text(175, 14, 'Invoice Date : ' + invoiceDate);
 
 
             doc.setLineWidth(0.3);
@@ -226,17 +228,20 @@
         }
     }
 
-    var addFooter = function (doc) {
+    var addFooter = function (doc, totalCostofProducts) {
         var afterTable = doc.lastAutoTable.finalY + 10; // The y position on the page
         doc.setFontSize(8);
         doc.setFont("times", "bold");
-        doc.text(170, afterTable, "TOTAL    EUR",{align:"right"});
-        doc.text(170, afterTable + 5, "TRANSPORT COST   EUR", { align: "right"});
-        doc.text(170, afterTable + 10, "TOTAL   EUR", { align: "right" });
+        var currency = $("#currencydropdown").find(':selected').text();
+        doc.text(170, afterTable, "TOTAL    " + currency,{align:"right"});
+        doc.text(170, afterTable + 5, "TRANSPORT COST   " + currency, { align: "right"});
+        doc.text(170, afterTable + 10, "TOTAL   " + currency, { align: "right" });
 
-        doc.text(195, afterTable, "95.647,21",{align:"right"});
-        doc.text(195, afterTable + 5, "3.400,00", { align: "right"});
-        doc.text(195, afterTable + 10, "99.047,21", { align: "right"});
+        doc.text(195, afterTable, totalCostofProducts.toFixed(2), { align: "right" });
+        var transportCost = 3400.20;
+        var totalCost = totalCostofProducts + transportCost;
+        doc.text(195, afterTable + 5, transportCost.toFixed(2), { align: "right"});
+        doc.text(195, afterTable + 10, totalCost.toFixed(2), { align: "right"});
 
         doc.setFont("times", "normal");
         doc.text(10, afterTable, "TOTAL PALLETES:   32 CASE",{align:"left"});
@@ -246,9 +251,10 @@
 
         doc.text(10, afterTable + 25, "PAYMENT: 60 DAYS AFTER RECEIVING GOODS", { align: "left"});
         doc.text(10, afterTable + 30, "DELIVERY TERMS:  CIF", { align: "left" });
-
+        debugger;
         doc.setFont("times", "bold");
-        doc.text(10, afterTable + 40, "Ninety Nine Thousand, Forty Seven EUR and Twenty One cents", { align: "left"});
+        var words = toWords(totalCost);
+        doc.text(10, afterTable + 40, words, { align: "left"});
         doc.text(10, afterTable + 45, "Bank Account", { align: "left"});
     }
 
@@ -257,20 +263,21 @@
             var doc = new window.jspdf.jsPDF();
 
             var orderedProducts = [];
-
+            var totalCost = 0.00;
                 $(".orderRow").each((index,order) => {
                     var productCode = $(order).find(".productCode").val();
-                    var description = $(order).find(".productDescription").val();
+                    var description = $(order).find(".productEnglishDescription").val();
                     var quantity = $(order).find(".quantity").val();
-                    var unitPrice = $(order).find(".unitPrice").val();
-                    var totalPrice = $(order).find(".totalPrice").val();
+                    var unitPrice = new Number($(order).find(".unitPrice").val());
+                    var totalPrice = new Number($(order).find(".totalPrice").val());
+                    totalCost += totalPrice;
                     var orderedProduct = [];
                     orderedProduct.push(productCode);
                     orderedProduct.push(description);
                     orderedProduct.push("ORIGIN");
                     orderedProduct.push(quantity);
-                    orderedProduct.push(unitPrice);
-                    orderedProduct.push(totalPrice);
+                    orderedProduct.push(unitPrice.toFixed(2));
+                    orderedProduct.push(totalPrice.toFixed(2));
                     orderedProducts.push(orderedProduct);
                 });
 
@@ -285,7 +292,7 @@
             });
 
             addHeaderToEachPage(doc);
-            addFooter(doc);
+            addFooter(doc,totalCost);
 
             var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
             var filename = "Invoice_" + dateNow + ".pdf";
