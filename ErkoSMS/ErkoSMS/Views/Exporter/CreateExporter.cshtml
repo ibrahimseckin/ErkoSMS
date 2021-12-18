@@ -1,0 +1,79 @@
+﻿@{
+    ViewBag.Title = "Yeni İthalatçı Girişi";
+}
+
+
+<h2>@ViewBag.Title</h2>
+<hr style="margin: 10px 0;" />
+@model ErkoSMS.ViewModels.ExporterViewModel
+
+
+
+@using (Html.BeginForm("CreateExporter", "Exporter", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "CreateExporterForm" }))
+{
+    <div id="createExporterDiv" style="display:block">
+        @Html.AntiForgeryToken()
+
+        <div class="row mt-10">
+            <div class="col-md-3">
+                @Html.LabelFor(x => x.Name)
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(x => x.Name)
+            </div>
+        </div>
+        <div class="row mt-10">
+            <div class="col-md-3">
+                @Html.LabelFor(x => x.Address)
+            </div>
+            <div class="col-md-3">
+                @Html.TextAreaFor(x => x.Address)
+            </div>
+        </div>
+
+        <div class="row mt-10">
+            <div class="col-md-3">
+                @Html.LabelFor(x => x.TradeRegisterNo)
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(x => x.TradeRegisterNo)
+            </div>
+        </div>
+        <div class="row mt-10">
+            <div class="col-md-3">
+                @Html.LabelFor(x => x.VatNo)
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(x => x.VatNo)
+            </div>
+        </div>
+        <div class="row mt-10">
+            <div class="col-md-3">
+                @Html.LabelFor(x => x.PhoneNumber)
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(x => x.PhoneNumber)
+            </div>
+        </div>
+        <div class="row mt-10">
+            <div class="col-md-3">
+                @Html.LabelFor(x => x.FaxNumber)
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(x => x.FaxNumber)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <input type="submit" class="btn btn-primary pull-right" value="Kaydet" />
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $("#CreateExporterForm").on('ajax-form:succeed', function () {
+        vex.dialog.alert("İthalatçı kaydedildi.");
+    });
+
+</script>

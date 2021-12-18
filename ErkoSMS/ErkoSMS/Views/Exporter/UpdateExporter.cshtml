@@ -1,0 +1,79 @@
+﻿
+@model ErkoSMS.ViewModels.ExporterViewModel
+
+
+<div>
+    <h3>Tedarikçi Güncelle</h3>
+    <hr />
+    @using (Html.BeginForm("UpdateExporter", "Exporter", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "UpdateExporterForm", style = "width:700px" }))
+    {
+        @Html.Hidden("Id", Model.Id)
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+        <div class="row mt-10">
+            <div class="col-md-3">
+                @Html.LabelFor(x => x.Name)
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(x => x.Name)
+            </div>
+        </div>
+        <div class="row mt-10">
+            <div class="col-md-3">
+                @Html.LabelFor(x => x.Address)
+            </div>
+            <div class="col-md-3">
+                @Html.TextAreaFor(x => x.Address)
+            </div>
+        </div>
+
+        <div class="row mt-10">
+            <div class="col-md-3">
+                @Html.LabelFor(x => x.TradeRegisterNo)
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(x => x.TradeRegisterNo)
+            </div>
+        </div>
+        <div class="row mt-10">
+            <div class="col-md-3">
+                @Html.LabelFor(x => x.VatNo)
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(x => x.VatNo)
+            </div>
+        </div>
+        <div class="row mt-10">
+            <div class="col-md-3">
+                @Html.LabelFor(x => x.PhoneNumber)
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(x => x.PhoneNumber)
+            </div>
+        </div>
+        <div class="row mt-10">
+            <div class="col-md-3">
+                @Html.LabelFor(x => x.FaxNumber)
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(x => x.FaxNumber)
+            </div>
+        </div>
+        <div class="row mt-10">
+            <div class="col-md-9">
+                <input type="submit" class="btn btn-primary pull-right" value="Kaydet" />
+            </div>
+        </div>
+    }
+
+</div>
+
+<script>
+    $("#UpdateExporterForm").on('ajax-form:succeed', function (ev, data) {
+        vex.dialog.alert("İthalatçı güncellendi.");
+        var tg = $(ev.currentTarget);
+        closeParentVexModal(tg);
+        listExporters();
+    });
+
+</script>

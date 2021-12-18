@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using ErkoSMS.DataAccess.Interfaces;
 using ErkoSMS.DataAccess.Model;
 
 namespace ErkoSMS.DataAccess.DataService
@@ -14,7 +15,7 @@ namespace ErkoSMS.DataAccess.DataService
             _sqliteDataProvider = new SqliteDataProvider();
         }
 
-        public bool CreateExporter(Exporter exporter)
+        public bool CreateExporter(IExporter exporter)
         {
             string query = "Insert into Exporters (name,address,tradeRegisterNo,vatNo,PhoneNumber,FaxNumber) values (@name,@address," +
                                       "@tradeRegisterNo,@vatNo,@PhoneNumber,@FaxNumber);";
@@ -28,7 +29,7 @@ namespace ErkoSMS.DataAccess.DataService
             return queryResult != null;
         }
 
-        public bool UpdateExporter(Exporter exporter)
+        public bool UpdateExporter(IExporter exporter)
         {
             string query = "Update Exporters Set name=@name, address=@address, " +
                                              "tradeRegisterNo=@tradeRegisterNo," +
@@ -64,7 +65,7 @@ namespace ErkoSMS.DataAccess.DataService
             return exporters;
         }
 
-        public Exporter GetExporters(int id)
+        public Exporter GetExporter(int id)
         {
             const string query = "select * from Exporters where id=@id";
             _sqliteDataProvider.AddParameter("@id", id);
@@ -77,7 +78,7 @@ namespace ErkoSMS.DataAccess.DataService
             return new Exporter
             {
                 Id = Convert.ToInt32(row["id"]),
-                Address = row["adress"].ToString(),
+                Address = row["address"].ToString(),
                 Name = row["name"].ToString(),
                 TradeRegisterNo = row["tradeRegisterNo"].ToString(),
                 VatNo = row["vatNo"].ToString(),

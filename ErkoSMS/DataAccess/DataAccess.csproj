@@ -80,6 +80,7 @@
     <Compile Include="DataService\ExporterDataService.cs" />
     <Compile Include="IDataProvider.cs" />
     <Compile Include="Interfaces\ICustomer.cs" />
+    <Compile Include="Interfaces\IExporter.cs" />
     <Compile Include="Interfaces\IProduct.cs" />
     <Compile Include="Interfaces\IStock.cs" />
     <Compile Include="Interfaces\IStockORKA.cs" />

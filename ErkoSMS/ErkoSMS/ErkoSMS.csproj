@@ -179,6 +179,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\ExporterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -214,6 +215,7 @@
     <Compile Include="ViewModels\ProductViewModel.cs" />
     <Compile Include="ViewModels\PurchaseViewModel.cs" />
     <Compile Include="ViewModels\StockViewModel.cs" />
+    <Compile Include="ViewModels\ExporterViewModel.cs" />
     <Compile Include="ViewModels\SupplierViewModel.cs" />
     <Compile Include="ViewModels\UserAdministrationViewModel.cs" />
   </ItemGroup>
@@ -687,6 +689,9 @@
     <Content Include="Views\Statistics\CustomerHitList.cshtml" />
     <Content Include="Views\Purchase\UpdatePurchase.cshtml" />
     <Content Include="Views\Purchase\ListPurchase.cshtml" />
+    <Content Include="Views\Exporter\CreateExporter.cshtml" />
+    <Content Include="Views\Exporter\ListExporters.cshtml" />
+    <Content Include="Views\Exporter\UpdateExporter.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\StockHistory\" />
