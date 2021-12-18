@@ -5,6 +5,7 @@
     var customers = (List<SelectListItem>)ViewBag.Customers;
     var salesState = (List<SelectListItem>)ViewBag.SaleStates;
     var currencies = (List<SelectListItem>)ViewBag.Currencies;
+    var exporters = (List<SelectListItem>)ViewBag.Exporters;
 }
 
 <div>
@@ -30,6 +31,10 @@
             <div class="col-sm-12 col-lg-9">
                 <div class="row">
                     <div class="form-group col-md-4">
+                        <label>İthalatçı:</label>
+                        @Html.DropDownListFor(x => x.Exporter.Id, exporters,"Bir İthalatçı Seçin",new { id = "exporterdropdown", @class = "chosen-select form-control" })
+                    </div>
+                    <div class="form-group col-md-4">
                         <label>Müşteri:</label>
                         @Html.DropDownListFor(x => x.Customer.Id, customers, new { id = "customerdropdown", @class = "chosen-select form-control" })
                     </div>
@@ -37,12 +42,12 @@
                         @Html.LabelFor(x => x.InvoiceNumber)
                         @Html.TextBoxFor(x => x.InvoiceNumber, new { @class = "chosen-select form-control", Name = "InvoiceNumber", id = "InvoiceTextBox", style = "display:inline-block" })
                     </div>
+                </div>
+                <div class="row">
                     <div class="form-group col-md-4">
                         @Html.LabelFor(model => model.InvoiceDate)
                         @Html.TextBoxFor(model => model.InvoiceDate, new { Name = "InvoiceDate", @class = "form-control datepicker", id = "invoiceDate", placeholder = "Enter Drop-off date here..." })
                     </div>
-                </div>
-                <div class="row">
                     <div class="form-group col-md-4">
                         <label>Durum:</label>
                         @Html.EnumDropDownListFor(x => x.State, new { id = "statedropdown", @class = "chosen-select form-control" })
@@ -53,7 +58,7 @@
                     </div>
                     <div class="form-group col-md-3" id="exchangeRateDiv" style="display: none">
                         <label>Doviz Kuru:</label>
-                        <input id="exchangeRate" name="ExchangeRate" type="number" step="0.0001" placeholder="0.0000" value="@Model.ExchangeRate" />
+                        <input id="exchangeRate" name="ExchangeRate" type="number" step="0.0001" placeholder="0.0000" value="@Model.ExchangeRate"/>
                     </div>
                 </div>
             </div>
@@ -116,12 +121,12 @@
         });
         $('.calculatePriceButton').off().on('click', function (e) {
             var exchangeRate = IsSelectedCurrencyDifferentThaTL() ? parseFloat($("#exchangeRate").val()) : 1;
-            var quantity = e.currentTarget.parentNode.parentNode.querySelector('.quantity').value;
-            var unitPrice = e.currentTarget.parentNode.parentNode.querySelector('.unitPrice').value;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').value = quantity * unitPrice;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').readOnly = true;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPriceTL').value = quantity * unitPrice * exchangeRate;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPriceTL').readOnly = true;
+            var quantity = e.currentTarget.parentNode.parentNode.parentNode.querySelector('.quantity').value;
+            var unitPrice = e.currentTarget.parentNode.parentNode.parentNode.querySelector('.unitPrice').value;
+            e.currentTarget.parentNode.parentNode.parentNode.querySelector('.totalPrice').value = quantity * unitPrice;
+            e.currentTarget.parentNode.parentNode.parentNode.querySelector('.totalPrice').readOnly = true;
+            e.currentTarget.parentNode.parentNode.parentNode.querySelector('.totalPriceTL').value = quantity * unitPrice * exchangeRate;
+            e.currentTarget.parentNode.parentNode.parentNode.querySelector('.totalPriceTL').readOnly = true;
         });
 
         $("#UpdateOrderForm").off().on("click", ".orderRowDeleteButton", function () {

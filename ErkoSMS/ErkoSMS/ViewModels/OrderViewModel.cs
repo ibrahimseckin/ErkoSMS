@@ -22,6 +22,7 @@ namespace ErkoSMS.ViewModels
                 this.InvoiceDate = sales.InvoiceDate.Value;
             this.SalesStartDate = sales.SalesStartDate;
             this.Customer = sales.Customer;
+            this.Exporter = sales.Exporter;
             this.State = sales.SalesState;
             this.Currency = sales.Currency;
             this.ExchangeRate = sales.ExchangeRate;
@@ -64,6 +65,7 @@ namespace ErkoSMS.ViewModels
         public DateTime? InvoiceDate { get; set; }
         public DateTime SalesStartDate { get; set; }
         public SalesState SalesState { get; set; }
+        public Exporter Exporter { get; set; }
     }
 
     public class OrderLine
