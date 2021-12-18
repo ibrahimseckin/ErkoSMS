@@ -120,8 +120,8 @@ namespace ErkoSMS.DataAccess
 
         public int CreateOrder(Sales sales)
         {
-            string query = "Insert into Sales (CustomerName,SalesPeople,TotalPrice,Currency,State,InvoiceNumber,InvoiceDate,StartDate,ExchangeRate) values (@customerName,@salesPeopleGuid," +
-                "@totalPrice,@currency,@state,@invoiceNumber,@invoiceDate,@salesStartDate,@exchangeRate);";
+            string query = "Insert into Sales (CustomerName,SalesPeople,TotalPrice,Currency,State,InvoiceNumber,InvoiceDate,StartDate,ExchangeRate,ExporterId) values (@customerName,@salesPeopleGuid," +
+                "@totalPrice,@currency,@state,@invoiceNumber,@invoiceDate,@salesStartDate,@exchangeRate,@exporterId);";
             query += Environment.NewLine + "SELECT LAST_INSERT_ROWID();";
             _sqliteDataProvider.AddParameter("@customerName", sales.Customer.Name);
             _sqliteDataProvider.AddParameter("@salesPeopleGuid", sales.SalesUserGuid);
@@ -132,6 +132,7 @@ namespace ErkoSMS.DataAccess
             _sqliteDataProvider.AddParameter("@invoiceDate", sales.InvoiceDate);
             _sqliteDataProvider.AddParameter("@salesStartDate", DateTime.Now);
             _sqliteDataProvider.AddParameter("@exchangeRate", sales.ExchangeRate);
+            _sqliteDataProvider.AddParameter("@exporterId", sales.Exporter?.Id);
 
             var salesId = Convert.ToInt32(_sqliteDataProvider.ExecuteScalar(query));
             foreach (var salesDetail in sales.SalesDetails)
@@ -163,7 +164,7 @@ namespace ErkoSMS.DataAccess
                                         "State = @state, InvoiceNumber = @invoiceNumber, " +
                                         "InvoiceDate = @invoiceDate, Currency = @currency, " +
                                         "TotalPrice = @totalPrice,  LastModifiedDate = @lastModifiedDate, " +
-                                        "ExchangeRate = @exchangeRate where id= @id;";
+                                        "ExchangeRate = @exchangeRate, ExporterId = @exporterId where id= @id;";
             _sqliteDataProvider.AddParameter("@id", sales.Id);
             _sqliteDataProvider.AddParameter("@customerName", sales.Customer.Name);
             _sqliteDataProvider.AddParameter("@state", sales.SalesState);
@@ -173,6 +174,7 @@ namespace ErkoSMS.DataAccess
             _sqliteDataProvider.AddParameter("@totalPrice", sales.TotalPrice);
             _sqliteDataProvider.AddParameter("@lastModifiedDate", sales.LastModifiedDate);
             _sqliteDataProvider.AddParameter("@exchangeRate", sales.ExchangeRate);
+            _sqliteDataProvider.AddParameter("@exporterId", sales.Exporter?.Id);
             _sqliteDataProvider.ExecuteNonQuery(query);
 
             DeleteOrderDetails(sales.Id);
@@ -222,7 +224,7 @@ namespace ErkoSMS.DataAccess
             var productIds = new List<int>();
             foreach (DataRow row in dataSet.Tables[0].Rows)
             {
-                 productIds.Add(Convert.ToInt32(row["productid"].ToString()));
+                productIds.Add(Convert.ToInt32(row["productid"].ToString()));
             }
 
             return productIds;
@@ -246,7 +248,7 @@ namespace ErkoSMS.DataAccess
                 : DateTime.Parse(row["startdate"].ToString());
             var SalesUserGuid = row["salespeople"]?.ToString();
             var ExchangeRate = DBNull.Value.Equals(row["ExchangeRate"]) ? 0.0 : Convert.ToDouble(row["ExchangeRate"]);
-
+            var Exporter = DBNull.Value.Equals(row["ExporterId"]) ? new Exporter() : GetExporterById(Convert.ToInt32(row["ExporterId"]));
             return new Sales
             {
                 Id = Id,
@@ -259,7 +261,8 @@ namespace ErkoSMS.DataAccess
                 LastModifiedDate = LastModifiedDate,
                 SalesStartDate = SalesStartDate,
                 SalesUserGuid = SalesUserGuid,
-                ExchangeRate = ExchangeRate
+                ExchangeRate = ExchangeRate,
+                Exporter = Exporter
             };
         }
 
@@ -294,6 +297,36 @@ namespace ErkoSMS.DataAccess
                 return CreateCustomer(row);
             }
 
+        }
+
+        private Exporter GetExporterById(int exporterId)
+        {
+            const string query = "Select * From Exporters Where id = @id";
+            _sqliteDataProvider.AddParameter("@id", exporterId);
+            DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
+            if (row == null)
+            {
+                return new Exporter { Id = exporterId };
+            }
+            else
+            {
+                return CreateExporter(row);
+            }
+
+        }
+
+        private Exporter CreateExporter(DataRow row)
+        {
+            return new Exporter
+            {
+                Id = Convert.ToInt32(row["id"]),
+                Address = row["address"].ToString(),
+                Name = row["name"].ToString(),
+                TradeRegisterNo = row["tradeRegisterNo"].ToString(),
+                VatNo = row["vatNo"].ToString(),
+                FaxNumber = row["FaxNumber"].ToString(),
+                PhoneNumber = row["PhoneNumber"].ToString()
+            };
         }
 
         private Customer CreateCustomer(DataRow row)

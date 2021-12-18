@@ -26,5 +26,6 @@ namespace ErkoSMS.DataAccess.Model
         public IEnumerable<SalesDetail> SalesDetails { get; set; }
 
         public double ExchangeRate { get; set; }
+        public Exporter Exporter { get; set; }
     }
 }
