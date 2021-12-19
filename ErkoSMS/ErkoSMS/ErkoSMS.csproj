@@ -677,7 +677,6 @@
     <Content Include="Views\Customer\Index.cshtml" />
     <Content Include="Views\Order\OrderRow.cshtml" />
     <Content Include="Views\Order\CreateOrder.cshtml" />
-    <Content Include="Views\Order\ListOrder.cshtml" />
     <Content Include="Views\Stock\Index.cshtml" />
     <Content Include="Views\Order\UpdateOrder.cshtml" />
     <Content Include="Views\Supplier\ListSuppliers.cshtml" />
@@ -693,6 +692,7 @@
     <Content Include="Views\Exporter\CreateExporter.cshtml" />
     <Content Include="Views\Exporter\ListExporters.cshtml" />
     <Content Include="Views\Exporter\UpdateExporter.cshtml" />
+    <Content Include="Views\Order\ListOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\StockHistory\" />
