@@ -196,7 +196,7 @@
     var addHeaderToEachPage = function(doc) {
         for (var i = 1; i <= doc.getNumberOfPages(); i++) {
 
-            doc.setFont("times", "bold");
+            doc.setFont("turkish", "bold");
             doc.setFontSize(12);
 
             var width = doc.internal.pageSize.getWidth();
@@ -220,61 +220,63 @@
 
 
             doc.setFontSize(5);
-            doc.setFont("times", "normal");
-            var loremipsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor" +
-                " incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation " +
-                "ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in" +
-                " voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non" +
-                " proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-            var lines = doc.splitTextToSize(loremipsum, 80);
-            doc.text(15, 30, lines);
-
+            doc.setFont("turkish", "normal");
+            addImporter(doc);
             addExporter(doc);
 
             doc.setPage(i);
         }
     }
 
+    var addImporter = function (doc) {
+        var exporterName = "@Model.Customer.Name";
+        doc.setFont("turkish", "bold");
+        doc.setFontSize(7);
+        var y = 28;
+        doc.text(15,y, exporterName);
+        y += 3;
+        var address = "@Html.Raw(Regex.Replace(Model.Customer.Address, @"\r?\n", ","))".split(",");
+        doc.setFont("turkish", "normal");
+        doc.setFontSize(6);
+        for (var i = 0; i < address.length; i++) {
+            var line = address[i];
+            doc.text(15, y, line);
+            y += 2;
+        }
+    }
+
     var addExporter = function (doc) {
         var exporterName = "@Model.Exporter.Name";
-
-        doc.setFont("times", "bold");
+        doc.setFont("turkish", "bold");
         doc.setFontSize(7);
-        var address = "@Html.Raw(Regex.Replace(Model.Exporter.Address, @"\r?\n", ","))".split(",");
-        @*//var addressLines = @String.Join(",",Model.Exporter.Address.Split( new string[] {"\n"},StringSplitOptions.None));*@
-        //var addressLinesArray = address.split(",");
         var y = 28;
-        doc.setFont("times", "normal");
+        doc.text(111,y, exporterName);
+        y += 3;
+        var address = "@Html.Raw(Regex.Replace(Model.Exporter.Address, @"\r?\n", ","))".split(",");
+        doc.setFont("turkish", "normal");
         doc.setFontSize(6);
         for (var i = 0; i < address.length; i++) {
             var line = address[i];
             doc.text(111, y, line);
             y += 2;
         }
-        y += 1;
         var tradeRegisterNoText = "Tic.Sic. No : " + "@Model.Exporter.TradeRegisterNo"; 
         doc.text(111, y, tradeRegisterNoText);
-        y += 3;
+        y += 2;
         var vatNoText = "VAT No : " + "@Model.Exporter.VatNo"; 
         doc.text(111, y, vatNoText);
-        y += 3;
+        y += 2;
         var telText = "TEL : " + "@Model.Exporter.PhoneNumber"; 
         doc.text(111, y, telText);
-        y += 3;
+        y += 2;
         var faxText = "FAX : " + "@Model.Exporter.FaxNumber"; 
         doc.text(111, y, faxText);
-
-
-
-
-
-
     }
 
     var addFooter = function(doc, totalCostofProducts) {
         var afterTable = doc.lastAutoTable.finalY + 10; // The y position on the page
         doc.setFontSize(8);
-        doc.setFont("times", "bold");
+        doc.setFont("turkish", "bold");
         var currency = $("#currencydropdown").find(':selected').text();
         doc.text(170, afterTable, "TOTAL    " + currency, { align: "right" });
         doc.text(170, afterTable + 5, "TRANSPORT COST   " + currency, { align: "right" });
@@ -286,7 +288,7 @@
         doc.text(195, afterTable + 5, transportCost.toFixed(2), { align: "right" });
         doc.text(195, afterTable + 10, totalCost.toFixed(2), { align: "right" });
 
-        doc.setFont("times", "normal");
+        doc.setFont("turkish", "normal");
         doc.text(10, afterTable, "TOTAL PALLETES:   32 CASE", { align: "left" });
         doc.text(10, afterTable + 5, "TOTAL PIECE:  50970", { align: "left" });
         doc.text(10, afterTable + 10, "TOTAL NET WEIGHT:    7872 Kgs", { align: "left" });
@@ -295,7 +297,7 @@
         doc.text(10, afterTable + 25, "PAYMENT: 60 DAYS AFTER RECEIVING GOODS", { align: "left" });
         doc.text(10, afterTable + 30, "DELIVERY TERMS:  CIF", { align: "left" });
 
-        doc.setFont("times", "bold");
+        doc.setFont("turkish", "bold");
         var words = toWords(totalCost);
         doc.text(10, afterTable + 40, words, { align: "left" });
         doc.text(10, afterTable + 45, "Bank Account", { align: "left" });

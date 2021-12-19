@@ -445,6 +445,8 @@
     <Content Include="CustomContent\Styles\vex-theme-metro.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="fonts\turkish-bold.js" />
+    <Content Include="fonts\turkish-normal.js" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
