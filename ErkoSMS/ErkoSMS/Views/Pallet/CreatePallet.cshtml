@@ -1,0 +1,67 @@
+﻿
+@model ErkoSMS.ViewModels.PalletViewModel
+<div>
+    <h3>Sandık Ekle</h3>
+    <hr />
+    @using (Html.BeginForm("CreatePallet", "Pallet", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "CreatePalletForm", style = "width: 500px" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Width)
+            @Html.TextBoxFor(m => m.Width, new { @class = "form-control", required = "", type = "number" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Height)
+            @Html.TextBoxFor(m => m.Height, new { @class = "form-control", required = "", type = "number" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Depth)
+            @Html.TextBoxFor(m => m.Depth, new { @class = "form-control", required = "", type = "number" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Weight)
+            @Html.TextBoxFor(m => m.Weight, new { @class = "form-control", required = "", type = "number" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.GrossWeight)
+            @Html.TextBoxFor(m => m.GrossWeight, new { @class = "form-control", required = "", type = "number" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Description)
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style = "height: 90px;resize: none;", required = "" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.EnglishDescription)
+            @Html.TextAreaFor(m => m.EnglishDescription, new { @class = "form-control", style = "height: 90px;resize: none;", required = "" })
+        </div>
+
+
+        <input type="submit" class="btn btn-primary pull-right" value="Kaydet" />
+    }
+
+</div>
+
+<script>
+
+    $("#CreatePalletForm").on("ajax-form:succeed",
+        function(ev, data) {
+            vex.dialog.alert({ unsafeMessage: data.result.Data });
+            var tg = $(ev.currentTarget);
+            closeParentVexModal(tg);
+        });
+
+    var getAllPurchases = function() {
+        return getPurchases("GetAllPurchases");
+    }
+
+    getAllPurchases();
+
+</script>

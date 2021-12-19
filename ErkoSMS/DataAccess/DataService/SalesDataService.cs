@@ -46,6 +46,20 @@ namespace ErkoSMS.DataAccess
             return sales;
         }
 
+        public IList<Sales> GetSalesByState(SalesState state)
+        {
+            const string query = "SELECT * From sales Where State = @state";
+            _sqliteDataProvider.AddParameter("@state", state);
+            var dataSet = _sqliteDataProvider.ExecuteDataSet(query);
+            IList<Sales> sales = new List<Sales>();
+            foreach (DataRow row in dataSet.Tables[0].Rows)
+            {
+                sales.Add(CreateSales(row));
+            }
+
+            return sales;
+        }
+
         public IList<Sales> GetSales(DateTime startDate, DateTime endDate)
         {
             const string query = "SELECT * From sales Where StartDate BETWEEN @StartDate AND @EndDate ";

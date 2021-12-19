@@ -1,0 +1,181 @@
+﻿
+
+<div id="listPurchaseDiv" style="display: block;margin-top:20px;">
+    <input type="button" id="getReadyToPackOrdersButton" value="Paketleme Bekleyen Sipaişler" />
+    <input type="button" id="getPackedOrdersButton" value="Paketlenmiş Sipaişler" />
+</div>
+
+<div style="margin-top: 20px">
+    <table id="ordersTable" class="table table-bordered table-condensed table-hover table-responsive table-striped"></table>
+</div>
+
+<script>
+    var destroyTable = function () {
+        var tb = $("#ordersTable");
+
+        if ($.fn.dataTable.isDataTable(tb))
+            tb.DataTable().destroy();
+
+        tb.empty();
+    };
+
+    $('#ordersTable').on('click', 'td.editor-edit', function (e) {
+        e.preventDefault();
+        var rowToBeUpdated = $(this).closest('tr')[0];
+        var orderId = rowToBeUpdated.cells[0].innerText;
+        ERKOSMS.GetAjaxDialog("Packing/PackOrder?orderId=" + orderId, {}, false).then(function () {
+        }), function (data) {
+            ERKOSMS.ShowWarning(data);
+        }
+    });
+
+    var getOrders = function (ajaxAction) {
+        destroyTable();
+        var tb = $("#ordersTable");
+        ERKOSMS.AjaxAction(ajaxAction, {
+            type: 'GET'
+        }).then(function (data) {
+            debugger;
+            var columns = [
+                { title: "Id", data: "OrderId", className: "data" },
+                { title: "Satış Başlangıç Tarihi", data: "SalesStartDate", className: "data", type: "date" },
+                { title: "Fatura Tarihi", data: "InvoiceDate", className: "data", type: "date" },
+                { title: "Fatura No", data: "InvoiceNumber", className: "data" },
+                { title: "Müşteri", data: "Customer.Name", className: "data" },
+                { title: "Müşteri Ülkesi", data: "Customer.Country", className: "data" },
+                { title: "Tutar", data: "TotalPrice", className: "data" },
+                { title: "Kur", data: "Currency", className: "data" },
+                { title: "Tutar(TL)", data: "TotalPriceTL", className: "data" },
+                { title: "Durum", data: "SalesState", className: "data" },
+                {
+                    data: null,
+                    className: "dt-center editor-edit",
+                    defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
+                    orderable: false
+                }
+            ];
+
+            ERKOSMS.AjaxAction(ajaxAction, {}, false).then(function (data) {
+                var datatable = tb.DataTable({
+                    autoWidth: true,
+                    columns: columns,
+                    data: data,
+                    sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
+                    buttons: [
+                        {
+                            extend: 'csv',
+                            charset: 'UTF-8',
+                            fieldSeparator: ';',
+                            bom: true,
+                            text: '<button type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-export"></span>Dışa Aktar</button ><br>',
+                            exportOptions: {
+                                columns: ".data"
+                            },
+                            filename: function () {
+                                var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
+                                return "Satışlar_" + dateNow;
+                            },
+                        },
+                    ],
+                    aaSorting: [], // Initial sorting
+                    bInfo: true, // Info is not shown because the total count to show is not known
+                    searching: true, // Disable searching TODO: Enable searching if necessary
+                    paging: true, // Disable paging in outstanding
+                    pageLength: 50,
+                    deferRender: true,
+                    columnDefs: [
+                        {
+                            targets: [1, 2],
+                            render: formatDate
+                        },
+                        {
+                            targets: [7],
+                            render: formatCurrency
+                        },
+                        {
+                            targets: [9],
+                            render: formatState
+                        }
+                    ]
+                });
+            });
+        });
+    }
+    var getReadyForPackingOrders = function () {
+        return getOrders("Packing/GetReadyForPackingOrders");
+    }
+    var getPackedOrders = function () {
+        return getOrders("Packing/GetPackedOrders");
+    }
+
+    $('#getReadyToPackOrdersButton').on('click', getReadyForPackingOrders);
+    $('#getPackedOrdersButton').on('click', getPackedOrders);
+
+    getReadyForPackingOrders();
+
+    var formatDate = function (date) {
+        if (date == null) {
+            return '';
+        }
+        else {
+            return window.moment(date).format("DD-MM-YYYY");
+        }
+    }
+
+    var formatCurrency = function (data) {
+        if (data == 0) {
+            return "TL";
+        }
+        else if (data == 1) {
+            return "EUR";
+        }
+        else if (data == 2) {
+            return "USD";
+        }
+    }
+
+    var formatState = function (data) {
+        if (data == -1) {
+            return "";
+        }
+        else if (data == 0) {
+            return "İç Satış İletildi";
+        }
+        else if (data == 1) {
+            return "Fatura Kesildi - Yüklendi";
+        }
+        else if (data == 2) {
+            return "Paketleme Bekleniyor";
+        }
+        else if (data == 3) {
+            return "Nakliye Bekleniyor";
+        }
+        else if (data == 4) {
+            return "Ödeme Geldi - Nakliye Bekleniyor";
+        }
+        else if (data == 5) {
+            return "Paketleme Hazır";
+        }
+        else if (data == 6) {
+            return "Paketleme Hazır - Ödeme Bekleniyor";
+        }
+        else if (data == 7) {
+            return "Reddedildi";
+        }
+        else if (data == 8) {
+            return "Cevap Bekleniyor";
+        }
+        else if (data == 9) {
+            return "Satın Alma Talep Edildi";
+        }
+        else if (data == 10) {
+            return "Satın Alma İşleme Alındı";
+        }
+        else if (data == 11) {
+            return "Satın Alma Başarılı";
+        }
+        else if (data == 12) {
+            return "Satın Alma Başarısız";
+        }
+    }
+</script>

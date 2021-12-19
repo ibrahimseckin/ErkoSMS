@@ -1,0 +1,97 @@
+﻿@using ErkoSMS.ViewModels
+@{
+    var order = (OrderViewModel)ViewBag.Order;
+    var pallets = (IList<PalletViewModel>)ViewBag.Pallets;
+}
+
+<div class="row" style="width: 1400px">
+    <div class="col-xs-6" id="productListDiv" style="border-right: 2px solid lightgray;">
+        <h2>Ürünler</h2>
+        <table id="productTable" class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Ürün Kodu</th>
+                <th>Açıklama TR</th>
+                <th>Toplam Miktar</th>
+                <th>Paketlenmemiş Miktar</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var product in order.OrderLines)
+            {
+                <tr>
+                    <td>@product.ProductCode</td>
+                    <td>@product.ProductDescription</td>
+                    <td>@product.Quantity</td>
+                    <td>@product.Quantity</td>
+                    <td>
+                        <span class="btn btn-info packOrderButton">
+                            <span class="glyphicon glyphicon-arrow-right"></span> Paketle
+                        </span>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-xs-6" id="packingListDiv">
+        <h2>Paketleme Listesi</h2>
+        @using (Html.BeginForm("SavePacking", "Packing", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "PackingListForm" }))
+        {
+            <table id="PackingList" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Palet No</th>
+                        <th>Ölçüler</th>
+                        <th>Miktar</th>
+                        <th>KG</th>
+                        <th>Brüt KG</th>
+                        <th>Kod</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>1x2x3</td>
+                        <td colspan="5">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<script>
+    $(".packOrderButton").on("click",
+        function (e) {
+            e.preventDefault();
+            var productRowToBePacked = $(this).closest('tr')[0];
+            var productCode = productRowToBePacked.cells[0].innerText;
+            ERKOSMS.GetAjaxDialog("Packing/PackProduct?productCode=" + productCode, {}, false).then(function () {
+            }), function (data) {
+                ERKOSMS.ShowWarning(data);
+            }
+        });
+    $(document).on("click", "#addProductToPallet",
+        function (e) {
+
+            var element = $("tr td:first:contains(" + $("#palletDropdown")[0].selectedOptions[0].value + ")");
+            debugger;
+            var tg = $(e.currentTarget);
+            closeParentVexModal(tg);
+        });
+</script>

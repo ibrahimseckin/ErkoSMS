@@ -180,6 +180,8 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\ExporterController.cs" />
+    <Compile Include="Controllers\PackingController.cs" />
+    <Compile Include="Controllers\PalletController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -191,6 +193,7 @@
     <Compile Include="Controllers\StockHistoryController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\UserAdministrationController.cs" />
+    <Compile Include="Enums\PalletTypes.cs" />
     <Compile Include="Enums\UserTypes.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -206,6 +209,7 @@
     <Compile Include="PurchaseFilterParameters.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\OrderStatusOverviewViewModel.cs" />
+    <Compile Include="ViewModels\PalletViewModel.cs" />
     <Compile Include="ViewModels\SalesManStatisticViewModel.cs" />
     <Compile Include="ViewModels\ProductHitListViewModel.cs" />
     <Compile Include="ViewModels\CustomerHitListViewModel.cs" />
@@ -692,6 +696,11 @@
     <Content Include="Views\Exporter\CreateExporter.cshtml" />
     <Content Include="Views\Exporter\ListExporters.cshtml" />
     <Content Include="Views\Exporter\UpdateExporter.cshtml" />
+    <Content Include="Views\Pallet\CreatePallet.cshtml" />
+    <Content Include="Views\Pallet\Index.cshtml" />
+    <Content Include="Views\Packing\Index.cshtml" />
+    <Content Include="Views\Packing\PackOrder.cshtml" />
+    <Content Include="Views\Packing\PackProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\StockHistory\" />

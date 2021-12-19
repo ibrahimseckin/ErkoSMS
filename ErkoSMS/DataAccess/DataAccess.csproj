@@ -78,13 +78,16 @@
     <Compile Include="DataService\CustomerDataService.cs" />
     <Compile Include="DataProvider.cs" />
     <Compile Include="DataService\ExporterDataService.cs" />
+    <Compile Include="DataService\PackingDataService.cs" />
     <Compile Include="IDataProvider.cs" />
     <Compile Include="Interfaces\ICustomer.cs" />
     <Compile Include="Interfaces\IExporter.cs" />
+    <Compile Include="Interfaces\IPallet.cs" />
     <Compile Include="Interfaces\IProduct.cs" />
     <Compile Include="Interfaces\IStock.cs" />
     <Compile Include="Interfaces\IStockORKA.cs" />
     <Compile Include="Model\Exporter.cs" />
+    <Compile Include="Model\Pallet.cs" />
     <Compile Include="Model\Purchase.cs" />
     <Compile Include="Model\Currency.cs" />
     <Compile Include="Model\Customer.cs" />

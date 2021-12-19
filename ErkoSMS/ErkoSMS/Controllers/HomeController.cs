@@ -61,6 +61,15 @@ namespace ErkoSMS.Controllers
             }
         };
 
+        private LeftMenuViewModel WarehouseNavigations = new LeftMenuViewModel
+        {
+            Navigations = new List<LeftMenu>
+            {
+                new LeftMenu(new LeftMenuItem("Sandıklar", "Pallet", "Index"),null),
+                new LeftMenu(new LeftMenuItem("Paketleme", "Packing", "Index"),null)
+            }
+        };
+
         LeftMenuViewModel AnynomousNavigations = new LeftMenuViewModel
         {
             Navigations = new List<LeftMenu> {
@@ -139,7 +148,7 @@ namespace ErkoSMS.Controllers
             }
             if (User.IsInRole(UserTypes.WareHouseMan.Name))
             {
-                return AnynomousNavigations;
+                return WarehouseNavigations;
             }
 
             return AnynomousNavigations;

@@ -1,0 +1,21 @@
+﻿@using ErkoSMS.ViewModels
+
+@{
+    var pallets = (IList<PalletViewModel>)ViewBag.Pallets;
+    var palletOptions = pallets.Select(x => new SelectListItem
+    {
+        Text = $"{x.Id} - Dimensions: {x.Height}x{x.Width}x{x.Depth}",
+        Value = x.Id.ToString()
+    }).ToList();
+}
+
+<div class="form-group col-md-4">
+    <label>Palet:</label>
+    @Html.DropDownList("palletDropdown", palletOptions, new { id = "palletDropdown", @class = "chosen-select form-control" })
+</div>
+<div class="form-group col-md-4">
+    <label>Miktar:</label>
+    @Html.TextBox("Quantity")
+</div>
+
+<input type="button" class="btn btn-primary pull-right mt-20" id="addProductToPallet" value="Paketle" />
