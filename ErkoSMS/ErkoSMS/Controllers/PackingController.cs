@@ -102,7 +102,7 @@ namespace ErkoSMS.Controllers
         [HttpPost]
         public ActionResult SavePacking(string productCode)
         {
-
+            return null;
         }
     }
 }

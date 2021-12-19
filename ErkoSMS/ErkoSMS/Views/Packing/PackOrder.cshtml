@@ -4,34 +4,34 @@
     var pallets = (IList<PalletViewModel>)ViewBag.Pallets;
 }
 
-<div class="row" style="width: 1400px">
+<div class="row" style="width: 1400px;margin-top:25px">
     <div class="col-xs-6" id="productListDiv" style="border-right: 2px solid lightgray;">
         <h2>Ürünler</h2>
         <table id="productTable" class="table table-bordered">
             <thead>
-            <tr>
-                <th>Ürün Kodu</th>
-                <th>Açıklama TR</th>
-                <th>Toplam Miktar</th>
-                <th>Paketlenmemiş Miktar</th>
-                <th></th>
-            </tr>
+                <tr>
+                    <th>Ürün Kodu</th>
+                    <th>Açıklama TR</th>
+                    <th>Toplam Miktar</th>
+                    <th>Paketlenmemiş Miktar</th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var product in order.OrderLines)
-            {
-                <tr>
-                    <td>@product.ProductCode</td>
-                    <td>@product.ProductDescription</td>
-                    <td>@product.Quantity</td>
-                    <td>@product.Quantity</td>
-                    <td>
-                        <span class="btn btn-info packOrderButton">
-                            <span class="glyphicon glyphicon-arrow-right"></span> Paketle
-                        </span>
-                    </td>
-                </tr>
-            }
+                @foreach (var product in order.OrderLines)
+                {
+                    <tr>
+                        <td>@product.ProductCode</td>
+                        <td>@product.ProductDescription</td>
+                        <td>@product.Quantity</td>
+                        <td>@product.Quantity</td>
+                        <td>
+                            <span class="btn btn-info packOrderButton">
+                                <span class="glyphicon glyphicon-arrow-right"></span> Paketle
+                            </span>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -39,7 +39,7 @@
         <h2>Paketleme Listesi</h2>
         @using (Html.BeginForm("SavePacking", "Packing", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "PackingListForm" }))
         {
-            <table id="PackingList" class="table table-bordered">
+            <table id="packingList" class="table table-bordered">
                 <thead>
                     <tr>
                         <th>Palet No</th>
@@ -53,21 +53,13 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>1</td>
+                        <td rowspan="1">1</td>
                         <td>1x2x3</td>
-                        <td colspan="5">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1</td>
                     </tr>
                 </tbody>
             </table>
@@ -86,11 +78,18 @@
                 ERKOSMS.ShowWarning(data);
             }
         });
-    $(document).on("click", "#addProductToPallet",
+    $(document).off("click", "#addProductToPallet").on("click", "#addProductToPallet",
         function (e) {
 
-            var element = $("tr td:first:contains(" + $("#palletDropdown")[0].selectedOptions[0].value + ")");
-            debugger;
+            var palletId = $("#palletDropdown")[0].selectedOptions[0].value;
+            // TODO: LOWER THE AMOUNT FROM LEFT TABLE
+            var element = $("#packingList tr td:first:contains(" + $("#palletDropdown")[0].selectedOptions[0].value + ")"); //TODO: Right a function instead. For finding the correct td with exact text.
+            if (element.length > 0) {
+                element[0].rowSpan = `${parseInt(element[0].rowSpan) + 1}`;
+                element.parent().after("<tr><td>Dimensions</td><td>Amount</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>");
+            } else {
+                $("#packingList tbody").append(`<tr><td>${palletId}</td><td>Dimensions</td><td>Amount</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>`);
+            }
             var tg = $(e.currentTarget);
             closeParentVexModal(tg);
         });
