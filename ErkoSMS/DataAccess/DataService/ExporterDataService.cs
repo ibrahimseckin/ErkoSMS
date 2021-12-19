@@ -34,7 +34,8 @@ namespace ErkoSMS.DataAccess.DataService
             string query = "Update Exporters Set name=@name, address=@address, " +
                                              "tradeRegisterNo=@tradeRegisterNo," +
                                              "vatNo=@vatNo,PhoneNumber=@PhoneNumber," +
-                                             "FaxNumber=@FaxNumber";
+                                             "FaxNumber=@FaxNumber where id = @id";
+            _sqliteDataProvider.AddParameter("@id", exporter.Id);
             _sqliteDataProvider.AddParameter("@name", exporter.Name);
             _sqliteDataProvider.AddParameter("@address", exporter.Address);
             _sqliteDataProvider.AddParameter("@tradeRegisterNo", exporter.TradeRegisterNo);
