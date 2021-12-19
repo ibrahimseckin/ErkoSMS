@@ -83,14 +83,25 @@
 
             var palletId = $("#palletDropdown")[0].selectedOptions[0].value;
             // TODO: LOWER THE AMOUNT FROM LEFT TABLE
-            var element = $("#packingList tr td:first:contains(" + $("#palletDropdown")[0].selectedOptions[0].value + ")"); //TODO: Right a function instead. For finding the correct td with exact text.
-            if (element.length > 0) {
-                element[0].rowSpan = `${parseInt(element[0].rowSpan) + 1}`;
-                element.parent().after("<tr><td>Dimensions</td><td>Amount</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>");
+            var element = FindPalletRowById(palletId); //TODO: Right a function instead. For finding the correct td with exact text.
+            if (element) {
+                element.find("td:first")[0].rowSpan = `${parseInt(element.find("td:first")[0].rowSpan) + 1}`;
+                element.after("<tr><td>Dimensions</td><td>Amount</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>");
             } else {
                 $("#packingList tbody").append(`<tr><td>${palletId}</td><td>Dimensions</td><td>Amount</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>`);
             }
             var tg = $(e.currentTarget);
             closeParentVexModal(tg);
         });
+
+    var FindPalletRowById = function (id) {
+        var row;
+        $("#packingList tr").each(function () {
+            if($(this).find('td').eq(0).text() === id) {
+                row = $(this);
+                return false;
+            }
+        });
+        return row;
+    }
 </script>
