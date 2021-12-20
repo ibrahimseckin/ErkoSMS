@@ -43,37 +43,29 @@
                 <thead>
                     <tr>
                         <th>Palet No</th>
-                        <th>Ölçüler</th>
                         <th>Miktar</th>
-                        <th>KG</th>
-                        <th>Brüt KG</th>
                         <th>Kod</th>
                         <th>Açıklama</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td rowspan="1">1</td>
-                        <td>1x2x3</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
                 </tbody>
             </table>
+            <input type="submit" class="btn btn-primary pull-right" value="Kaydet" />
         }
     </div>
 </div>
 
 <script>
+    var currentProductCode;
+
     $(".packOrderButton").on("click",
         function (e) {
             e.preventDefault();
             var productRowToBePacked = $(this).closest('tr')[0];
-            var productCode = productRowToBePacked.cells[0].innerText;
-            ERKOSMS.GetAjaxDialog("Packing/PackProduct?productCode=" + productCode, {}, false).then(function () {
+            currentProductCode = productRowToBePacked.cells[0].innerText;
+
+            ERKOSMS.GetAjaxDialog("Packing/PackProduct", {}, false).then(function () {
             }), function (data) {
                 ERKOSMS.ShowWarning(data);
             }
@@ -82,13 +74,35 @@
         function (e) {
 
             var palletId = $("#palletDropdown")[0].selectedOptions[0].value;
+            var quantityOfProduct = parseInt($('#Quantity')[0].value);
+
             // TODO: LOWER THE AMOUNT FROM LEFT TABLE
-            var element = FindPalletRowById(palletId); //TODO: Right a function instead. For finding the correct td with exact text.
-            if (element) {
-                element.find("td:first")[0].rowSpan = `${parseInt(element.find("td:first")[0].rowSpan) + 1}`;
-                element.after("<tr><td>Dimensions</td><td>Amount</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>");
+            var targetPalletRow = FindPalletRowById(palletId);
+            var targetProductRow = FindProductRowByCode(currentProductCode);
+            var productDesc = targetProductRow.find("td:nth-child(2)").text();
+
+            if (targetPalletRow) {
+                // Already added pallet. Merge the common cells and add the new row.
+                var numberOfRowForPallet = parseInt(targetPalletRow.find("td:first")[0].rowSpan);
+                targetPalletRow.find("td:first")[0].rowSpan = `${numberOfRowForPallet + 1}`;
+                //targetPalletRow.find("td:nth-child(2)")[0].rowSpan = `${parseInt(targetPalletRow.find("td:nth-child(2)")[0].rowSpan) + 1}`;
+                //targetPalletRow.find("td:nth-child(3)")[0].rowSpan = `${parseInt(targetPalletRow.find("td:nth-child(3)")[0].rowSpan) + 1}`;
+                //targetPalletRow.find("td:nth-child(4)")[0].rowSpan = `${parseInt(targetPalletRow.find("td:nth-child(4)")[0].rowSpan) + 1}`;
+
+                targetPalletRow.after(
+                    `<tr>
+                        <td>${quantityOfProduct}<input type="text" class="hidden" value="${quantityOfProduct}" name="Pallets[].Products[${numberOfRowForPallet}].Quantity"></input></td>
+                        <td>${currentProductCode}<input type="text" class="hidden" value="${currentProductCode}" name="Pallets[].Products[${numberOfRowForPallet}].ProductCode"</td>
+                        <td>${productDesc}</td>
+                    </tr>`);
             } else {
-                $("#packingList tbody").append(`<tr><td>${palletId}</td><td>Dimensions</td><td>Amount</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>`);
+                $("#packingList tbody").append(
+                 `<tr>
+                    <td rowspan="1">${palletId}<input type="text" class="hidden" value="${palletId}" name="Pallets[].PalletId"></input></td>
+                    <td>${quantityOfProduct}<input type="text" class="hidden" value="${quantityOfProduct}" name="Pallets[].Products[0].Quantity"></input></td>
+                    <td>${currentProductCode}<input type="text" class="hidden" value="${currentProductCode}" name="Pallets[].Products[0].ProductCode"></input></td>
+                    <td>${productDesc}</td>
+                 </tr>`);
             }
             var tg = $(e.currentTarget);
             closeParentVexModal(tg);
@@ -97,7 +111,18 @@
     var FindPalletRowById = function (id) {
         var row;
         $("#packingList tr").each(function () {
-            if($(this).find('td').eq(0).text() === id) {
+            if ($(this).find('td').eq(0).text() === id) {
+                row = $(this);
+                return false;
+            }
+        });
+        return row;
+    }
+
+    var FindProductRowByCode = function (code) {
+        var row;
+        $("#productTable tr").each(function () {
+            if ($(this).find('td').eq(0).text() === code) {
                 row = $(this);
                 return false;
             }

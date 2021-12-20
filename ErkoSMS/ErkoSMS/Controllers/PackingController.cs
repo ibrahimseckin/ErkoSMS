@@ -87,9 +87,8 @@ namespace ErkoSMS.Controllers
         }
 
         [HttpGet]
-        public ActionResult PackProduct(string productCode)
+        public ActionResult PackProduct()
         {
-            ViewBag.ProductCodeToPack = productCode;
             var packingDataService = new PackingDataService();
             var allPallets = packingDataService.GetAllPallets();
 
@@ -100,9 +99,26 @@ namespace ErkoSMS.Controllers
         }
 
         [HttpPost]
-        public ActionResult SavePacking(string productCode)
+        public ActionResult SavePacking(PackingViewModel packingDetail)
         {
             return null;
+        }
+
+        public class PackingViewModel
+        {
+            public IList<PackingPallet> Pallets { get; set; }
+    }
+
+        public class PackingPallet
+        {
+            public int PalletId { get; set; }
+            public IList<PackedProduct> Products { get; set; }
+        }
+
+        public class PackedProduct
+        {
+            public int Quantity { get; set; }
+            public string ProductCode { get; set; }
         }
     }
 }
