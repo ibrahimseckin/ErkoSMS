@@ -65,8 +65,9 @@ namespace ErkoSMS.Controllers
         {
             Navigations = new List<LeftMenu>
             {
-                new LeftMenu(new LeftMenuItem("Sandıklar", "Pallet", "Index"),null),
-                new LeftMenu(new LeftMenuItem("Paketleme", "Packing", "Index"),null)
+                new LeftMenu(new LeftMenuItem("Paletler", "Pallet", "Index"),null),
+                new LeftMenu(new LeftMenuItem("Paketleme Bekleyen Siparişler", "Packing", "ListUnpackedOrders"),null),
+                new LeftMenu(new LeftMenuItem("Paketlenmiş Siparişler", "Packing", "ListPackedOrders"),null)
             }
         };
 

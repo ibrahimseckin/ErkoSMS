@@ -19,3 +19,13 @@
 </div>
 
 <input type="button" class="btn btn-primary pull-right mt-20" id="addProductToPallet" value="Paketle" />
+
+<script>
+    $(document).ready(function() {
+        $("#Quantity").off().on("change",
+            function () {
+                if ($(this)[0].value < 0) $(this)[0].value = 0;
+                if ($(this)[0].value > maxQuantityToPack) $(this)[0].value = maxQuantityToPack;
+            });
+    });
+</script>

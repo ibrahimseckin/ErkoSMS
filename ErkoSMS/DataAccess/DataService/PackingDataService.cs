@@ -30,51 +30,6 @@ namespace ErkoSMS.DataAccess
             return pallets;
         }
 
-        //public Product GetProductById(int productId)
-        //{
-        //    const string query = "Select * From products Where Id = @productid";
-        //    _sqliteDataProvider.AddParameter("@productid", productId);
-        //    DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
-        //    return CreatePallet(row);
-        //}
-
-        //public Product GetProductByCode(string productCode)
-        //{
-        //    const string query = "Select * From products Where lower(code) = lower(@productCode)";
-        //    _sqliteDataProvider.AddParameter("@productCode", productCode);
-        //    DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
-        //    return row != null ? CreatePallet(row) : null;
-        //}
-
-
-        //public IList<Product> GetProductByCodeWithWildCard(string productCode)
-        //{
-        //    const string query = "Select * From products Where code like @productCode";
-        //    _sqliteDataProvider.AddParameter("@productCode", $"%{productCode}%");
-        //    var rows = _sqliteDataProvider.ExecuteDataRows(query);
-        //    IList<Product> products = new List<Product>();
-        //    foreach (DataRow row in rows)
-        //    {
-        //        products.Add(CreatePallet(row));
-        //    }
-
-        //    return products;
-        //}
-
-        public bool DeleteProductByCode(string productCode)
-        {
-            const string query = "Delete From products Where code = @productCode";
-            _sqliteDataProvider.AddParameter("@productCode", productCode);
-            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
-        }
-
-        public bool DeleteProductById(int productId)
-        {
-            const string query = "Delete From products Where Id = @productId";
-            _sqliteDataProvider.AddParameter("@productId", productId);
-            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
-        }
-
         public bool CreatePallet(IPallet product)
         {
             const string query = "Insert into Pallets (Width, Height, Depth, Description, DescriptionEng, Weight, GrossWeight) values " +
@@ -120,6 +75,48 @@ namespace ErkoSMS.DataAccess
             return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
         }
 
+        public bool CreatePackedProduct(PackedProduct packedProduct)
+        {
+            const string query = "Insert into Packing (SalesId, PalletId, ProductId, Quantity) values " +
+                                 "(@SalesId, @PalletId, @ProductId, @Quantity);" +
+                                 "select last_insert_rowid();";
+            _sqliteDataProvider.AddParameter("@SalesId", packedProduct.OrderId);
+            _sqliteDataProvider.AddParameter("@PalletId", packedProduct.PalletId);
+            var productId = new ProductDataService().GetProductByCode(packedProduct.ProductCode).Id;
+            _sqliteDataProvider.AddParameter("@ProductId", productId);
+            _sqliteDataProvider.AddParameter("@Quantity", packedProduct.Quantity);
+            var queryResult = _sqliteDataProvider.ExecuteScalar(query);
+            
+            return queryResult != null;
+        }
+
+        public IList<PackedProduct> GetPackedProductsByOrderId(int orderId)
+        {
+            const string query = "select * from Packing where SalesId = @SalesId;";
+            _sqliteDataProvider.AddParameter("@SalesId", orderId);
+            var dataset = _sqliteDataProvider.ExecuteDataSet(query);
+            
+            IList<PackedProduct> packedProducts = new List<PackedProduct>();
+            foreach (DataRow row in dataset.Tables[0].Rows)
+            {
+                packedProducts.Add(CreatePackedProduct(row));
+            }
+
+            return packedProducts;
+        }
+
+        private PackedProduct CreatePackedProduct(DataRow row)
+        {
+            var productId = Convert.ToInt32(row["ProductId"]);
+            var productCode = new ProductDataService().GetProductById(productId).Code;
+            return new PackedProduct
+            {
+                OrderId = Convert.ToInt32(row["SalesId"]),
+                PalletId = Convert.ToInt32(row["PalletId"]),
+                ProductCode = productCode,
+                Quantity = Convert.ToInt32(row["Quantity"])
+            };
+        }
 
         private Pallet CreatePallet(DataRow row)
         {

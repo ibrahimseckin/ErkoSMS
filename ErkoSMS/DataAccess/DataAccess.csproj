@@ -87,6 +87,7 @@
     <Compile Include="Interfaces\IStock.cs" />
     <Compile Include="Interfaces\IStockORKA.cs" />
     <Compile Include="Model\Exporter.cs" />
+    <Compile Include="Model\PackedProduct.cs" />
     <Compile Include="Model\Pallet.cs" />
     <Compile Include="Model\Purchase.cs" />
     <Compile Include="Model\Currency.cs" />

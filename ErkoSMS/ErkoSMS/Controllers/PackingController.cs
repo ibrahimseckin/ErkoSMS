@@ -18,7 +18,13 @@ namespace ErkoSMS.Controllers
     public class PackingController : Controller
     {
         [HttpGet]
-        public ActionResult Index()
+        public ActionResult ListUnpackedOrders()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult ListPackedOrders()
         {
             return View();
         }
@@ -77,11 +83,54 @@ namespace ErkoSMS.Controllers
             var salesDataService = new SalesDataService();
             var order = salesDataService.GetSalesById(orderId);
 
+            ViewBag.Order = new OrderViewModel(order);
+
+            return PartialView();
+        }
+
+        [HttpGet]
+        public ActionResult EditOrderPacking(int orderId)
+        {
+            var salesDataService = new SalesDataService();
             var packingDataService = new PackingDataService();
-            var allPallets = packingDataService.GetAllPallets();
+
+            var order = salesDataService.GetSalesById(orderId);
+            var packedProducts = packingDataService.GetPackedProductsByOrderId(orderId);
+
+            var packing = new PackingViewModel
+            {
+                OrderId = orderId,
+                Pallets = new List<PackingViewModel.PackingPallet>()
+            };
+
+            foreach (var packedProduct in packedProducts)
+            {
+                var packedPrdct = new PackingViewModel.PackingPallet.PackedProduct
+                {
+                    ProductCode = packedProduct.ProductCode,
+                    Quantity = packedProduct.Quantity
+                };
+
+                var palletOfProduct = packing.Pallets.FirstOrDefault(x => x.PalletId == packedProduct.PalletId);
+
+                if (palletOfProduct != null)
+                {
+                    palletOfProduct.Products.Add(packedPrdct);
+                }
+                else
+                {
+                    palletOfProduct = new PackingViewModel.PackingPallet
+                    {
+                        PalletId = packedProduct.PalletId,
+                        Products = new List<PackingViewModel.PackingPallet.PackedProduct>()
+                    };
+                    palletOfProduct.Products.Add(packedPrdct);
+                    packing.Pallets.Add(palletOfProduct);
+                }
+            }
 
             ViewBag.Order = new OrderViewModel(order);
-            ViewBag.Pallets = allPallets.Select(x=> new PalletViewModel(x)).ToList();
+            ViewBag.Packing = packing;
 
             return PartialView();
         }
@@ -101,24 +150,25 @@ namespace ErkoSMS.Controllers
         [HttpPost]
         public ActionResult SavePacking(PackingViewModel packingDetail)
         {
-            return null;
-        }
+            var packingDataService = new PackingDataService();
+            foreach (var packingDetailPallet in packingDetail.Pallets)
+            {
+                foreach (var packedProduct in packingDetailPallet.Products)
+                {
+                    packingDataService.CreatePackedProduct(new PackedProduct
+                    {
+                        OrderId = packingDetail.OrderId,
+                        PalletId = packingDetailPallet.PalletId,
+                        ProductCode = packedProduct.ProductCode,
+                        Quantity = packedProduct.Quantity
+                    });
+                }
+            }
 
-        public class PackingViewModel
-        {
-            public IList<PackingPallet> Pallets { get; set; }
-    }
+            var salesDataService = new SalesDataService();
+            salesDataService.UpdateOrderState(packingDetail.OrderId, SalesState.PackingIsReady);
 
-        public class PackingPallet
-        {
-            public int PalletId { get; set; }
-            public IList<PackedProduct> Products { get; set; }
-        }
-
-        public class PackedProduct
-        {
-            public int Quantity { get; set; }
-            public string ProductCode { get; set; }
+            return Json(new AjaxResult(true));
         }
     }
 }

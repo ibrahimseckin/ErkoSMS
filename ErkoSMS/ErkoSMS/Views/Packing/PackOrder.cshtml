@@ -1,7 +1,6 @@
 ﻿@using ErkoSMS.ViewModels
 @{
     var order = (OrderViewModel)ViewBag.Order;
-    var pallets = (IList<PalletViewModel>)ViewBag.Pallets;
 }
 
 <div class="row" style="width: 1400px;margin-top:25px">
@@ -39,6 +38,7 @@
         <h2>Paketleme Listesi</h2>
         @using (Html.BeginForm("SavePacking", "Packing", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "PackingListForm" }))
         {
+            @Html.Hidden("OrderId", order.OrderId)
             <table id="packingList" class="table table-bordered">
                 <thead>
                     <tr>
@@ -58,14 +58,23 @@
 
 <script>
     var currentProductCode;
+    var maxQuantityToPack;
+    $("#PackingListForm").on("ajax-form:succeed", function (ev, data) {
+        var tg = $(ev.currentTarget);
+        closeParentVexModal(tg);
+        location.reload();
+    });
 
     $(".packOrderButton").on("click",
         function (e) {
             e.preventDefault();
             var productRowToBePacked = $(this).closest('tr')[0];
+            // Set current product code to the code of the selected product.
             currentProductCode = productRowToBePacked.cells[0].innerText;
+            // Max quantity that can be packed to a pallet = amount of unpacked products for the given product.
+            maxQuantityToPack = parseInt(productRowToBePacked.cells[3].innerText);
 
-            ERKOSMS.GetAjaxDialog("Packing/PackProduct", {}, false).then(function () {
+                ERKOSMS.GetAjaxDialog("PackProduct", {}, false).then(function () {
             }), function (data) {
                 ERKOSMS.ShowWarning(data);
             }
@@ -76,18 +85,22 @@
             var palletId = $("#palletDropdown")[0].selectedOptions[0].value;
             var quantityOfProduct = parseInt($('#Quantity')[0].value);
 
-            // TODO: LOWER THE AMOUNT FROM LEFT TABLE
             var targetPalletRow = FindPalletRowById(palletId);
             var targetProductRow = FindProductRowByCode(currentProductCode);
+            // Lower the unpacked quantity of the product that was packed.
+            var unpackedQuantity = parseInt(targetProductRow.find("td:nth-child(4)").text()) - quantityOfProduct;
+            targetProductRow.find("td:nth-child(4)").text(unpackedQuantity);
+
+            // Hide the pack product button if unpackedQuantity went down to zero.
+            if (unpackedQuantity === 0) targetProductRow.find("td:nth-child(5)").hide();
+
+            // Get the description of the product that was packed.
             var productDesc = targetProductRow.find("td:nth-child(2)").text();
 
             if (targetPalletRow) {
                 // Already added pallet. Merge the common cells and add the new row.
                 var numberOfRowForPallet = parseInt(targetPalletRow.find("td:first")[0].rowSpan);
                 targetPalletRow.find("td:first")[0].rowSpan = `${numberOfRowForPallet + 1}`;
-                //targetPalletRow.find("td:nth-child(2)")[0].rowSpan = `${parseInt(targetPalletRow.find("td:nth-child(2)")[0].rowSpan) + 1}`;
-                //targetPalletRow.find("td:nth-child(3)")[0].rowSpan = `${parseInt(targetPalletRow.find("td:nth-child(3)")[0].rowSpan) + 1}`;
-                //targetPalletRow.find("td:nth-child(4)")[0].rowSpan = `${parseInt(targetPalletRow.find("td:nth-child(4)")[0].rowSpan) + 1}`;
 
                 targetPalletRow.after(
                     `<tr>
@@ -96,6 +109,7 @@
                         <td>${productDesc}</td>
                     </tr>`);
             } else {
+                // Add new row for the new pallet.
                 $("#packingList tbody").append(
                  `<tr>
                     <td rowspan="1">${palletId}<input type="text" class="hidden" value="${palletId}" name="Pallets[].PalletId"></input></td>
