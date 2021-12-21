@@ -10,7 +10,7 @@ namespace ErkoSMS.ViewModels
 {
     public class ExporterViewModel : IExporter
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Display(Name = "İthalatçı")]
         public string Name { get; set; }

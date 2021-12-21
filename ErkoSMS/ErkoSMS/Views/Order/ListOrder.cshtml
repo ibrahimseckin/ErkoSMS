@@ -85,6 +85,7 @@
             { title: "Satış Başlangıç Tarihi", data: "SalesStartDate", className: "data", type: "date" },
             { title: "Fatura Tarihi", data: "InvoiceDate", className: "data", type: "date" },
             { title: "Fatura No", data: "InvoiceNumber", className: "data" },
+            { title: "İthalatçı", data: "Exporter.Name", className: "data" },
             { title: "Müşteri", data: "Customer.Name", className: "data" },
             { title: "Müşteri Ülkesi", data: "Customer.Country", className: "data" },
             { title: "Tutar", data: "TotalPrice", className: "data" },
@@ -143,11 +144,11 @@
                         render: formatDate
                     },
                     {
-                        targets: [7],
+                        targets: [8],
                         render: formatCurrency
                     },
                     {
-                        targets: [9],
+                        targets: [10],
                         render: formatState
                     }
                 ]
@@ -249,3 +250,6 @@
 
 
 </script>
+<script src="/fonts/turkish-bold.js"></script>
+<script src="/fonts/turkish-normal.js"></script>
+

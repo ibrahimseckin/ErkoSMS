@@ -1,10 +1,12 @@
 ﻿
+@using System.Text.RegularExpressions
 @model ErkoSMS.ViewModels.OrderViewModel
 
 @{
     var customers = (List<SelectListItem>)ViewBag.Customers;
     var salesState = (List<SelectListItem>)ViewBag.SaleStates;
     var currencies = (List<SelectListItem>)ViewBag.Currencies;
+    var exporters = (List<SelectListItem>)ViewBag.Exporters;
 }
 
 <div>
@@ -30,6 +32,10 @@
             <div class="col-sm-12 col-lg-9">
                 <div class="row">
                     <div class="form-group col-md-4">
+                        <label>İthalatçı:</label>
+                        @Html.DropDownListFor(x => x.Exporter.Id, exporters, "Bir İthalatçı Seçin", new { id = "exporterdropdown", @class = "chosen-select form-control" })
+                    </div>
+                    <div class="form-group col-md-4">
                         <label>Müşteri:</label>
                         @Html.DropDownListFor(x => x.Customer.Id, customers, new { id = "customerdropdown", @class = "chosen-select form-control" })
                     </div>
@@ -37,12 +43,12 @@
                         @Html.LabelFor(x => x.InvoiceNumber)
                         @Html.TextBoxFor(x => x.InvoiceNumber, new { @class = "chosen-select form-control", Name = "InvoiceNumber", id = "InvoiceTextBox", style = "display:inline-block" })
                     </div>
+                </div>
+                <div class="row">
                     <div class="form-group col-md-4">
                         @Html.LabelFor(model => model.InvoiceDate)
                         @Html.TextBoxFor(model => model.InvoiceDate, new { Name = "InvoiceDate", @class = "form-control datepicker", id = "invoiceDate", placeholder = "Enter Drop-off date here..." })
                     </div>
-                </div>
-                <div class="row">
                     <div class="form-group col-md-4">
                         <label>Durum:</label>
                         @Html.EnumDropDownListFor(x => x.State, new { id = "statedropdown", @class = "chosen-select form-control" })
@@ -116,12 +122,12 @@
         });
         $('.calculatePriceButton').off().on('click', function (e) {
             var exchangeRate = IsSelectedCurrencyDifferentThaTL() ? parseFloat($("#exchangeRate").val()) : 1;
-            var quantity = e.currentTarget.parentNode.parentNode.querySelector('.quantity').value;
-            var unitPrice = e.currentTarget.parentNode.parentNode.querySelector('.unitPrice').value;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').value = quantity * unitPrice;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPrice').readOnly = true;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPriceTL').value = quantity * unitPrice * exchangeRate;
-            e.currentTarget.parentNode.parentNode.querySelector('.totalPriceTL').readOnly = true;
+            var quantity = e.currentTarget.parentNode.parentNode.parentNode.querySelector('.quantity').value;
+            var unitPrice = e.currentTarget.parentNode.parentNode.parentNode.querySelector('.unitPrice').value;
+            e.currentTarget.parentNode.parentNode.parentNode.querySelector('.totalPrice').value = quantity * unitPrice;
+            e.currentTarget.parentNode.parentNode.parentNode.querySelector('.totalPrice').readOnly = true;
+            e.currentTarget.parentNode.parentNode.parentNode.querySelector('.totalPriceTL').value = quantity * unitPrice * exchangeRate;
+            e.currentTarget.parentNode.parentNode.parentNode.querySelector('.totalPriceTL').readOnly = true;
         });
 
         $("#UpdateOrderForm").off().on("click", ".orderRowDeleteButton", function () {
@@ -190,7 +196,7 @@
     var addHeaderToEachPage = function(doc) {
         for (var i = 1; i <= doc.getNumberOfPages(); i++) {
 
-            doc.setFont("times", "bold");
+            doc.setFont("turkish", "bold");
             doc.setFontSize(12);
 
             var width = doc.internal.pageSize.getWidth();
@@ -214,48 +220,87 @@
 
 
             doc.setFontSize(5);
-            doc.setFont("times", "normal");
-            var loremipsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor" +
-                " incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation " +
-                "ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in" +
-                " voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non" +
-                " proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-            var lines = doc.splitTextToSize(loremipsum, 80);
-            doc.text(15, 30, lines);
-            doc.text(111, 30, lines);
+            doc.setFont("turkish", "normal");
+            addImporter(doc);
+            addExporter(doc);
 
             doc.setPage(i);
         }
     }
 
-    var addFooter = function (doc, totalCostofProducts) {
+    var addImporter = function (doc) {
+        var exporterName = "@Model.Customer.Name";
+        doc.setFont("turkish", "bold");
+        doc.setFontSize(7);
+        var y = 28;
+        doc.text(15,y, exporterName);
+        y += 3;
+        var address = "@Html.Raw(Regex.Replace(Model.Customer.Address, @"\r?\n", ","))".split(",");
+        doc.setFont("turkish", "normal");
+        doc.setFontSize(6);
+        for (var i = 0; i < address.length; i++) {
+            var line = address[i];
+            doc.text(15, y, line);
+            y += 2;
+        }
+    }
+
+    var addExporter = function (doc) {
+        var exporterName = "@Model.Exporter.Name";
+        doc.setFont("turkish", "bold");
+        doc.setFontSize(7);
+        var y = 28;
+        doc.text(111,y, exporterName);
+        y += 3;
+        var address = "@Html.Raw(Regex.Replace(Model.Exporter.Address, @"\r?\n", ","))".split(",");
+        doc.setFont("turkish", "normal");
+        doc.setFontSize(6);
+        for (var i = 0; i < address.length; i++) {
+            var line = address[i];
+            doc.text(111, y, line);
+            y += 2;
+        }
+        var tradeRegisterNoText = "Tic.Sic. No : " + "@Model.Exporter.TradeRegisterNo"; 
+        doc.text(111, y, tradeRegisterNoText);
+        y += 2;
+        var vatNoText = "VAT No : " + "@Model.Exporter.VatNo"; 
+        doc.text(111, y, vatNoText);
+        y += 2;
+        var telText = "TEL : " + "@Model.Exporter.PhoneNumber"; 
+        doc.text(111, y, telText);
+        y += 2;
+        var faxText = "FAX : " + "@Model.Exporter.FaxNumber"; 
+        doc.text(111, y, faxText);
+    }
+
+    var addFooter = function(doc, totalCostofProducts) {
         var afterTable = doc.lastAutoTable.finalY + 10; // The y position on the page
         doc.setFontSize(8);
-        doc.setFont("times", "bold");
+        doc.setFont("turkish", "bold");
         var currency = $("#currencydropdown").find(':selected').text();
-        doc.text(170, afterTable, "TOTAL    " + currency,{align:"right"});
-        doc.text(170, afterTable + 5, "TRANSPORT COST   " + currency, { align: "right"});
+        doc.text(170, afterTable, "TOTAL    " + currency, { align: "right" });
+        doc.text(170, afterTable + 5, "TRANSPORT COST   " + currency, { align: "right" });
         doc.text(170, afterTable + 10, "TOTAL   " + currency, { align: "right" });
 
         doc.text(195, afterTable, totalCostofProducts.toFixed(2), { align: "right" });
         var transportCost = 3400.20;
         var totalCost = totalCostofProducts + transportCost;
-        doc.text(195, afterTable + 5, transportCost.toFixed(2), { align: "right"});
-        doc.text(195, afterTable + 10, totalCost.toFixed(2), { align: "right"});
+        doc.text(195, afterTable + 5, transportCost.toFixed(2), { align: "right" });
+        doc.text(195, afterTable + 10, totalCost.toFixed(2), { align: "right" });
 
-        doc.setFont("times", "normal");
-        doc.text(10, afterTable, "TOTAL PALLETES:   32 CASE",{align:"left"});
-        doc.text(10, afterTable + 5, "TOTAL PIECE:  50970", { align: "left"});
-        doc.text(10, afterTable + 10, "TOTAL NET WEIGHT:    7872 Kgs", { align: "left"});
+        doc.setFont("turkish", "normal");
+        doc.text(10, afterTable, "TOTAL PALLETES:   32 CASE", { align: "left" });
+        doc.text(10, afterTable + 5, "TOTAL PIECE:  50970", { align: "left" });
+        doc.text(10, afterTable + 10, "TOTAL NET WEIGHT:    7872 Kgs", { align: "left" });
         doc.text(10, afterTable + 15, "TOTAL GROSS WEIGHT:  8288 Kgs", { align: "left" });
 
-        doc.text(10, afterTable + 25, "PAYMENT: 60 DAYS AFTER RECEIVING GOODS", { align: "left"});
+        doc.text(10, afterTable + 25, "PAYMENT: 60 DAYS AFTER RECEIVING GOODS", { align: "left" });
         doc.text(10, afterTable + 30, "DELIVERY TERMS:  CIF", { align: "left" });
-        debugger;
-        doc.setFont("times", "bold");
+
+        doc.setFont("turkish", "bold");
         var words = toWords(totalCost);
-        doc.text(10, afterTable + 40, words, { align: "left"});
-        doc.text(10, afterTable + 45, "Bank Account", { align: "left"});
+        doc.text(10, afterTable + 40, words, { align: "left" });
+        doc.text(10, afterTable + 45, "Bank Account", { align: "left" });
     }
 
     $("#invoiceButton").on('click',
@@ -264,35 +309,34 @@
 
             var orderedProducts = [];
             var totalCost = 0.00;
-                $(".orderRow").each((index,order) => {
-                    var productCode = $(order).find(".productCode").val();
-                    var description = $(order).find(".productEnglishDescription").val();
-                    var quantity = $(order).find(".quantity").val();
-                    var unitPrice = new Number($(order).find(".unitPrice").val());
-                    var totalPrice = new Number($(order).find(".totalPrice").val());
-                    totalCost += totalPrice;
-                    var orderedProduct = [];
-                    orderedProduct.push(productCode);
-                    orderedProduct.push(description);
-                    orderedProduct.push("ORIGIN");
-                    orderedProduct.push(quantity);
-                    orderedProduct.push(unitPrice.toFixed(2));
-                    orderedProduct.push(totalPrice.toFixed(2));
-                    orderedProducts.push(orderedProduct);
-                });
-
+            $(".orderRow").each((index, order) => {
+                var productCode = $(order).find(".productCode").val();
+                var description = $(order).find(".productEnglishDescription").val();
+                var quantity = $(order).find(".quantity").val();
+                var unitPrice = new Number($(order).find(".unitPrice").val());
+                var totalPrice = new Number($(order).find(".totalPrice").val());
+                totalCost += totalPrice;
+                var orderedProduct = [];
+                orderedProduct.push(productCode);
+                orderedProduct.push(description);
+                orderedProduct.push("ORIGIN");
+                orderedProduct.push(quantity);
+                orderedProduct.push(unitPrice.toFixed(2));
+                orderedProduct.push(totalPrice.toFixed(2));
+                orderedProducts.push(orderedProduct);
+            });
 
 
             doc.autoTable({
-                head: [['CODE', 'DESCRIPTION', 'ORIGIN','QTY','NET UNIT PRICE','TOTAL']],
+                head: [['CODE', 'DESCRIPTION', 'ORIGIN', 'QTY', 'NET UNIT PRICE', 'TOTAL']],
                 body: orderedProducts,
                 theme: 'grid',
                 margin: { top: 50, left: 10 },
-                headStyles: { fillColor: [182, 191, 182]}
+                headStyles: { fillColor: [182, 191, 182] }
             });
 
             addHeaderToEachPage(doc);
-            addFooter(doc,totalCost);
+            addFooter(doc, totalCost);
 
             var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
             var filename = "Invoice_" + dateNow + ".pdf";

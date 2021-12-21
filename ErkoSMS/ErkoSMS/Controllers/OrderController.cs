@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Web.SessionState;
 using ErkoSMS.DataAccess;
+using ErkoSMS.DataAccess.DataService;
 using ErkoSMS.DataAccess.Model;
 using ErkoSMS.Objects;
 using ErkoSMS.ViewModels;
@@ -146,6 +147,7 @@ namespace ErkoSMS.Controllers
             sales.InvoiceNumber = order.InvoiceNumber;
             sales.SalesState = order.State;
             sales.InvoiceDate = order.InvoiceDate;
+            sales.Exporter = order.Exporter;
 
             var isThereGap = order.OrderLines.Any(x => x.Quantity > x.StokQuantity);
             if (isThereGap)
@@ -215,6 +217,7 @@ namespace ErkoSMS.Controllers
             {
                 Id = order.OrderId,
                 Customer = new CustomerDataService().GetCustomerById(order.Customer.Id),
+                Exporter = order.Exporter,
                 InvoiceNumber = order.InvoiceNumber,
                 SalesState = order.State,
                 InvoiceDate = order.InvoiceDate,
@@ -374,7 +377,17 @@ namespace ErkoSMS.Controllers
             ViewBag.SaleStates = EnumHelper.GetSelectList(typeof(SalesState));
             ViewBag.Currencies = EnumHelper.GetSelectList(typeof(Currency));
 
-
+            var allExporters = new ExporterDataService().GetAllExporters().ToList();
+            ViewBag.Exporters =
+                allExporters.GroupBy(x => x.Id)
+                    .Select(x => x.FirstOrDefault()).Select(
+                        x =>
+                            new SelectListItem
+                            {
+                                Text = x.Name,
+                                Value = x.Id.ToString()
+                            })
+                    .ToList();
         }
     }
 }

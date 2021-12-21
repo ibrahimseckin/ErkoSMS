@@ -8,7 +8,7 @@ namespace ErkoSMS.DataAccess.Interfaces
 {
     public interface IExporter
     {
-        int Id { get; set; }
+        int? Id { get; set; }
         string Name { get; set; }
         string Address { get; set; }
         string TradeRegisterNo { get; set; }
