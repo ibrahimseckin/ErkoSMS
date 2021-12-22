@@ -24,7 +24,7 @@
                         <td>@product.ProductCode</td>
                         <td>@product.ProductDescription</td>
                         <td>@product.Quantity</td>
-                        <td>@product.Quantity</td>
+                        <td>0</td>
                         <td>
                             <span class="btn btn-info packOrderButton">
                                 <span class="glyphicon glyphicon-arrow-right"></span> Paketle
@@ -50,6 +50,29 @@
                     </tr>
                 </thead>
                 <tbody>
+                @foreach (var pallet in packing.Pallets)
+                {
+                    var productIndex = 0;
+                    foreach (var product in pallet.Products)
+                    {
+                        if (pallet.Products.IndexOf(product) == 0)
+                        {
+                            <tr>
+                                <td rowspan="@pallet.Products.Count">@pallet.PalletId<input type="text" class="hidden" value="@pallet.PalletId" name="Pallets[].PalletId"></td>
+                                <td>@product.Quantity<input type="text" class="hidden" value="@product.Quantity" name="Pallets[].Products[0].Quantity"></td>
+                                <td>@product.ProductCode<input type="text" class="hidden" value="@product.ProductCode" name="Pallets[].Products[0].ProductCode"></td>
+                                <td>@order.OrderLines.FirstOrDefault(x=>x.ProductCode == product.ProductCode).ProductDescription</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <td>@product.Quantity<input type="text" class="hidden" value="@product.Quantity" name="Pallets[].Products[@productIndex].Quantity"></td>
+                            <td>@product.ProductCode<input type="text" class="hidden" value="@product.ProductCode" name="Pallets[].Products[@productIndex].ProductCode"></td>
+                            <td>@order.OrderLines.FirstOrDefault(x=>x.ProductCode == product.ProductCode).ProductDescription</td>
+                        }
+                        productIndex++;
+                    }
+                }
                 </tbody>
             </table>
             <input type="submit" class="btn btn-primary pull-right" value="Kaydet" />
@@ -105,17 +128,17 @@
 
                 targetPalletRow.after(
                     `<tr>
-                        <td>${quantityOfProduct}<input type="text" class="hidden" value="${quantityOfProduct}" name="Pallets[].Products[${numberOfRowForPallet}].Quantity"></input></td>
-                        <td>${currentProductCode}<input type="text" class="hidden" value="${currentProductCode}" name="Pallets[].Products[${numberOfRowForPallet}].ProductCode"</td>
+                        <td>${quantityOfProduct}<input type="text" class="hidden" value="${quantityOfProduct}" name="Pallets[].Products[${numberOfRowForPallet}].Quantity"></td>
+                        <td>${currentProductCode}<input type="text" class="hidden" value="${currentProductCode}" name="Pallets[].Products[${numberOfRowForPallet}].ProductCode"></td>
                         <td>${productDesc}</td>
                     </tr>`);
             } else {
                 // Add new row for the new pallet.
                 $("#packingList tbody").append(
                     `<tr>
-                    <td rowspan="1">${palletId}<input type="text" class="hidden" value="${palletId}" name="Pallets[].PalletId"></input></td>
-                    <td>${quantityOfProduct}<input type="text" class="hidden" value="${quantityOfProduct}" name="Pallets[].Products[0].Quantity"></input></td>
-                    <td>${currentProductCode}<input type="text" class="hidden" value="${currentProductCode}" name="Pallets[].Products[0].ProductCode"></input></td>
+                    <td rowspan="1">${palletId}<input type="text" class="hidden" value="${palletId}" name="Pallets[].PalletId"></td>
+                    <td>${quantityOfProduct}<input type="text" class="hidden" value="${quantityOfProduct}" name="Pallets[].Products[0].Quantity"></td>
+                    <td>${currentProductCode}<input type="text" class="hidden" value="${currentProductCode}" name="Pallets[].Products[0].ProductCode"></td>
                     <td>${productDesc}</td>
                  </tr>`);
             }
