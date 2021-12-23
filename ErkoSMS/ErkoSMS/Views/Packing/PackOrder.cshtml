@@ -36,7 +36,7 @@
     </div>
     <div class="col-xs-6" id="packingListDiv">
         <h2>Paketleme Listesi</h2>
-        @using (Html.BeginForm("SavePacking", "Packing", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "PackingListForm" }))
+        @using (Html.BeginForm("CreatePacking", "Packing", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "PackingListForm" }))
         {
             @Html.Hidden("OrderId", order.OrderId)
             <table id="packingList" class="table table-bordered">
@@ -65,6 +65,17 @@
         location.reload();
     });
 
+    $("input[type=submit]").on("click",
+        function (e) {
+            var isThereAnUnpdackedProduct = $("#productTable tbody tr td:nth-child(4)").toArray().some(function (unpackedQuantityCell) {
+                return $(unpackedQuantityCell).text() !== "0";
+            });
+
+            if (isThereAnUnpdackedProduct) {
+                e.preventDefault();
+            }
+        });
+
     $(".packOrderButton").on("click",
         function (e) {
             e.preventDefault();
@@ -79,6 +90,7 @@
                 ERKOSMS.ShowWarning(data);
             }
         });
+
     $(document).off("click", "#addProductToPallet").on("click", "#addProductToPallet",
         function (e) {
 
@@ -107,6 +119,11 @@
                         <td>${quantityOfProduct}<input type="text" class="hidden" value="${quantityOfProduct}" name="Pallets[].Products[${numberOfRowForPallet}].Quantity"></input></td>
                         <td>${currentProductCode}<input type="text" class="hidden" value="${currentProductCode}" name="Pallets[].Products[${numberOfRowForPallet}].ProductCode"</td>
                         <td>${productDesc}</td>
+                        <td>
+                         <span class="btn btn-danger deletePackedProductButton">
+                            <span class="glyphicon glyphicon-remove"></span> iptal et
+                         </span>
+                    </td>
                     </tr>`);
             } else {
                 // Add new row for the new pallet.
@@ -116,6 +133,11 @@
                     <td>${quantityOfProduct}<input type="text" class="hidden" value="${quantityOfProduct}" name="Pallets[].Products[0].Quantity"></input></td>
                     <td>${currentProductCode}<input type="text" class="hidden" value="${currentProductCode}" name="Pallets[].Products[0].ProductCode"></input></td>
                     <td>${productDesc}</td>
+                    <td>
+                         <span class="btn btn-danger deletePackedProductButton">
+                            <span class="glyphicon glyphicon-remove"></span> iptal et
+                         </span>
+                    </td>
                  </tr>`);
             }
             var tg = $(e.currentTarget);
@@ -143,4 +165,31 @@
         });
         return row;
     }
+
+    $(document).off("click", ".deletePackedProductButton").on("click", ".deletePackedProductButton", function () {
+        var packedProductRowToBeRemoved = $(this).closest('tr')[0];
+        var productCode = packedProductRowToBeRemoved.cells[packedProductRowToBeRemoved.cells.length - 3].innerText;
+        var quantity = parseInt(packedProductRowToBeRemoved.cells[packedProductRowToBeRemoved.cells.length - 4].innerText);
+        var targetProductRow = FindProductRowByCode(productCode);
+        // Increase the unpacked quantity of the product that was canceled.
+        var unpackedQuantity = parseInt(targetProductRow.find("td:nth-child(4)").text()) + quantity;
+        targetProductRow.find("td:nth-child(4)").text(unpackedQuantity);
+
+        // Show the pack product button if unpackedQuantity went up from zero.
+        if (unpackedQuantity !== 0) targetProductRow.find("td:nth-child(5)").show();
+
+        if (packedProductRowToBeRemoved.cells.length === 5 && $(packedProductRowToBeRemoved).next()[0] !== undefined && $(packedProductRowToBeRemoved).next()[0].cells.length !== 5) {
+            $(packedProductRowToBeRemoved).next().prepend($(packedProductRowToBeRemoved.cells[0]));
+        }
+        if (packedProductRowToBeRemoved.cells.length !== 5) {
+            var firstRowOfThePallet = $(packedProductRowToBeRemoved).prevAll().filter(function () {
+                return this.cells.length === 5;
+            }).first();
+
+            var numberOfRowForPallet = parseInt(firstRowOfThePallet[0].cells[0].rowSpan);
+            firstRowOfThePallet[0].cells[0].rowSpan = `${numberOfRowForPallet - 1}`;
+        }
+
+        packedProductRowToBeRemoved.remove();
+    });
 </script>

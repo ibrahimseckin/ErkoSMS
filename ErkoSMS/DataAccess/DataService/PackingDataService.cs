@@ -46,35 +46,6 @@ namespace ErkoSMS.DataAccess
             return queryResult != null;
         }
 
-        public bool UpdateProduct(IProduct product)
-        {
-            const string query = "Update Products " +
-                           "Set Code = @Code, CrossReferenceCode = @CrossReferenceCode," +
-                           "Description = @Description, DescriptionEng = @DescriptionEng," +
-                           "ProductGroup = @ProductGroup, Brand = @Brand, Model = @Model,LastPrice = @LastPrice " +
-                           " Where Id = @Id";
-            _sqliteDataProvider.AddParameter("@Id", product.Id);
-            _sqliteDataProvider.AddParameter("@Code", product.Code);
-            _sqliteDataProvider.AddParameter("@CrossReferenceCode", product.CrossReferenceCode);
-            _sqliteDataProvider.AddParameter("@Description", product.Description);
-            _sqliteDataProvider.AddParameter("@DescriptionEng", product.EnglishDescription);
-            _sqliteDataProvider.AddParameter("@ProductGroup", product.Group);
-            _sqliteDataProvider.AddParameter("@Brand", product.Brand);
-            _sqliteDataProvider.AddParameter("@Model", product.Model);
-            _sqliteDataProvider.AddParameter("@LastPrice", product.LastPrice);
-            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
-        }
-
-        public bool UpdateProductLatestPrice(int productId, double price)
-        {
-            const string query = "Update Products " +
-                                 "Set LastPrice = @LastPrice" +
-                                 " Where Id = @Id";
-            _sqliteDataProvider.AddParameter("@Id", productId);
-            _sqliteDataProvider.AddParameter("@LastPrice", price);
-            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
-        }
-
         public bool CreatePackedProduct(PackedProduct packedProduct)
         {
             const string query = "Insert into Packing (SalesId, PalletId, ProductId, Quantity) values " +
@@ -99,13 +70,20 @@ namespace ErkoSMS.DataAccess
             IList<PackedProduct> packedProducts = new List<PackedProduct>();
             foreach (DataRow row in dataset.Tables[0].Rows)
             {
-                packedProducts.Add(CreatePackedProduct(row));
+                packedProducts.Add(CreatePackedProductObject(row));
             }
 
             return packedProducts;
         }
 
-        private PackedProduct CreatePackedProduct(DataRow row)
+        public bool DeletePackedProductsByOrderId(int orderId)
+        {
+            const string query = "delete from Packing where SalesId = @SalesId;";
+            _sqliteDataProvider.AddParameter("@SalesId", orderId);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
+
+        private PackedProduct CreatePackedProductObject(DataRow row)
         {
             var productId = Convert.ToInt32(row["ProductId"]);
             var productCode = new ProductDataService().GetProductById(productId).Code;

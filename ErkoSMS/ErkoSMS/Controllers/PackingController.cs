@@ -148,7 +148,7 @@ namespace ErkoSMS.Controllers
         }
 
         [HttpPost]
-        public ActionResult SavePacking(PackingViewModel packingDetail)
+        public ActionResult CreatePacking(PackingViewModel packingDetail)
         {
             var packingDataService = new PackingDataService();
             foreach (var packingDetailPallet in packingDetail.Pallets)
@@ -167,6 +167,28 @@ namespace ErkoSMS.Controllers
 
             var salesDataService = new SalesDataService();
             salesDataService.UpdateOrderState(packingDetail.OrderId, SalesState.PackingIsReady);
+
+            return Json(new AjaxResult(true));
+        }
+
+        [HttpPost]
+        public ActionResult UpdatePacking(PackingViewModel packingDetail)
+        {
+            var packingDataService = new PackingDataService();
+            packingDataService.DeletePackedProductsByOrderId(packingDetail.OrderId);
+            foreach (var packingDetailPallet in packingDetail.Pallets)
+            {
+                foreach (var packedProduct in packingDetailPallet.Products)
+                {
+                    packingDataService.CreatePackedProduct(new PackedProduct
+                    {
+                        OrderId = packingDetail.OrderId,
+                        PalletId = packingDetailPallet.PalletId,
+                        ProductCode = packedProduct.ProductCode,
+                        Quantity = packedProduct.Quantity
+                    });
+                }
+            }
 
             return Json(new AjaxResult(true));
         }
