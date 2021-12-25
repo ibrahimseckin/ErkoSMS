@@ -99,7 +99,7 @@
         $(this).closest('.bankAccountRow').remove();
     });
 
-    $("#CreateExporterForm").off.on('ajax-form:succeed',
+    $("#CreateExporterForm").off().on('ajax-form:succeed',
         function () {
             vex.dialog.alert("İthalatçı kaydedildi.");
         });
