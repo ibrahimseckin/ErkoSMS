@@ -178,6 +178,23 @@
         // Show the pack product button if unpackedQuantity went up from zero.
         if (unpackedQuantity !== 0) targetProductRow.find("td:nth-child(5)").show();
 
+        // Shift the index of the rows to keep the mvc binding correct.
+        var rowsToShift = $(packedProductRowToBeRemoved).nextUntil(".primaryPalletRow").filter(function () {
+            return $(this).attr('class') === "secondaryPalletRow";
+        });
+
+        rowsToShift.each(function (index, row) {
+            var inputsToAdjust = $(row).find("input[type=text]");
+            inputsToAdjust.each(function (index, input) {
+                console.log("old name: " + input.name);
+                var indexOfInput = input.name.split('.')[1].split('[')[1].split(']')[0];
+                var newIndexOfInput = parseInt(indexOfInput) - 1;
+                input.name = input.name.replace("[" + indexOfInput + "]", "[" + newIndexOfInput + "]");
+
+                console.log("new name: " + input.name);
+            });
+        });
+
         if (packedProductRowToBeRemoved.cells.length === 5) {
             if (packedProductRowToBeRemoved.cells[0].rowspan !== "1") {
                 // Lower the rowspan amount of the pallet id cell to extend it to the correct number of rows.
@@ -199,8 +216,6 @@
             var numberOfRowForPallet = parseInt(firstRowOfThePallet[0].cells[0].rowSpan);
             firstRowOfThePallet[0].cells[0].rowSpan = `${numberOfRowForPallet - 1}`;
         }
-
-
 
         packedProductRowToBeRemoved.remove();
     });
