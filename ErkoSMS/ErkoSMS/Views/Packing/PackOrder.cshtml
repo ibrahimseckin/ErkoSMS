@@ -115,7 +115,7 @@
                 targetPalletRow.find("td:first")[0].rowSpan = `${numberOfRowForPallet + 1}`;
 
                 targetPalletRow.after(
-                    `<tr>
+                    `<tr class="secondaryPalletRow">
                         <td>${quantityOfProduct}<input type="text" class="hidden" value="${quantityOfProduct}" name="Pallets[].Products[${numberOfRowForPallet}].Quantity"></input></td>
                         <td>${currentProductCode}<input type="text" class="hidden" value="${currentProductCode}" name="Pallets[].Products[${numberOfRowForPallet}].ProductCode"</td>
                         <td>${productDesc}</td>
@@ -128,7 +128,7 @@
             } else {
                 // Add new row for the new pallet.
                 $("#packingList tbody").append(
-                 `<tr>
+                 `<tr class="primaryPalletRow">
                     <td rowspan="1">${palletId}<input type="text" class="hidden" value="${palletId}" name="Pallets[].PalletId"></input></td>
                     <td>${quantityOfProduct}<input type="text" class="hidden" value="${quantityOfProduct}" name="Pallets[].Products[0].Quantity"></input></td>
                     <td>${currentProductCode}<input type="text" class="hidden" value="${currentProductCode}" name="Pallets[].Products[0].ProductCode"></input></td>
@@ -178,17 +178,29 @@
         // Show the pack product button if unpackedQuantity went up from zero.
         if (unpackedQuantity !== 0) targetProductRow.find("td:nth-child(5)").show();
 
-        if (packedProductRowToBeRemoved.cells.length === 5 && $(packedProductRowToBeRemoved).next()[0] !== undefined && $(packedProductRowToBeRemoved).next()[0].cells.length !== 5) {
-            $(packedProductRowToBeRemoved).next().prepend($(packedProductRowToBeRemoved.cells[0]));
-        }
-        if (packedProductRowToBeRemoved.cells.length !== 5) {
+        if (packedProductRowToBeRemoved.cells.length === 5) {
+            if (packedProductRowToBeRemoved.cells[0].rowspan !== "1") {
+                // Lower the rowspan amount of the pallet id cell to extend it to the correct number of rows.
+                var numberOfRowForPallet = parseInt(packedProductRowToBeRemoved.cells[0].rowSpan);
+                packedProductRowToBeRemoved.cells[0].rowSpan = `${numberOfRowForPallet - 1}`;
+            }
+
+            // If there is another row for this pallet, delegate the pallet id cell to the next row.
+            if ($(packedProductRowToBeRemoved).next()[0] !== undefined && $(packedProductRowToBeRemoved).next()[0].cells.length !== 5) {
+                $(packedProductRowToBeRemoved).next().prepend($(packedProductRowToBeRemoved.cells[0]));
+            }
+        } else {
+            // Find the first row above that has 5 cells (row with the pallet id)
             var firstRowOfThePallet = $(packedProductRowToBeRemoved).prevAll().filter(function () {
                 return this.cells.length === 5;
             }).first();
 
+            // Lower the rowspan amount of the pallet id cell to extend it to the correct number of rows.
             var numberOfRowForPallet = parseInt(firstRowOfThePallet[0].cells[0].rowSpan);
             firstRowOfThePallet[0].cells[0].rowSpan = `${numberOfRowForPallet - 1}`;
         }
+
+
 
         packedProductRowToBeRemoved.remove();
     });
