@@ -3,7 +3,7 @@
 
 
 <div>
-    <h3>Tedarikçi Güncelle</h3>
+    <h3>İthalatçı Güncelle</h3>
     <hr />
     @using (Html.BeginForm("UpdateExporter", "Exporter", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "UpdateExporterForm", style = "width:700px" }))
     {
@@ -11,7 +11,7 @@
         @Html.AntiForgeryToken()
         @Html.ValidationSummary("", new { @class = "text-danger" })
         <div class="row mt-10">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.LabelFor(x => x.Name)
             </div>
             <div class="col-md-3">
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="row mt-10">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.LabelFor(x => x.Address)
             </div>
             <div class="col-md-3">
@@ -28,7 +28,7 @@
         </div>
 
         <div class="row mt-10">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.LabelFor(x => x.TradeRegisterNo)
             </div>
             <div class="col-md-3">
@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="row mt-10">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.LabelFor(x => x.VatNo)
             </div>
             <div class="col-md-3">
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="row mt-10">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.LabelFor(x => x.PhoneNumber)
             </div>
             <div class="col-md-3">
@@ -52,15 +52,33 @@
             </div>
         </div>
         <div class="row mt-10">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.LabelFor(x => x.FaxNumber)
             </div>
             <div class="col-md-3">
                 @Html.TextBoxFor(x => x.FaxNumber)
             </div>
         </div>
+        <div class="row mt-20">
+            <div class="col-md-2">
+                <label>Banka Hesapları</label>
+            </div>
+            <div class="col-sm-2">
+                <button type="button" id="addBankAccountButton" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-plus"></span> Ekle
+                </button>
+            </div>
+        </div>
+        <div id="bankaccounts" style="max-width: 800px; padding: 10px" class="row">
+    
+            @foreach (var bankAccount in Model.BankAccounts)
+            {
+
+                @Html.Partial("BankAccountRow",bankAccount);
+            }
+        </div>
         <div class="row mt-10">
-            <div class="col-md-9">
+            <div class="col-md-6">
                 <input type="submit" class="btn btn-primary pull-right" value="Kaydet" />
             </div>
         </div>
@@ -69,6 +87,20 @@
 </div>
 
 <script>
+
+    var bankAccountRowTemplate = '@Html.Template("BankAccountRow", null)';
+    var addOrderRow = function() {
+        var html = $($.parseHTML(bankAccountRowTemplate));
+        html.appendTo($("#bankaccounts"));
+    };
+
+
+    $("#addBankAccountButton").on('click', addOrderRow);
+
+    $("#UpdateExporterForm").off().on("click", ".bankAccountRowDeleteButton", function () {
+        $(this).closest('.bankAccountRow').remove();
+    });
+
     $("#UpdateExporterForm").on('ajax-form:succeed', function (ev, data) {
         vex.dialog.alert("İthalatçı güncellendi.");
         var tg = $(ev.currentTarget);

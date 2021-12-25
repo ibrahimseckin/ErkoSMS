@@ -15,5 +15,14 @@ namespace ErkoSMS.DataAccess.Interfaces
         string VatNo { get; set; }
         string PhoneNumber { get; set; }
         string FaxNumber { get; set; }
+        List<BankAccount> BankAccounts { get; set; }
+    }
+
+    public class BankAccount
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string AccountDetails { get; set; }
+
     }
 }

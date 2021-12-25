@@ -705,6 +705,7 @@
     <Content Include="Views\Packing\ListPackedOrders.cshtml" />
     <Content Include="Views\Packing\EditOrderPacking.cshtml" />
     <Content Include="Views\Order\ListOrder.cshtml" />
+    <Content Include="Views\Exporter\BankAccountRow.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\StockHistory\" />

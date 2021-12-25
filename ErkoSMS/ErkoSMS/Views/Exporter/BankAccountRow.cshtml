@@ -1,0 +1,42 @@
+﻿@model ErkoSMS.DataAccess.Interfaces.BankAccount
+
+@*<div class='w3-card-2 w3-margin bankaccount' style='padding:10px;overflow:auto'>
+        <span class='btn btn-danger pull-right deleteBankAccount'>
+            <span class='glyphicon glyphicon-pencil'></span>Sil
+        </span>
+    </div>*@
+
+<div class="bankAccountRow row" style="overflow: hidden;">
+    <div class="row form-group-sm w3-card-2 w3-margin" style="padding: 10px;">
+        <div class="row">
+                <div class="col-sm-6">
+                    <label> Hesap Adı</label>
+                    @Html.TextBoxFor(x => x.Name, new { @class = "form-control accountName", Name = "BankAccounts[].Name", style = "font-weight: bold" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <label>Hesap Detayı</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-9">
+                            @Html.TextAreaFor(x => x.AccountDetails,
+                                new { @class = "form-control productDescription", Name = "BankAccounts[].AccountDetails", style = "height: 90px; resize: none" })
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-1">
+                    <span class="btn btn-danger bankAccountRowDeleteButton pull-right">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

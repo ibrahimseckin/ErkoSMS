@@ -10,11 +10,12 @@ namespace ErkoSMS.DataAccess.Model
     public class Exporter : IExporter
     {
         public int? Id { get; set; }
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public string TradeRegisterNo { get; set; }
-        public string VatNo { get; set; }
-        public string PhoneNumber { get; set; }
-        public string FaxNumber { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string TradeRegisterNo { get; set; } = string.Empty;
+        public string VatNo { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public string FaxNumber { get; set; } = string.Empty;
+        public List<BankAccount> BankAccounts { get; set; }
     }
 }

@@ -15,7 +15,7 @@
         @Html.AntiForgeryToken()
 
         <div class="row mt-10">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.LabelFor(x => x.Name)
             </div>
             <div class="col-md-3">
@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="row mt-10">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.LabelFor(x => x.Address)
             </div>
             <div class="col-md-3">
@@ -32,7 +32,7 @@
         </div>
 
         <div class="row mt-10">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.LabelFor(x => x.TradeRegisterNo)
             </div>
             <div class="col-md-3">
@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="row mt-10">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.LabelFor(x => x.VatNo)
             </div>
             <div class="col-md-3">
@@ -48,7 +48,7 @@
             </div>
         </div>
         <div class="row mt-10">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.LabelFor(x => x.PhoneNumber)
             </div>
             <div class="col-md-3">
@@ -56,24 +56,52 @@
             </div>
         </div>
         <div class="row mt-10">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.LabelFor(x => x.FaxNumber)
             </div>
             <div class="col-md-3">
                 @Html.TextBoxFor(x => x.FaxNumber)
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-9">
-                <input type="submit" class="btn btn-primary pull-right" value="Kaydet" />
+        <div class="row mt-20">
+            <div class="col-md-2">
+                <label>Banka Hesapları</label>
             </div>
+            <div class="col-sm-2">
+                <button type="button" id="addBankAccountButton" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-plus"></span> Ekle
+                </button>
+            </div>
+        </div>
+        <div id="bankaccounts" style="max-width: 800px;padding: 10px" class="row">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <input type="submit" class="mt-10 btn btn-primary pull-right" value="Kaydet" />
         </div>
     </div>
 }
 
 <script>
-    $("#CreateExporterForm").on('ajax-form:succeed', function () {
-        vex.dialog.alert("İthalatçı kaydedildi.");
+
+
+    var bankAccountRowTemplate = '@Html.Template("BankAccountRow", null)';
+    var addOrderRow = function() {
+        var html = $($.parseHTML(bankAccountRowTemplate));
+        html.appendTo($("#bankaccounts"));
+    };
+
+
+    $("#addBankAccountButton").on('click', addOrderRow);
+
+    $("#CreateExporterForm").off().on("click", ".bankAccountRowDeleteButton", function () {
+        $(this).closest('.bankAccountRow').remove();
     });
+
+    $("#CreateExporterForm").off.on('ajax-form:succeed',
+        function () {
+            vex.dialog.alert("İthalatçı kaydedildi.");
+        });
 
 </script>

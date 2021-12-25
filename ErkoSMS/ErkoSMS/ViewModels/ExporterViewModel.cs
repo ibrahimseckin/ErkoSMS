@@ -30,6 +30,8 @@ namespace ErkoSMS.ViewModels
         [Display(Name = "Fax No")]
         public string FaxNumber { get; set; }
 
+        public List<BankAccount> BankAccounts { get; set; } = new List<BankAccount>();
+
         public ExporterViewModel()
         {
 
@@ -44,6 +46,7 @@ namespace ErkoSMS.ViewModels
             PhoneNumber = exporter.PhoneNumber;
             VatNo = exporter.VatNo;
             FaxNumber = exporter.FaxNumber;
+            BankAccounts = exporter.BankAccounts;
         }
     }
 }

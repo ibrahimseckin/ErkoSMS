@@ -19,15 +19,31 @@ namespace ErkoSMS.DataAccess.DataService
         {
             string query = "Insert into Exporters (name,address,tradeRegisterNo,vatNo,PhoneNumber,FaxNumber) values (@name,@address," +
                                       "@tradeRegisterNo,@vatNo,@PhoneNumber,@FaxNumber);";
+            query += Environment.NewLine + "SELECT LAST_INSERT_ROWID();";
             _sqliteDataProvider.AddParameter("@name", exporter.Name);
             _sqliteDataProvider.AddParameter("@address", exporter.Address);
             _sqliteDataProvider.AddParameter("@tradeRegisterNo", exporter.TradeRegisterNo);
             _sqliteDataProvider.AddParameter("@vatNo", exporter.VatNo);
             _sqliteDataProvider.AddParameter("@PhoneNumber", exporter.PhoneNumber);
             _sqliteDataProvider.AddParameter("@FaxNumber", exporter.FaxNumber);
-            var queryResult = _sqliteDataProvider.ExecuteScalar(query);
-            return queryResult != null;
+            var exporterId = Convert.ToInt32(_sqliteDataProvider.ExecuteScalar(query));
+            foreach (var bankAccount in exporter.BankAccounts)
+            {
+                CreateBankAccount(bankAccount, exporterId);
+
+            }
+            return true;
         }
+
+        private void CreateBankAccount(BankAccount bankAccount, int exporterId)
+        {
+            string query = "Insert into ExporterBankAccounts (ExporterId,Name,AccountDetails) values (@exporterid,@name,@accountdetails)";
+            _sqliteDataProvider.AddParameter("@exporterid", exporterId);
+            _sqliteDataProvider.AddParameter("@name", bankAccount.Name);
+            _sqliteDataProvider.AddParameter("@accountdetails", bankAccount.AccountDetails);
+            _sqliteDataProvider.ExecuteScalar(query);
+        }
+
 
         public bool UpdateExporter(IExporter exporter)
         {
@@ -71,7 +87,33 @@ namespace ErkoSMS.DataAccess.DataService
             const string query = "select * from Exporters where id=@id";
             _sqliteDataProvider.AddParameter("@id", id);
             DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
-            return row != null ? CreateExporterObject(row) : null;
+            if (row != null)
+            {
+                var exporter = CreateExporterObject(row);
+                exporter.BankAccounts = GetBankAccounts(exporter.Id);
+                return exporter;
+            }
+            return null;
+        }
+
+
+        private List<BankAccount> GetBankAccounts(int? exporterId)
+        {
+            const string query = "Select * from ExporterBankAccounts where ExporterId = @exporterid";
+            _sqliteDataProvider.AddParameter("@exporterid", exporterId);
+            DataSet dataSet = _sqliteDataProvider.ExecuteDataSet(query);
+            var bankAccounts = new List<BankAccount>();
+            foreach (DataRow row in dataSet.Tables[0].Rows)
+            {
+                bankAccounts.Add(new BankAccount()
+                {
+                    Id = Convert.ToInt32(row["Id"]),
+                    Name = row["Name"]?.ToString(),
+                    AccountDetails = row["AccountDetails"]?.ToString()
+                });
+            }
+
+            return bankAccounts;
         }
 
         private Exporter CreateExporterObject(DataRow row)
