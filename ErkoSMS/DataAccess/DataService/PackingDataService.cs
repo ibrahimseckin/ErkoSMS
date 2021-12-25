@@ -17,6 +17,27 @@ namespace ErkoSMS.DataAccess
             _sqliteDataProvider = new SqliteDataProvider();
         }
 
+
+        public List<PackedProductExport> GetPackingExportInfo(int salesId)
+        {
+            var result = new List<PackedProductExport>();
+            const string query = "select pl.Id as palletId, pl.Width as width, pl.Height as height, " +
+                                 "pl.Depth as depth, pl.Weight as NetKG, pl.GrossWeight as GrossKG, " +
+                                 "p.Quantity as quantity, pr.Code as productCode, pr.DescriptionEng as description " +
+                                 "from Packing p, Pallets pl, Products pr " +
+                                 "where p.PalletId = pl.Id and p.ProductId = pr.Id and p.SalesId = @salesId ";
+            _sqliteDataProvider.AddParameter("@salesId", salesId);
+            var dataset = _sqliteDataProvider.ExecuteDataSet(query);
+  
+            foreach (DataRow row in dataset.Tables[0].Rows)
+            {
+                result.Add(CreatePackedProductExportObject(row));
+            }
+
+            return result.OrderBy(x=>x.PalletId).ToList();
+        }
+
+
         public IList<Pallet> GetAllPallets()
         {
             const string query = "select * from pallets";
@@ -57,7 +78,7 @@ namespace ErkoSMS.DataAccess
             _sqliteDataProvider.AddParameter("@ProductId", productId);
             _sqliteDataProvider.AddParameter("@Quantity", packedProduct.Quantity);
             var queryResult = _sqliteDataProvider.ExecuteScalar(query);
-            
+
             return queryResult != null;
         }
 
@@ -66,7 +87,7 @@ namespace ErkoSMS.DataAccess
             const string query = "select * from Packing where SalesId = @SalesId;";
             _sqliteDataProvider.AddParameter("@SalesId", orderId);
             var dataset = _sqliteDataProvider.ExecuteDataSet(query);
-            
+
             IList<PackedProduct> packedProducts = new List<PackedProduct>();
             foreach (DataRow row in dataset.Tables[0].Rows)
             {
@@ -108,6 +129,20 @@ namespace ErkoSMS.DataAccess
                 EnglishDescription = row["DescriptionEng"]?.ToString(),
                 Weight = Convert.ToInt32(row["Weight"]),
                 GrossWeight = Convert.ToInt32(row["GrossWeight"]),
+            };
+        }
+
+        private PackedProductExport CreatePackedProductExportObject(DataRow row)
+        {
+            return new PackedProductExport
+            {
+                PalletId = $"{row["palletId"]?.ToString() ?? string.Empty}.PALLET",
+                Dimensions = $"{row["width"]?.ToString() ?? string.Empty}x{row["height"].ToString()}x{row["depth"].ToString()}",
+                Quantity = row["quantity"]?.ToString() ?? string.Empty,
+                NetKG = row["NetKG"]?.ToString() ?? string.Empty,
+                GrossKG = row["GrossKG"]?.ToString() ?? string.Empty,
+                Description = row["description"]?.ToString() ?? string.Empty,
+                ProductCode = row["productCode"]?.ToString() ?? string.Empty
             };
         }
     }

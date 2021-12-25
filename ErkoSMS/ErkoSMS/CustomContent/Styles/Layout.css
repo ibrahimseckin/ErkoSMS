@@ -14,3 +14,7 @@
 #mainContainer {
     margin-left: 200px;
 }
+
+.hide_column {
+    display: none;
+}

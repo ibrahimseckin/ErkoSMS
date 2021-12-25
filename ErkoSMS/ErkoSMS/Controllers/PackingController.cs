@@ -192,5 +192,18 @@ namespace ErkoSMS.Controllers
 
             return Json(new AjaxResult(true));
         }
+
+        [HttpGet]
+        public ActionResult GetPackedProductsExportInfo(int orderId)
+        {
+            var packingExportInfo = new PackingDataService().GetPackingExportInfo(orderId);
+            return new JsonResult()
+            {
+                Data = packingExportInfo,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+        }
     }
 }
