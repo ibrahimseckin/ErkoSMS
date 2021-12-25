@@ -2,6 +2,11 @@
     ViewBag.Title = "Yeni Satış";
 }
 
+<style>
+    .select2 {
+        width: 100% !important;
+    }
+</style>
 
 <h2>@ViewBag.Title</h2>
 <hr style="margin: 10px 0;" />
@@ -12,7 +17,7 @@
     var exporters = (List<SelectListItem>)ViewBag.Exporters;
 }
 <div class="row">
-    <div class="col-sm-12 col-lg-9">
+    <div class="col-sm-12">
 
         @using (Html.BeginForm("CreateOrder", "Order", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "CreateOrderForm" }))
         {
