@@ -215,7 +215,7 @@ namespace ErkoSMS.Controllers
             var lastRow = new PackedProductExport
             {
                 PalletId = "TOPLAM",
-                Quantity = filteredEmptyRows.Sum(x => Convert.ToInt32(x.Quantity)).ToString(),
+                Quantity = packingExportInfo.Sum(x => Convert.ToInt32(x.Quantity)).ToString(),
                 NetKG = filteredEmptyRows.Sum(x => Convert.ToDouble(x.NetKG)).ToString(),
                 GrossKG = filteredEmptyRows.Sum(x => Convert.ToDouble(x.GrossKG)).ToString(),
                 ProductCode = string.Empty,
