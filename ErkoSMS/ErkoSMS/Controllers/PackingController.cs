@@ -197,6 +197,34 @@ namespace ErkoSMS.Controllers
         public ActionResult GetPackedProductsExportInfo(int orderId)
         {
             var packingExportInfo = new PackingDataService().GetPackingExportInfo(orderId);
+
+            var groups = packingExportInfo.GroupBy(x => x.PalletId).ToList();
+
+            foreach (var packing in groups)
+            {
+                foreach (var productExport in packing.Skip(1))
+                {
+                    productExport.PalletId = string.Empty;
+                    productExport.Dimensions = string.Empty;
+                    productExport.NetKG = string.Empty;
+                    productExport.GrossKG = string.Empty;
+                }
+            }
+
+            var filteredEmptyRows = packingExportInfo.Where(x => !string.IsNullOrEmpty(x.PalletId)).ToList();
+            var lastRow = new PackedProductExport
+            {
+                PalletId = "TOPLAM",
+                Quantity = filteredEmptyRows.Sum(x => Convert.ToInt32(x.Quantity)).ToString(),
+                NetKG = filteredEmptyRows.Sum(x => Convert.ToDouble(x.NetKG)).ToString(),
+                GrossKG = filteredEmptyRows.Sum(x => Convert.ToDouble(x.GrossKG)).ToString(),
+                ProductCode = string.Empty,
+                Description = string.Empty,
+                Dimensions = string.Empty
+            };
+
+            packingExportInfo.Add(lastRow);
+
             return new JsonResult()
             {
                 Data = packingExportInfo,

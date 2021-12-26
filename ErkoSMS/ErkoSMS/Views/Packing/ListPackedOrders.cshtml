@@ -40,7 +40,28 @@
         }
     }
 
-    var addHeaderToEachPage = function (doc, invoiceDate, invoiceNo,customerName, customerAddress ) {
+    var addFooter = function (doc, lastRow, totalCase) {
+        var afterTable = doc.lastAutoTable.finalY + 10; // The y position on the page
+        doc.setFontSize(9);
+        var totalPiece = lastRow.Quantity + " Adet";
+        var totalNetWeight = lastRow.NetKG + " Kgs";
+        var totalGrossWeight = lastRow.GrossKG + " Kgs";
+
+        doc.setFont("turkish", "normal");
+        doc.text(10, afterTable, "Total Piece:   " + totalPiece, { align: "left" });
+        doc.text(10, afterTable + 5, "Total Case: " + totalCase + " Adet", { align: "left" });
+        doc.text(10, afterTable + 10, "Total Net Weight:    " + totalNetWeight, { align: "left" });
+        doc.text(10, afterTable + 15, "Total Gross Weight:  " + totalGrossWeight, { align: "left" });
+
+        doc.setFont("turkish", "bold");
+        doc.text(10, afterTable + 25, "Packing", { align: "left" });
+        doc.setFont("turkish", "normal");
+        doc.text(10, afterTable + 29, totalCase+" PCS PALLET", { align: "left" });
+
+    }
+
+
+    var addHeaderToEachPage = function (doc, invoiceDate, invoiceNo, customerName, customerAddress) {
         for (var i = 1; i <= doc.getNumberOfPages(); i++) {
 
             doc.setFont("turkish", "bold");
@@ -49,9 +70,9 @@
             var width = doc.internal.pageSize.getWidth();
             doc.text(width / 2, 10, 'PACKING LIST', { align: 'center' });
 
-            doc.setFontSize(5);
-            doc.text(175, 12, 'Invoice No    : ' + invoiceNo);
-            doc.text(175, 14, 'Invoice Date : ' + invoiceDate);
+            doc.setFontSize(8);
+            doc.text(160, 40, 'Invoice No    : ' + invoiceNo);
+            doc.text(160, 44, 'Invoice Date : ' + invoiceDate);
 
 
             doc.setLineWidth(0.3);
@@ -59,8 +80,6 @@
             doc.roundedRect(10, 20, 95, 25, 3, 3, 'S');
             doc.setFontSize(8);
             doc.text(15, 25, 'IMPORTER:');
-           
-
 
             doc.setFontSize(5);
             doc.setFont("turkish", "normal");
@@ -72,7 +91,6 @@
     }
 
     $('#ordersTable').on('click', 'td.editor-export', function (e) {
-        debugger;
         e.preventDefault();
         var rowToBeUpdated = $(this).closest('tr')[0];
         var orderId = rowToBeUpdated.cells[0].innerText;
@@ -81,7 +99,6 @@
         var customerName = rowToBeUpdated.cells[4].innerText;
         var customerAddress = rowToBeUpdated.cells[10].innerText;
         ERKOSMS.AjaxAction("GetPackedProductsExportInfo?orderId=" + orderId, {}, false).then(function (data) {
-            debugger;
             var doc = new window.jspdf.jsPDF();
             doc.autoTable({
                 head: [['Case No', 'Dimensions', 'Quantity', 'Net KG', 'Gross KG', 'Code', 'Description']],
@@ -91,8 +108,10 @@
                 headStyles: { fillColor: [182, 191, 182] }
             });
 
+            var dataWithoutLastRow = data.slice(0, data.length - 1);
+            var numberOfPallet = dataWithoutLastRow.map(d => d.PalletId.split('.')[0]).filter(item => item).pop(-2);
             addHeaderToEachPage(doc, invoiceDate, invoiceNo, customerName, customerAddress);
-
+            addFooter(doc, data[data.length - 1], numberOfPallet);
             var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
             var filename = "PackingList_" + dateNow + ".pdf";
             doc.save(filename);
@@ -138,7 +157,6 @@
             ];
 
             ERKOSMS.AjaxAction(ajaxAction, {}, false).then(function (data) {
-                debugger;
                 var datatable = tb.DataTable({
                     autoWidth: true,
                     columns: columns,
