@@ -47,16 +47,22 @@
         var totalNetWeight = lastRow.NetKG + " Kgs";
         var totalGrossWeight = lastRow.GrossKG + " Kgs";
 
+        doc.setFont("turkish", "bold");
+        doc.text(10, afterTable, "Total Piece   ", { align: "left" });
+        doc.text(10, afterTable + 5, "Total Case ", { align: "left" });
+        doc.text(10, afterTable + 10, "Total Net Weight    ", { align: "left" });
+        doc.text(10, afterTable + 15, "Total Gross Weight  ", { align: "left" });
+
         doc.setFont("turkish", "normal");
-        doc.text(10, afterTable, "Total Piece:   " + totalPiece, { align: "left" });
-        doc.text(10, afterTable + 5, "Total Case: " + totalCase + " Adet", { align: "left" });
-        doc.text(10, afterTable + 10, "Total Net Weight:    " + totalNetWeight, { align: "left" });
-        doc.text(10, afterTable + 15, "Total Gross Weight:  " + totalGrossWeight, { align: "left" });
+        doc.text(45, afterTable, ": " + totalPiece, { align: "left" });
+        doc.text(45, afterTable + 5, ": " + totalCase + " Adet", { align: "left" });
+        doc.text(45, afterTable + 10, ": " + totalNetWeight, { align: "left" });
+        doc.text(45, afterTable + 15, ": " + totalGrossWeight, { align: "left" });
 
         doc.setFont("turkish", "bold");
         doc.text(10, afterTable + 25, "Packing", { align: "left" });
         doc.setFont("turkish", "normal");
-        doc.text(10, afterTable + 29, totalCase+" PCS PALLET", { align: "left" });
+        doc.text(10, afterTable + 29, totalCase + " PCS PALLET", { align: "left" });
 
     }
 
