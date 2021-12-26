@@ -33,6 +33,10 @@ namespace ErkoSMS.DataAccess
             const string query = "Select * From suppliers Where Id = @supplierId";
             _sqliteDataProvider.AddParameter("@supplierId", supplierId);
             DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
+            if(row == null)
+            {
+                return null;
+            }
             return CreateSupplier(row);
         }
 
