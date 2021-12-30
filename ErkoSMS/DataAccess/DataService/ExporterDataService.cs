@@ -58,14 +58,30 @@ namespace ErkoSMS.DataAccess.DataService
             _sqliteDataProvider.AddParameter("@vatNo", exporter.VatNo);
             _sqliteDataProvider.AddParameter("@PhoneNumber", exporter.PhoneNumber);
             _sqliteDataProvider.AddParameter("@FaxNumber", exporter.FaxNumber);
-            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+            if (_sqliteDataProvider.ExecuteNonQuery(query) > 0 && exporter.Id != null)
+            {
+                DeleteAllBankAccounts(exporter.Id.Value);
+                foreach (var bankAccount in exporter.BankAccounts)
+                {
+                    CreateBankAccount(bankAccount, exporter.Id.Value);
 
+                }
+            }
+
+            return true;
         }
 
         public bool DeleteExporter(int id)
         {
             const string query = "Delete From Exporters Where Id = @id";
             _sqliteDataProvider.AddParameter("@id", id);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
+
+        public bool DeleteAllBankAccounts(int exporterId)
+        {
+            const string query = "Delete From ExporterBankAccounts Where ExporterId = @exporterId";
+            _sqliteDataProvider.AddParameter("@exporterId", exporterId);
             return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
         }
 
