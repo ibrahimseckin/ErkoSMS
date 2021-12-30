@@ -260,20 +260,20 @@
             doc.text(111, y, line);
             y += 2;
         }
-        var tradeRegisterNoText = "Tic.Sic. No : " + "@Model.Exporter.TradeRegisterNo"; 
+        var tradeRegisterNoText = "Tic.Sic. No : " + "@Model.Exporter.TradeRegisterNo";
         doc.text(111, y, tradeRegisterNoText);
         y += 2;
-        var vatNoText = "VAT No : " + "@Model.Exporter.VatNo"; 
+        var vatNoText = "VAT No : " + "@Model.Exporter.VatNo";
         doc.text(111, y, vatNoText);
         y += 2;
-        var telText = "TEL : " + "@Model.Exporter.PhoneNumber"; 
+        var telText = "TEL : " + "@Model.Exporter.PhoneNumber";
         doc.text(111, y, telText);
         y += 2;
-        var faxText = "FAX : " + "@Model.Exporter.FaxNumber"; 
+        var faxText = "FAX : " + "@Model.Exporter.FaxNumber";
         doc.text(111, y, faxText);
     }
 
-    var addFooter = function(doc, totalCostofProducts) {
+    var addFooter = function (doc, totalCostofProducts, lastRow,totalCase) {
         var afterTable = doc.lastAutoTable.finalY + 10; // The y position on the page
         doc.setFontSize(8);
         doc.setFont("turkish", "bold");
@@ -288,11 +288,20 @@
         doc.text(195, afterTable + 5, transportCost.toFixed(2), { align: "right" });
         doc.text(195, afterTable + 10, totalCost.toFixed(2), { align: "right" });
 
+        var totalPiece = lastRow.Quantity;
+        var totalNetWeight = lastRow.NetKG + " Kgs";
+        var totalGrossWeight = lastRow.GrossKG + " Kgs";
+
         doc.setFont("turkish", "normal");
-        doc.text(10, afterTable, "TOTAL PALLETES:   32 CASE", { align: "left" });
-        doc.text(10, afterTable + 5, "TOTAL PIECE:  50970", { align: "left" });
-        doc.text(10, afterTable + 10, "TOTAL NET WEIGHT:    7872 Kgs", { align: "left" });
-        doc.text(10, afterTable + 15, "TOTAL GROSS WEIGHT:  8288 Kgs", { align: "left" });
+        doc.text(10, afterTable, "TOTAL PALLETS   ", { align: "left" });
+        doc.text(10, afterTable + 5, "Total Case ", { align: "left" });
+        doc.text(10, afterTable + 10, "Total Net Weight    ", { align: "left" });
+        doc.text(10, afterTable + 15, "Total Gross Weight  ", { align: "left" });
+
+        doc.text(45, afterTable, ": " + totalCase + " CASE", { align: "left" });
+        doc.text(45, afterTable + 5, ": " + totalPiece, { align: "left" });
+        doc.text(45, afterTable + 10, ": " + totalNetWeight, { align: "left" });
+        doc.text(45, afterTable + 15, ": " + totalGrossWeight, { align: "left" });
 
         doc.text(10, afterTable + 25, "PAYMENT: 60 DAYS AFTER RECEIVING GOODS", { align: "left" });
         doc.text(10, afterTable + 30, "DELIVERY TERMS:  CIF", { align: "left" });
@@ -305,43 +314,51 @@
 
     $("#invoiceButton").on('click',
         function() {
-            var doc = new window.jspdf.jsPDF();
+            ERKOSMS.AjaxAction("../Packing/GetPackedProductsExportInfo?orderId=" + @Model.OrderId, {}, false).then(function (data) {
+                var doc = new window.jspdf.jsPDF();
 
-            var orderedProducts = [];
-            var totalCost = 0.00;
-            $(".orderRow").each((index, order) => {
-                var productCode = $(order).find(".productCode").val();
-                var description = $(order).find(".productEnglishDescription").val();
-                var quantity = $(order).find(".quantity").val();
-                var unitPrice = new Number($(order).find(".unitPrice").val());
-                var totalPrice = new Number($(order).find(".totalPrice").val());
-                totalCost += totalPrice;
-                var orderedProduct = [];
-                orderedProduct.push(productCode);
-                orderedProduct.push(description);
-                orderedProduct.push("ORIGIN");
-                orderedProduct.push(quantity);
-                orderedProduct.push(unitPrice.toFixed(2));
-                orderedProduct.push(totalPrice.toFixed(2));
-                orderedProducts.push(orderedProduct);
-            });
+                var orderedProducts = [];
+                var totalCost = 0.00;
+                $(".orderRow").each((index, order) => {
+                    var productCode = $(order).find(".productCode").val();
+                    var description = $(order).find(".productEnglishDescription").val();
+                    var quantity = $(order).find(".quantity").val();
+                    var unitPrice = new Number($(order).find(".unitPrice").val());
+                    var totalPrice = new Number($(order).find(".totalPrice").val());
+                    totalCost += totalPrice;
+                    var orderedProduct = [];
+                    orderedProduct.push(productCode);
+                    orderedProduct.push(description);
+                    orderedProduct.push("ORIGIN");
+                    orderedProduct.push(quantity);
+                    orderedProduct.push(unitPrice.toFixed(2));
+                    orderedProduct.push(totalPrice.toFixed(2));
+                    orderedProducts.push(orderedProduct);
+                });
 
 
-            doc.autoTable({
-                head: [['CODE', 'DESCRIPTION', 'ORIGIN', 'QTY', 'NET UNIT PRICE', 'TOTAL']],
-                body: orderedProducts,
-                theme: 'grid',
-                margin: { top: 50, left: 10 },
-                headStyles: { fillColor: [182, 191, 182] }
-            });
+                doc.autoTable({
+                    head: [['CODE', 'DESCRIPTION', 'ORIGIN', 'QTY', 'NET UNIT PRICE', 'TOTAL']],
+                    body: orderedProducts,
+                    theme: 'grid',
+                    margin: { top: 50, left: 10 },
+                    headStyles: { fillColor: [182, 191, 182] }
+                });
 
-            addHeaderToEachPage(doc);
-            addFooter(doc, totalCost);
+                addHeaderToEachPage(doc);
+                var dataWithoutLastRow = data.slice(0, data.length - 1);
+                var numberOfPallet = dataWithoutLastRow.map(d => d.PalletId.split('.')[0]).filter(item => item).pop(-2);
+                addFooter(doc, totalCost, data[data.length - 1], numberOfPallet);
 
-            var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
-            var filename = "Invoice_" + dateNow + ".pdf";
-            doc.save(filename);
+                var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
+                var filename = "Invoice_" + dateNow + ".pdf";
+                doc.save(filename);
+
+            }), function (data) {
+                ERKOSMS.ShowWarning(data);
+            }
         });
+
 
 
 </script>
