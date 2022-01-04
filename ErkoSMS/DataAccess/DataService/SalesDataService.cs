@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using AspNet.Identity.SQLite;
+using ErkoSMS.DataAccess.DataService;
 using ErkoSMS.DataAccess.Model;
 
 namespace ErkoSMS.DataAccess
@@ -315,17 +316,7 @@ namespace ErkoSMS.DataAccess
 
         private Exporter GetExporterById(int exporterId)
         {
-            const string query = "Select * From Exporters Where id = @id";
-            _sqliteDataProvider.AddParameter("@id", exporterId);
-            DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
-            if (row == null)
-            {
-                return new Exporter { Id = exporterId };
-            }
-            else
-            {
-                return CreateExporter(row);
-            }
+            return new ExporterDataService().GetExporter(exporterId);
 
         }
 

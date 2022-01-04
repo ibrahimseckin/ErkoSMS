@@ -273,7 +273,7 @@
         doc.text(111, y, faxText);
     }
 
-    var addFooter = function (doc, totalCostofProducts, lastRow,totalCase) {
+    var addFooter = function (doc, totalCostofProducts, lastRow,totalCase,bankaccount) {
         var afterTable = doc.lastAutoTable.finalY + 10; // The y position on the page
         doc.setFontSize(8);
         doc.setFont("turkish", "bold");
@@ -310,11 +310,45 @@
         var words = toWords(totalCost);
         doc.text(10, afterTable + 40, words, { align: "left" });
         doc.text(10, afterTable + 45, "Bank Account", { align: "left" });
+        var address = bankaccount.split(",");
+        doc.setFont("turkish", "normal");
+        var y = afterTable + 48;
+        for (var i = 0; i < address.length; i++) {
+            var line = address[i];
+            doc.text(10, y, line);
+            y += 3;
+        }
     }
 
     $("#invoiceButton").on('click',
-        function() {
-            ERKOSMS.AjaxAction("../Packing/GetPackedProductsExportInfo?orderId=" + @Model.OrderId, {}, false).then(function (data) {
+        function () {
+            if (@Model.Exporter.BankAccounts.Count){
+            vex.dialog.open({
+                message: 'İthalatçı için tanımlı banka hesaplarından birini seçiniz',
+                input: [
+                    '@MvcHtmlString.Create(Regex.Replace(Html.DropDownList("bankaccount", Model.Exporter?.BankAccounts?.Select(x => new SelectListItem() { Text = x.Name, Value = Regex.Replace(x.AccountDetails, @"\r?\n",",") }) ?? new List<SelectListItem>()).ToString(), @"\r?\n",""))'
+                ].join(''),
+                buttons: [
+                    $.extend({}, vex.dialog.buttons.YES, { text: 'Devam Et' }),
+                    $.extend({}, vex.dialog.buttons.NO, { text: 'İptal' })
+                ],
+                callback: function(data) {
+                    if (!data) {
+                        return;
+                    } else {
+                        createPDF(data.bankaccount);
+                    }
+                }
+            });
+            } else {
+                createPDF("");
+            }
+
+        });
+
+    var createPDF = function (bankaccount) {
+        console.log('bankaccount', bankaccount );
+        ERKOSMS.AjaxAction("../Packing/GetPackedProductsExportInfo?orderId=" + @Model.OrderId, {}, false).then(function (data) {
                 var doc = new window.jspdf.jsPDF();
 
                 var orderedProducts = [];
@@ -348,7 +382,7 @@
                 addHeaderToEachPage(doc);
                 var dataWithoutLastRow = data.slice(0, data.length - 1);
                 var numberOfPallet = dataWithoutLastRow.map(d => d.PalletId.split('.')[0]).filter(item => item).pop(-2);
-                addFooter(doc, totalCost, data[data.length - 1], numberOfPallet);
+                addFooter(doc, totalCost, data[data.length - 1], numberOfPallet,bankaccount);
 
                 var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
                 var filename = "Invoice_" + dateNow + ".pdf";
@@ -357,7 +391,7 @@
             }), function (data) {
                 ERKOSMS.ShowWarning(data);
             }
-        });
+    }
 
 
 

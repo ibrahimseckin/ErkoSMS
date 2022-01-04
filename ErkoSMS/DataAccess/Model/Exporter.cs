@@ -16,6 +16,6 @@ namespace ErkoSMS.DataAccess.Model
         public string VatNo { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string FaxNumber { get; set; } = string.Empty;
-        public List<BankAccount> BankAccounts { get; set; }
+        public List<BankAccount> BankAccounts { get; set; } = new List<BankAccount>();
     }
 }
