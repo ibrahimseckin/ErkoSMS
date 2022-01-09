@@ -51,20 +51,53 @@ namespace ErkoSMS.DataAccess
             return pallets;
         }
 
-        public bool CreatePallet(IPallet product)
+        public Pallet GetPalletById(int palletId)
+        {
+            const string query = "Select * From pallets Where Id = @palletId";
+            _sqliteDataProvider.AddParameter("@palletId", palletId);
+            DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
+            return CreatePallet(row);
+        }
+
+        public bool CreatePallet(IPallet pallet)
         {
             const string query = "Insert into Pallets (Width, Height, Depth, Description, DescriptionEng, Weight, GrossWeight) values " +
                                 "(@Width,@Height,@Depth,@Description,@DescriptionEng,@Weight,@GrossWeight);" +
                                 "select last_insert_rowid();";
-            _sqliteDataProvider.AddParameter("@Width", product.Width);
-            _sqliteDataProvider.AddParameter("@Height", product.Height);
-            _sqliteDataProvider.AddParameter("@Depth", product.Depth);
-            _sqliteDataProvider.AddParameter("@Description", product.Description);
-            _sqliteDataProvider.AddParameter("@DescriptionEng", product.EnglishDescription);
-            _sqliteDataProvider.AddParameter("@Weight", product.Weight);
-            _sqliteDataProvider.AddParameter("@GrossWeight", product.GrossWeight);
+            _sqliteDataProvider.AddParameter("@Width", pallet.Width);
+            _sqliteDataProvider.AddParameter("@Height", pallet.Height);
+            _sqliteDataProvider.AddParameter("@Depth", pallet.Depth);
+            _sqliteDataProvider.AddParameter("@Description", pallet.Description);
+            _sqliteDataProvider.AddParameter("@DescriptionEng", pallet.EnglishDescription);
+            _sqliteDataProvider.AddParameter("@Weight", pallet.Weight);
+            _sqliteDataProvider.AddParameter("@GrossWeight", pallet.GrossWeight);
             var queryResult = _sqliteDataProvider.ExecuteScalar(query);
             return queryResult != null;
+        }
+
+        public bool DeletePalletById(int palletId)
+        {
+            const string query = "Delete From Pallets Where Id = @palletId";
+            _sqliteDataProvider.AddParameter("@PalletId", palletId);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
+        }
+
+        public bool UpdatePallet(IPallet pallet)
+        {
+            const string query = "Update Pallets " +
+                           "Set Width = @Width, Height = @Height," +
+                           "Depth= @Depth, Description = @Description," +
+                           "DescriptionEng = @DescriptionEng, Weight = @Weight, GrossWeight = @GrossWeight" +
+                           " Where Id = @Id";
+            _sqliteDataProvider.AddParameter("@Id", pallet.Id);
+            _sqliteDataProvider.AddParameter("@Width", pallet.Width);
+            _sqliteDataProvider.AddParameter("@Height", pallet.Height);
+            _sqliteDataProvider.AddParameter("@Depth", pallet.Depth);
+            _sqliteDataProvider.AddParameter("@Description", pallet.Description);
+            _sqliteDataProvider.AddParameter("@DescriptionEng", pallet.EnglishDescription);
+            _sqliteDataProvider.AddParameter("@Weight", pallet.Weight);
+            _sqliteDataProvider.AddParameter("@GrossWeight", pallet.GrossWeight);
+            return _sqliteDataProvider.ExecuteNonQuery(query) > 0;
         }
 
         public bool CreatePackedProduct(PackedProduct packedProduct)
@@ -122,7 +155,7 @@ namespace ErkoSMS.DataAccess
             return new Pallet
             {
                 Id = Convert.ToInt32(row["Id"]),
-                Width = Convert.ToInt32(row["Weight"]),
+                Width = Convert.ToInt32(row["Width"]),
                 Height = Convert.ToInt32(row["Height"]),
                 Depth = Convert.ToInt32(row["Depth"]),
                 Description = row["Description"]?.ToString(),

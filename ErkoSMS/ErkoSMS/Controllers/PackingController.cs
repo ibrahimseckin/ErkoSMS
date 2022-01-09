@@ -29,18 +29,6 @@ namespace ErkoSMS.Controllers
             return View();
         }
 
-        [HttpPost]
-        public ActionResult CreatePallet(PalletViewModel pallet)
-        {
-            var packingDataService = new PackingDataService();
-            var result = packingDataService.CreatePallet(pallet);
-            if (result)
-            {
-                return Json(new AjaxResult("Sandık başarıyla kaydedildi."));
-            }
-            return Json(new AjaxResult("Sandık kaydedilemedi!"));
-        }
-
         [HttpGet]
         public ActionResult GetReadyForPackingOrders()
         {

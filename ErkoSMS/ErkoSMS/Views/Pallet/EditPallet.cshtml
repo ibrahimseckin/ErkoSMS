@@ -1,10 +1,11 @@
 ﻿
 @model ErkoSMS.ViewModels.PalletViewModel
 <div>
-    <h3>Palet Ekle</h3>
+    <h3>Palet Güncelle</h3>
     <hr />
-    @using (Html.BeginForm("CreatePallet", "Pallet", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "CreatePalletForm", style = "width: 500px" }))
+    @using (Html.BeginForm("EditPallet", "Pallet", FormMethod.Post, new { data_erkosms_role = "ajax-form", id = "EditPalletForm", style = "width: 500px" }))
     {
+        @Html.Hidden("Id", Model.Id)
         @Html.AntiForgeryToken()
         @Html.ValidationSummary("", new { @class = "text-danger" })
 
@@ -51,11 +52,12 @@
 
 <script>
 
-    $("#CreatePalletForm").on("ajax-form:succeed",
+    $("#EditPalletForm").on("ajax-form:succeed",
         function(ev, data) {
             vex.dialog.alert({ unsafeMessage: data.result.Data });
             var tg = $(ev.currentTarget);
             closeParentVexModal(tg);
             getPallets();
         });
+
 </script>

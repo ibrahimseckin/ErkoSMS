@@ -15,26 +15,26 @@
 </div>
 <script>
     // Edit record
-    $('#productListTable').on('click', 'td.editor-edit', function (e) {
+    $('#palletListTable').on('click', 'td.editPallet', function (e) {
         e.preventDefault();
         var rowToBeUpdated = $(this).closest('tr')[0];
-        var productId = rowToBeUpdated.cells[0].innerText;
-        ERKOSMS.GetAjaxDialog("Product/EditProduct?productId=" + productId, {}, false).then(function () {
+        var palletId = rowToBeUpdated.cells[0].innerText;
+        ERKOSMS.GetAjaxDialog("Pallet/EditPallet?palletId=" + palletId, {}, false).then(function () {
         }), function (data) {
             ERKOSMS.ShowWarning(data);
         }
     });
 
 
-    $('#productListTable').on('click', 'td.editor-delete', function (e) {
+    $('#palletListTable').on('click', 'td.deletePallet', function (e) {
         e.preventDefault();
-        var rowToBeDelleted = $(this).closest('tr')[0]
-        var productId = rowToBeDelleted.cells[0].innerText
+        var rowToBeDelleted = $(this).closest('tr')[0];
+        var palletId = rowToBeDelleted.cells[0].innerText;
         vex.dialog.confirm({
-            message: "Seçilen ürün silinecektir. Emin misiniz? ",
+            message: "Seçilen palet silinecektir. Emin misiniz? ",
             callback: function (result) {
                 if (result) {
-                    ERKOSMS.AjaxAction("Product/DeleteProduct?productId=" + productId, {}, false).then(function () {
+                    ERKOSMS.AjaxAction("Pallet/DeletePallet?palletId=" + palletId, {}, false).then(function () {
                         rowToBeDelleted.remove();
                     }), function (data) {
                         ERKOSMS.ShowWarning(data);
@@ -43,75 +43,6 @@
             }
         });
     });
-
-
-    $("#searchButton").on("click", function () {
-        destroyTable();
-        var tb = $("#productListTable");
-        var productCode = $("#productCode").val();
-        ERKOSMS.AjaxAction("Product/GetProductByCode?productCode=" + productCode, {}, false).then(function (data) {
-            var datatable = tb.DataTable({
-                autoWidth: true,
-                columns: [
-                    { title: "Id", data: "Id", className: "data" },
-                    { title: "Ürün Kodu", data: "Code", className: "data" },
-                    { title: "CrossReferenceCode", data: "CrossReferenceCode", className: "data" },
-                    { title: "Ürün Açıklaması", data: "Description", className: "data" },
-                    { title: "Ürün Açıklaması İnglizce", data: "EnglishDescription", className: "data" },
-                    { title: "Ürün Grubu", data: "Group", className: "data" },
-                    { title: "Marka", data: "Brand", className: "data" },
-                    { title: "Model", data: "Model", className: "data" },
-                    { title: "En Son Fiyatı", data: "LastPrice", className: "data" },
-                    {
-                        data: null,
-                        className: "dt-center editor-edit",
-                        defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Güncelle</span>',
-                        orderable: false
-                    },
-                    {
-                        data: null,
-                        className: "dt-center editor-delete",
-                        defaultContent: '<span class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> Sil</span>',
-                        orderable: false
-                    }
-                ],
-                data: data,
-                sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
-                buttons: [
-                    {
-                        extend: 'csv',
-                        charset: 'UTF-8',
-                        fieldSeparator: ';',
-                        bom: true,
-                        text: '<button type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-export"></span>Dışa Aktar</button ><br>',
-                        exportOptions: {
-                            columns: ".data"
-                        },
-                        filename: function () {
-                            var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
-                            return "Ürünler_" + dateNow;
-                        },
-                    },
-                ],
-                aaSorting: [],      // Initial sorting
-                bInfo: true,       // Info is not shown because the total count to show is not known
-                searching: true,   // Disable searching TODO: Enable searching if necessary
-                paging: true, // Disable paging in outstanding
-                pageLength: 50,
-                deferRender: true,
-                columnDefs: [{
-                    targets: 2,
-                    render: function (data, type, row) {
-                        shortened = data.length > 20 ?
-                            data.substr(0, 20) + '…' :
-                            data;
-                        return '<span  title="' + data + '">' + shortened + '</span>'
-                    }
-                }]
-            });
-        });
-    });
-
 
     var destroyTable = function () {
         var tb = $("#palletListTable");
@@ -128,7 +59,6 @@
         ERKOSMS.AjaxAction("Pallet/ListPallets", {
             type: 'GET'
         }).then(function (data) {
-            debugger;
             var columns = [
                 { title: "No", data: "Id" },
                 { title: "Genişlik", data: "Width" },
@@ -140,13 +70,13 @@
                 { title: "Desc.", data: "EnglishDescription" },
                 {
                     data: null,
-                    className: "dt-center updateRecord",
+                    className: "dt-center editPallet",
                     defaultContent: '<span class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span>Güncelle</span>',
                     orderable: false
                 },
                 {
                     data: null,
-                    className: "dt-center deleteRecord",
+                    className: "dt-center deletePallet",
                     defaultContent: '<span class="btn btn-danger"><span class="glyphicon glyphicon-pencil"></span>Sil</span>',
                     orderable: false
                 }

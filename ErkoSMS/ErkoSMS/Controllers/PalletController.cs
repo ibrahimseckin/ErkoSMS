@@ -50,16 +50,42 @@ namespace ErkoSMS.Controllers
             var result = packingDataService.CreatePallet(pallet);
             if (result)
             {
-                return Json(new AjaxResult("Sandık başarıyla kaydedildi."));
+                return Json(new AjaxResult("Palet başarıyla kaydedildi."));
             }
-            return Json(new AjaxResult("Sandık kaydedilemedi!"));
+            return Json(new AjaxResult("Palet kaydedilemedi!"));
         }
 
-        private void FillViewBag()
+        [HttpGet]
+        public ActionResult DeletePallet(int palletId)
         {
-            
+            var result = new PackingDataService().DeletePalletById(palletId);
+            return new JsonResult()
+            {
+                Data = result,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
 
         }
 
+        public ActionResult EditPallet(int palletId)
+        {
+            var packingDataService = new PackingDataService();
+            var pallet = packingDataService.GetPalletById(palletId);
+            return PartialView(new PalletViewModel(pallet));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditPallet(PalletViewModel pallet)
+        {
+            var packingDataService = new PackingDataService();
+            var result = packingDataService.UpdatePallet(pallet);
+            if (result)
+            {
+                return Json(new AjaxResult("Palet başarıyla kaydedildi."));
+            }
+            return Json(new AjaxResult("Palet kaydedilemedi!"));
+        }
     }
 }
