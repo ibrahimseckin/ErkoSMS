@@ -46,6 +46,7 @@ namespace ErkoSMS.Controllers
                 UnitPrice = purchaseViewModel.UnitPrice,
                 TotalPrice = purchaseViewModel.TotalPrice,
                 OrderId = 0,
+                Comment = purchaseViewModel.Comment
             };
 
             new PurchaseDataService().CreatePurchase(purchase);
@@ -101,7 +102,8 @@ namespace ErkoSMS.Controllers
                 PurchaseId = purchaseViewModel.PurchaseId,
                 PurchaserUserGuid = purchaseViewModel.PurchaserUser,
                 TotalPrice = purchaseViewModel.UnitPrice * purchaseViewModel.Quantity,
-                RequestedBySales = purchaseViewModel.RequestedBySales
+                RequestedBySales = purchaseViewModel.RequestedBySales,
+                Comment = purchaseViewModel.Comment
             };
             if (purchaseViewModel.PurchaseState == PurchaseState.PurchaseSuccesful ||
                 purchaseViewModel.PurchaseState == PurchaseState.PurchaseFailed)

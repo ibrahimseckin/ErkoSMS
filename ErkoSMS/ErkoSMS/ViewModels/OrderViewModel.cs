@@ -28,6 +28,7 @@ namespace ErkoSMS.ViewModels
             this.ExchangeRate = sales.ExchangeRate;
             this.OrderId = sales.Id;
             this.SalesState = sales.SalesState;
+            this.Comment = sales.Comment;
             this.OrderLines = new List<OrderLine>();
             if (sales.SalesDetails != null)
             {
@@ -66,6 +67,8 @@ namespace ErkoSMS.ViewModels
         public DateTime SalesStartDate { get; set; }
         public SalesState SalesState { get; set; }
         public Exporter Exporter { get; set; }
+        [Display(Name = "Yorum")]
+        public string Comment { get; set; }
     }
 
     public class OrderLine

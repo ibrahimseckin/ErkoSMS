@@ -53,6 +53,10 @@
                         <label>Durum:</label>
                         @Html.EnumDropDownListFor(x => x.State, new { id = "statedropdown", @class = "chosen-select form-control" })
                     </div>
+                    <div class="form-group col-md-3">
+                        @Html.LabelFor(model => model.Comment)
+                        @Html.TextAreaFor(model => model.Comment, new {style="width:400px;height: 50px"})
+                    </div>
                     <div class="form-group col-md-2">
                         <label>Kur:</label>
                         @Html.EnumDropDownListFor(x => x.Currency, new { id = "currencydropdown", @class = "chosen-select form-control" })

@@ -46,15 +46,16 @@ namespace ErkoSMS.DataAccess
                 Quantity = Convert.ToInt32(row["Amount"]),
                 OrderId = Convert.ToInt32(row["SaleId"]),
                 SalesUserName = row["SalesUser"].ToString(),
+                Comment = row["Comment"]?.ToString() ?? string.Empty,
             };
         }
 
         public bool CreatePurchase(Purchase purchase)
         {
             const string query = "Insert into Purchases (ProductId,ProductCode,Amount,State,StartDate,SaleId,AssignedUser,TotalPrice," +
-                                 "UnitPrice,SupplierId,Currency,RequestedBySales,SalesUser) values " +
+                                 "UnitPrice,SupplierId,Currency,RequestedBySales,SalesUser,Comment) values " +
                                  "(@ProductId,@ProductCode,@Amount,@State,@StartDate,@SaleId,@AssignedUser,@TotalPrice,@UnitPrice," +
-                                 "@SupplierId,@Currency,@RequestedBySales,@SalesUser);" +
+                                 "@SupplierId,@Currency,@RequestedBySales,@SalesUser,@comment);" +
                                  "select last_insert_rowid();";
             _sqliteDataProvider.AddParameter("@ProductId", purchase.ProductId);
             _sqliteDataProvider.AddParameter("@ProductCode", purchase.ProductCode);
@@ -70,6 +71,7 @@ namespace ErkoSMS.DataAccess
             _sqliteDataProvider.AddParameter("@SupplierId", purchase.SupplierId);
             _sqliteDataProvider.AddParameter("@Currency", purchase.Currency);
             _sqliteDataProvider.AddParameter("@RequestedBySales", purchase.RequestedBySales);
+            _sqliteDataProvider.AddParameter("@comment", purchase.Comment);
 
             var queryResult = _sqliteDataProvider.ExecuteScalar(query);
             return queryResult != null;
@@ -80,7 +82,7 @@ namespace ErkoSMS.DataAccess
             string query = "Update Purchases " +
                                  "Set State = @State, SupplierId = @SupplierId," +
                                  "UnitPrice = @UnitPrice, TotalPrice = @TotalPrice," +
-                                 "Currency = @Currency, Amount = @Quantity";
+                                 "Currency = @Currency, Amount = @Quantity, Comment = @comment";
             if (purchase.PurchaseCloseDate.HasValue)
             {
                 query += ",CloseDate = @CloseDate";
@@ -94,6 +96,7 @@ namespace ErkoSMS.DataAccess
             _sqliteDataProvider.AddParameter("@UnitPrice", purchase.UnitPrice);
             _sqliteDataProvider.AddParameter("@Currency", purchase.Currency);
             _sqliteDataProvider.AddParameter("@Quantity", purchase.Quantity);
+            _sqliteDataProvider.AddParameter("@comment", purchase.Comment);
             try
             {
                 return _sqliteDataProvider.ExecuteNonQuery(query) > 0;

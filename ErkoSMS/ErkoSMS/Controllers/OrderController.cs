@@ -148,6 +148,7 @@ namespace ErkoSMS.Controllers
             sales.SalesState = order.State;
             sales.InvoiceDate = order.InvoiceDate;
             sales.Exporter = order.Exporter;
+            sales.Comment = order.Comment;
 
             var isThereGap = order.OrderLines.Any(x => x.Quantity > x.StokQuantity);
             if (isThereGap)
@@ -233,7 +234,8 @@ namespace ErkoSMS.Controllers
                     SalesId = order.OrderId,
                     UnitPrice = x.UnitPrice
                 })?.ToList() ?? new List<SalesDetail>(),
-                TotalPrice = order.OrderLines?.Sum(x => x.TotalPrice) ?? 0
+                TotalPrice = order.OrderLines?.Sum(x => x.TotalPrice) ?? 0,
+                Comment = order.Comment
             };
             salesDataService.UpdateOrder(sales);
             return Json(new AjaxResult(true));

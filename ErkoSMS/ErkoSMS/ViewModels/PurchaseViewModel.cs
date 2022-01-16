@@ -37,6 +37,8 @@ namespace ErkoSMS.ViewModels
         public int OrderId { get; set; }
 
         public int ActiveTime { get; set; }
+        [Display(Name = "Yorum")]
+        public string Comment { get; set; }
 
         public PurchaseViewModel()
         {
@@ -57,6 +59,7 @@ namespace ErkoSMS.ViewModels
             RequestedBySales = purchase.RequestedBySales;
             SalesUserName = purchase.SalesUserName;
             ActiveTime = purchase.ActiveTime;
+            Comment = purchase.Comment;
         }
     }
 }

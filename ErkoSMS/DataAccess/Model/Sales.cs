@@ -27,5 +27,6 @@ namespace ErkoSMS.DataAccess.Model
 
         public double ExchangeRate { get; set; }
         public Exporter Exporter { get; set; }
+        public string Comment { get; set; }
     }
 }

@@ -24,5 +24,6 @@ namespace ErkoSMS.DataAccess.Model
         public bool RequestedBySales { get; set; }
         public int? OrderId { get; set; }
         public int ActiveTime { get; set; }
+        public string Comment { get; set; }
     }
 }
