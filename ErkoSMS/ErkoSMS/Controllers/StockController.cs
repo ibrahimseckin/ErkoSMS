@@ -28,9 +28,13 @@ namespace ErkoSMS.Controllers
             {
                 var productCode = new ProductDataService().GetProductById(reservedProductId).Code;
                 var reservedAmount = new SalesDataService().GetReservedCountyProductId(reservedProductId);
-                allStocks.First(x => x.Code == productCode).ReservedAmount = reservedAmount;
-                allStocks.First(x => x.Code == productCode).RemainingAmount =
-                    allStocks.First(x => x.Code == productCode).RemainingAmount - reservedAmount;
+                var stock = allStocks.FirstOrDefault(x => x.Code == productCode);
+                if (stock != null)
+                {
+                    stock.ReservedAmount = reservedAmount;
+                    stock.RemainingAmount -= reservedAmount;
+                }
+
             }
 
             var orderedStocks = allStocks.OrderByDescending(x => x.ReservedAmount);
@@ -56,9 +60,12 @@ namespace ErkoSMS.Controllers
             {
                 var code = new ProductDataService().GetProductById(productId).Code;
                 var reservedAmount = new SalesDataService().GetReservedCountyProductId(productId);
-                stocks.First(x => x.Code == code).ReservedAmount = reservedAmount;
-                stocks.First(x => x.Code == code).RemainingAmount =
-                    stocks.First(x => x.Code == code).RemainingAmount - reservedAmount;
+                var stock = stocks.FirstOrDefault(x => x.Code == code);
+                if (stock != null)
+                {
+                    stock.ReservedAmount = reservedAmount;
+                    stock.RemainingAmount -= reservedAmount;
+                }
             }
 
 

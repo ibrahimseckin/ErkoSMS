@@ -21,7 +21,7 @@ namespace ErkoSMS.DataAccess
         {
             const string query = "SELECT sm.stokkodu, sm.kalanmiktar, ss.fiyat FROM dbo.[STOK_MIZAN] sm " +
                 "join dbo.STK_STOKSATIR ss on sm.stokkodu = ss.stokkodu " +
-                "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu)";
+                "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) and ss.IOdurum = 1";
             var dataset = _sqliteDataProvider.ExecuteDataRows(query);
             IList<IStockORKA> stocks = new List<IStockORKA>();
 
@@ -36,7 +36,7 @@ namespace ErkoSMS.DataAccess
         {
             const string query = "SELECT sm.stokkodu, sm.kalanmiktar, ss.fiyat FROM dbo.[STOK_MIZAN] sm " +
                                 "join dbo.STK_STOKSATIR ss on sm.stokkodu = ss.stokkodu " +
-                                "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) AND lower(sm.stokkodu) = lower(@stokkodu)";
+                                "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) AND lower(sm.stokkodu) = lower(@stokkodu) and ss.IOdurum = 1";
             _sqliteDataProvider.AddParameter("@stokkodu", stockCode);
             var row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
             return row != null ? CreateStockObject(row) : null;
@@ -47,7 +47,7 @@ namespace ErkoSMS.DataAccess
         {
             const string query = "SELECT sm.stokkodu, sm.kalanmiktar, ss.fiyat FROM dbo.[STOK_MIZAN] sm " +
                                 "join dbo.STK_STOKSATIR ss on sm.stokkodu = ss.stokkodu " +
-                                "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) AND sm.stokkodu like @stokkodu";
+                                "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) AND lower(sm.stokkodu) like lower(@stokkodu) and ss.IOdurum = 1";
             _sqliteDataProvider.AddParameter("@stokkodu", $"%{stockCode}%");
             var rows = _sqliteDataProvider.ExecuteDataRows(query);
             IList<IStockORKA> stocks = new List<IStockORKA>();
