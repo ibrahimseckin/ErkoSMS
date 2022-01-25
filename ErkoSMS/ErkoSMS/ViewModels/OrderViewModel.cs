@@ -18,7 +18,7 @@ namespace ErkoSMS.ViewModels
             this.TotalPrice = sales.TotalPrice;
             this.TotalPriceTL = sales.TotalPrice * (sales.Currency != Currency.Tl ? sales.ExchangeRate : 1.0);
             this.InvoiceNumber = sales.InvoiceNumber;
-            if(sales.InvoiceDate.HasValue)
+            if (sales.InvoiceDate.HasValue)
                 this.InvoiceDate = sales.InvoiceDate.Value;
             this.SalesStartDate = sales.SalesStartDate;
             this.Customer = sales.Customer;
@@ -29,6 +29,8 @@ namespace ErkoSMS.ViewModels
             this.OrderId = sales.Id;
             this.SalesState = sales.SalesState;
             this.Comment = sales.Comment;
+            this.TransportCost = sales.TransportCost;
+            this.DeliveryType = sales.DeliveryType;
             this.OrderLines = new List<OrderLine>();
             if (sales.SalesDetails != null)
             {
@@ -69,6 +71,13 @@ namespace ErkoSMS.ViewModels
         public Exporter Exporter { get; set; }
         [Display(Name = "Yorum")]
         public string Comment { get; set; }
+        [Display(Name = "Taşıma Maliyeti")]
+        [DisplayFormat(DataFormatString = "{0:n2}", ApplyFormatInEditMode = true)]
+        public double TransportCost { get; set; }
+
+        [Display(Name = "Teslim Şekli")]
+
+        public string DeliveryType { get; set; }
     }
 
     public class OrderLine
