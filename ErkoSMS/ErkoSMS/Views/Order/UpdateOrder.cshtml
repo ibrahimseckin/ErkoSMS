@@ -55,17 +55,17 @@
                     </div>
                     <div class="form-group col-md-3">
                         @Html.LabelFor(model => model.Comment)
-                        @Html.TextAreaFor(model => model.Comment, new {style="width:400px;height: 50px"})
+                        @Html.TextAreaFor(model => model.Comment, new { style = "width:400px;height: 50px" })
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-3">
                         @Html.LabelFor(x => x.TransportCost)
-                        @Html.EditorFor(x => x.TransportCost, new { htmlAttributes = new { @class = "form-control", Name = "TransportCost" } })
+                        @Html.EditorFor(x => x.TransportCost, new { htmlAttributes = new { @class = "form-control", Name = "TransportCost", id = "transportCost" } })
                     </div>
                     <div class="form-group col-md-2">
                         @Html.LabelFor(x => x.DeliveryType)
-                        @Html.TextBoxFor(x => x.DeliveryType, new { @class = "form-control", Name = "DeliveryType" })
+                        @Html.TextBoxFor(x => x.DeliveryType, new { @class = "form-control", Name = "DeliveryType", id = "deliveryType" })
                     </div>
                     <div class="form-group col-md-2">
                         <label>Kur:</label>
@@ -295,9 +295,8 @@
         doc.text(170, afterTable, "TOTAL    " + currency, { align: "right" });
         doc.text(170, afterTable + 5, "TRANSPORT COST   " + currency, { align: "right" });
         doc.text(170, afterTable + 10, "TOTAL   " + currency, { align: "right" });
-
         doc.text(195, afterTable, totalCostofProducts.toFixed(2), { align: "right" });
-        var transportCost = 3400.20;
+        var transportCost = parseFloat($("#transportCost").val());
         var totalCost = totalCostofProducts + transportCost;
         doc.text(195, afterTable + 5, transportCost.toFixed(2), { align: "right" });
         doc.text(195, afterTable + 10, totalCost.toFixed(2), { align: "right" });
@@ -318,7 +317,8 @@
         doc.text(45, afterTable + 15, ": " + totalGrossWeight, { align: "left" });
 
         doc.text(10, afterTable + 25, "PAYMENT: 60 DAYS AFTER RECEIVING GOODS", { align: "left" });
-        doc.text(10, afterTable + 30, "DELIVERY TERMS:  CIF", { align: "left" });
+        var deliveryType = $("#deliveryType").val();
+        doc.text(10, afterTable + 30, "DELIVERY TERMS:  "+deliveryType, { align: "left" });
 
         doc.setFont("turkish", "bold");
         var words = toWords(totalCost);
