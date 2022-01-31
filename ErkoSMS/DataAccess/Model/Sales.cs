@@ -30,5 +30,6 @@ namespace ErkoSMS.DataAccess.Model
         public string Comment { get; set; }
         public double TransportCost { get; set; }
         public string DeliveryType { get; set; }
+        public string PaymentType { get; set; }
     }
 }

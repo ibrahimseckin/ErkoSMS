@@ -31,6 +31,7 @@ namespace ErkoSMS.ViewModels
             this.Comment = sales.Comment;
             this.TransportCost = sales.TransportCost;
             this.DeliveryType = sales.DeliveryType;
+            this.PaymentType = sales.PaymentType;
             this.OrderLines = new List<OrderLine>();
             if (sales.SalesDetails != null)
             {
@@ -78,6 +79,10 @@ namespace ErkoSMS.ViewModels
         [Display(Name = "Teslim Şekli")]
 
         public string DeliveryType { get; set; }
+
+        [Display(Name = "Ödeme Şekli")]
+
+        public string PaymentType { get; set; }
     }
 
     public class OrderLine

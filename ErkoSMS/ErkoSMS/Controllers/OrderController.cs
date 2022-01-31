@@ -150,6 +150,7 @@ namespace ErkoSMS.Controllers
             sales.Exporter = order.Exporter;
             sales.Comment = order.Comment;
             sales.DeliveryType = order.DeliveryType;
+            sales.PaymentType = order.PaymentType;
             sales.TransportCost = order.TransportCost;
 
             var isThereGap = order.OrderLines.Any(x => x.Quantity > x.StokQuantity);
@@ -239,6 +240,7 @@ namespace ErkoSMS.Controllers
                 TotalPrice = order.OrderLines?.Sum(x => x.TotalPrice) ?? 0,
                 Comment = order.Comment,
                 DeliveryType = order.DeliveryType,
+                PaymentType = order.PaymentType,
                 TransportCost = order.TransportCost,
             };
             salesDataService.UpdateOrder(sales);
