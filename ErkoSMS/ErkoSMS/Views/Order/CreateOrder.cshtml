@@ -88,6 +88,9 @@
                                 <button type="button" id="addOrderLineButton" class="btn btn-primary">
                                     <span class="glyphicon glyphicon-plus"></span> Yeni Ürün Ekle
                                 </button>
+                                <button type="button" id="previewButton" class="btn btn-info">
+                                    <span class="fa fa-eye"></span> Önizleme
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -123,7 +126,7 @@
 
     var addOrderRow = function () {
         var html = $($.parseHTML(orderRowTemplate));
-        html.appendTo($("#products"));
+        html.prependTo($("#products"));
         $('.stockButton').off().on('click', function (e) {
             var productCode = e.currentTarget.parentNode.parentNode.querySelector('.productCode').value;
             ERKOSMS.AjaxAction("GetStockInformationByProductCode?productCode=" + productCode, {}, false).then(function (data) {
@@ -216,5 +219,29 @@
 
     $("#exchangeRate").val(parseFloat($("#exchangeRate").val()).toFixed(4));
 
+    $("#previewButton").off().on('click', function (e) {
+        var previewHtml = "<table><thead><th style='padding:20px'>Ürün Kodu</th><th style='padding:20px'>Ürün Açıklaması</th><th style='padding:20px'>Adet</th><th style='padding:20px'>Toplam Fiyat(TL)</th></thead>";
+        previewHtml += "<tr>";
+        var totalPrice = 0.0;
+        $(".productCode").each(function (i, e) {
+            previewHtml += "<td style='padding-left:20px'>" + e.value + "</td>";
+            previewHtml += "<td style='padding-left:20px'>" + $(".productDescription")[i].value + "</td>";
+            previewHtml += "<td style='padding-left:20px'>" + $(".quantity")[i].value + "</td>";
+            previewHtml += "<td style='padding-left:20px'>" + $(".totalPriceTL")[i].value + "</td>";
+            previewHtml += "</tr>";
+            if (parseFloat($(".totalPriceTL")[i].value))
+                totalPrice += parseFloat($(".totalPriceTL")[i].value) ;
+        });
+
+        previewHtml += "<tr>";
+        previewHtml += "<td></td>";
+        previewHtml += "<td></td>";
+        previewHtml += "<td style='padding-left:20px;padding-top:20px;font-weight:bold'>Toplam</td>";
+        previewHtml += "<td style='padding-left:20px;padding-top:20px;font-weight:bold'>"+totalPrice+"</td>";
+        previewHtml += "</tr>";
+        previewHtml += "</table>";
+
+        vex.dialog.open({ unsafeMessage: previewHtml});
+    });
 
 </script>

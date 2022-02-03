@@ -82,25 +82,28 @@
                 </div>
             </div>
         </div>
-        <div id="products" style="overflow: hidden;">
-            <div class="row">
-                <div class="col-sm-10">
-                    <h3>Ürün Listesi</h3>
-                </div>
-                <div class="col-sm-2">
-                    <div id="addProductDiv">
-                        <div class="clearfix">
-                            <button type="button" id="addOrderLineButton" class="btn btn-primary">
-                                <span class="glyphicon glyphicon-plus"></span> Yeni Ürün Ekle
-                            </button>
-                        </div>
+        <hr style="margin: 10px 0;" />
+        <div class="row">
+            <div class="col-sm-9">
+                <h3>Ürün Listesi</h3>
+            </div>
+            <div class="col-sm-3">
+                <div id="addProductDiv">
+                    <div class="clearfix">
+                        <button type="button" id="addOrderLineButton" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-plus"></span> Yeni Ürün Ekle
+                        </button>
+                        <button type="button" id="previewButton" class="btn btn-info">
+                            <span class="fa fa-eye"></span> Önizleme
+                        </button>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <span id="noProductInfo" style="display: @(Model.OrderLines.Any() ? "none" : "block")"> Satışa ekli bir ürün bulunmamaktadır</span>
+        <span id="noProductInfo" style="display: @(Model.OrderLines.Any() ? "none" : "block")"> Satışa ekli bir ürün bulunmamaktadır</span>
 
-
+        <div id="products" style="overflow: hidden;">
             @foreach (var orderLine in Model.OrderLines)
             {
 
@@ -201,7 +204,7 @@
         var orderRowTemplate = '@Html.Template("OrderRow", null)';
         var addOrderRow = function () {
             var html = $($.parseHTML(orderRowTemplate));
-            html.appendTo($("#products"));
+            html.prependTo($("#products"));
             InitializeScriptsForButtons();
             $("#noProductInfo").hide();
         }
@@ -412,6 +415,30 @@
             }
     }
 
+    $("#previewButton").off().on('click', function (e) {
+        var previewHtml = "<table><thead><th style='padding:20px'>Ürün Kodu</th><th style='padding:20px'>Ürün Açıklaması</th><th style='padding:20px'>Adet</th><th style='padding:20px'>Toplam Fiyat(TL)</th></thead>";
+        previewHtml += "<tr>";
+        var totalPrice = 0.0;
+        $(".productCode").each(function (i, e) {
+            previewHtml += "<td style='padding-left:20px'>" + e.value + "</td>";
+            previewHtml += "<td style='padding-left:20px'>" + $(".productDescription")[i].value + "</td>";
+            previewHtml += "<td style='padding-left:20px'>" + $(".quantity")[i].value + "</td>";
+            previewHtml += "<td style='padding-left:20px'>" + $(".totalPriceTL")[i].value + "</td>";
+            previewHtml += "</tr>";
+            if (parseFloat($(".totalPriceTL")[i].value))
+                totalPrice += parseFloat($(".totalPriceTL")[i].value) ;
+        });
+
+        previewHtml += "<tr>";
+        previewHtml += "<td></td>";
+        previewHtml += "<td></td>";
+        previewHtml += "<td style='padding-left:20px;padding-top:20px;font-weight:bold'>Toplam</td>";
+        previewHtml += "<td style='padding-left:20px;padding-top:20px;font-weight:bold'>"+totalPrice+"</td>";
+        previewHtml += "</tr>";
+        previewHtml += "</table>";
+
+        vex.dialog.open({ unsafeMessage: previewHtml});
+    });
 
 
 </script>
