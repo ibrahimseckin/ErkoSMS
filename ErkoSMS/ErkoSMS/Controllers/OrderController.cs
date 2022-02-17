@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
@@ -182,6 +183,17 @@ namespace ErkoSMS.Controllers
                         $"<br> <b>{orderLine.ProductCode}</b> kodlu ürün yeteri kadar stokta bulunmadığı için <b>{gap}</b> adet satın alma talebi yapıldı.";
                 }
             }
+
+            var uploadedFilesPath = Path.Combine(Server.MapPath("~"), "UploadedFiles");
+            foreach (var file in Directory.GetFiles(uploadedFilesPath, $"{orderId}_*"))
+            {
+                System.IO.File.Delete(file);
+            }
+
+            if (order.Document != null)
+            {
+                order.Document.SaveAs(Path.Combine(uploadedFilesPath, $"{orderId}_{order.Document.FileName}"));
+            }
             return Json(new AjaxResult(message));
 
         }
@@ -208,7 +220,15 @@ namespace ErkoSMS.Controllers
             {
                 order.InvoiceDate = DateTime.MaxValue;
             }
-            return PartialView(new OrderViewModel(order));
+
+            var uploadedFilesPath = Path.Combine(Server.MapPath("~"), "UploadedFiles");
+            var orderViewModel = new OrderViewModel(order);
+            var fileName = Directory.GetFiles(uploadedFilesPath, $"{orderId}_*").FirstOrDefault();
+            orderViewModel.AttachedDocumentFileName = Path.GetFileName(fileName);
+
+
+
+            return PartialView(orderViewModel);
         }
 
         [HttpPost]
@@ -244,6 +264,19 @@ namespace ErkoSMS.Controllers
                 TransportCost = order.TransportCost,
             };
             salesDataService.UpdateOrder(sales);
+
+
+
+            var uploadedFilesPath = Path.Combine(Server.MapPath("~"), "UploadedFiles");
+            foreach (var file in Directory.GetFiles(uploadedFilesPath, $"{order.OrderId}_*"))
+            {
+                System.IO.File.Delete(file);
+            }
+
+            if (order.Document != null)
+            {
+                order.Document.SaveAs(Path.Combine(uploadedFilesPath, $"{order.OrderId}_{order.Document.FileName}"));
+            }
             return Json(new AjaxResult(true));
         }
 
@@ -366,6 +399,36 @@ namespace ErkoSMS.Controllers
             };
 
         }
+
+        [HttpGet]
+        public ActionResult DeleteDocument(int orderId)
+        {
+            var uploadedFilesPath = Path.Combine(Server.MapPath("~"), "UploadedFiles");
+            foreach (var file in Directory.GetFiles(uploadedFilesPath, $"{orderId}_*"))
+            {
+                System.IO.File.Delete(file);
+            }
+
+            return new JsonResult()
+            {
+                Data = true,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+
+        }
+
+
+        [HttpGet]
+        public FileResult DownloadDocument(int orderId)
+        {
+            var uploadedFilesPath = Path.Combine(Server.MapPath("~"), "UploadedFiles");
+            var fileName = Directory.GetFiles(uploadedFilesPath, $"{orderId}_*").FirstOrDefault();
+            string contentType = "application/pdf";
+            return File(fileName, contentType, Path.GetFileName(fileName) );
+        }
+
+
 
         private void FillViewBag()
         {

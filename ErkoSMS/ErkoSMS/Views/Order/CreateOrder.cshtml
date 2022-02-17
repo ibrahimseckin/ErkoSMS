@@ -75,6 +75,15 @@
                                 <input id="exchangeRate" name="ExchangeRate" type="number" step="0.0001" placeholder="0.0000" value="@Model.ExchangeRate" />
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label>Belge Ekle</label>
+                            <input id="addDocument" style="padding: 10px;display: inline-block" type="file" name="Document" title=@if (Request.Browser.Browser == "IE" || Request.Browser.Browser == "InternetExplorer") { <text> "" </text> } else { <text> " " </text> }
+                                   accept=".pdf"/>
+                            <span><a id="linkToDocument" style="display: none">Önizleme</a></span>
+                            </div>
+                            
+                        </div>
                     </div>
                 </div>
                 <hr style="margin: 10px 0;" />
@@ -242,6 +251,25 @@
         previewHtml += "</table>";
 
         vex.dialog.open({ unsafeMessage: previewHtml});
+    });
+
+
+    var input = document.getElementById('addDocument');
+    var link = document.getElementById('linkToDocument');
+    var objectURL;
+
+    input.addEventListener('change', function () {
+        if (objectURL) {
+            // revoke the old object url to avoid using more memory than needed
+            URL.revokeObjectURL(objectURL);  
+        }
+
+        var file = this.files[0];
+        objectURL = URL.createObjectURL(file);
+
+        link.download = file.name; // this name is used when the user downloads the file
+        link.href = objectURL;
+        link.style.removeProperty("display");
     });
 
 </script>

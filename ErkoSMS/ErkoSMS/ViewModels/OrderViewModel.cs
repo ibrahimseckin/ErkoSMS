@@ -83,6 +83,10 @@ namespace ErkoSMS.ViewModels
         [Display(Name = "Ödeme Şekli")]
 
         public string PaymentType { get; set; }
+
+        public HttpPostedFileBase Document { get; set; }
+
+        public string AttachedDocumentFileName { get; set; }
     }
 
     public class OrderLine

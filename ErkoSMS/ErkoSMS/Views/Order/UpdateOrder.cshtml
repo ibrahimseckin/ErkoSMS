@@ -80,6 +80,25 @@
                         <input id="exchangeRate" name="ExchangeRate" type="number" step="0.0001" placeholder="0.0000" value="@Model.ExchangeRate" />
                     </div>
                 </div>
+                <div class="row">
+                    <div class="form-group col-md-10">
+                        <div style="display: none" id="noDocument">
+                            <label>Belge Ekle</label>
+                            <input id="addDocument" style="padding: 10px; display: inline-block" type="file" name="Document" title=@if (Request.Browser.Browser == "IE" || Request.Browser.Browser == "InternetExplorer") { <text> "" </text>  } else { <text> " " </text> }
+                                   accept=".pdf" />
+                            <span><a id="linkToDocument" style="display: none">Önizleme</a></span>
+                        </div>
+                        <div style="display: none" id="documentExists">
+                            <label>Ekli Belge</label>
+                            <span>@Model.AttachedDocumentFileName</span>
+                            @*<span style="cursor: pointer"><a id="downloadDocument">İndir</a></span>*@
+                            <span style="cursor: pointer">@Html.ActionLink("İndir", "DownloadDocument", new { orderId = @Model.OrderId })</span>
+                            <span style="cursor: pointer"><a id="deleteDocument">Sil</a></span>
+
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
         <hr style="margin: 10px 0;" />
@@ -116,6 +135,52 @@
 </div>
 
 <script>
+    debugger;
+    var documentExist = "@string.IsNullOrEmpty(Model.AttachedDocumentFileName)" === "True" ? false : true;
+
+    if (documentExist) {
+        $("#documentExists").show();
+        $("#noDocument").hide();
+    } else {
+        $("#documentExists").hide();
+        $("#noDocument").show();
+    }
+
+
+    $('#deleteDocument').off().on("click", function() {
+        ERKOSMS.AjaxAction("DeleteDocument?orderId=" + @Model.OrderId, {}, false).then(function (data) {
+            $("#documentExists").hide();
+            $("#noDocument").show();
+        });
+    });
+
+
+    $('#downloadDocuments').off().on("click", function() {
+        ERKOSMS.AjaxAction("DownloadDocument?orderId=" + @Model.OrderId, {}, false).then(function (data) {
+            $("#documentExists").hide();
+            $("#noDocument").show();
+        });
+    });
+
+    var input = document.getElementById('addDocument');
+    var link = document.getElementById('linkToDocument');
+    var objectURL;
+
+    input.addEventListener('change', function () {
+        if (objectURL) {
+            // revoke the old object url to avoid using more memory than needed
+            URL.revokeObjectURL(objectURL);
+        }
+
+        var file = this.files[0];
+        objectURL = URL.createObjectURL(file);
+
+        link.download = file.name; // this name is used when the user downloads the file
+        link.href = objectURL;
+        link.style.removeProperty("display");
+    });
+
+
     $('.datepicker').datepicker({ dateFormat: 'dd.mm.yy' }); //Initialise any date pickers
     $('#customerdropdown').select2({ placeholder: "Müşteri Seçin", dropdownParent: $('.vex') });
     $('#currencydropdown').select2({ placeholder: "Kur Seçin", dropdownParent: $('.vex') });
@@ -209,8 +274,8 @@
             $("#noProductInfo").hide();
         }
 
-    $("#addOrderLineButton")
-        .on('click', addOrderRow);
+        $("#addOrderLineButton")
+            .on('click', addOrderRow);
 
     });
 
@@ -345,23 +410,23 @@
     $("#invoiceButton").on('click',
         function () {
             if (@Model.Exporter.BankAccounts.Count){
-            vex.dialog.open({
-                message: 'İthalatçı için tanımlı banka hesaplarından birini seçiniz',
-                input: [
-                    '@MvcHtmlString.Create(Regex.Replace(Html.DropDownList("bankaccount", Model.Exporter?.BankAccounts?.Select(x => new SelectListItem() { Text = x.Name, Value = Regex.Replace(x.AccountDetails, @"\r?\n",",") }) ?? new List<SelectListItem>()).ToString(), @"\r?\n",""))'
-                ].join(''),
-                buttons: [
-                    $.extend({}, vex.dialog.buttons.YES, { text: 'Devam Et' }),
-                    $.extend({}, vex.dialog.buttons.NO, { text: 'İptal' })
-                ],
-                callback: function(data) {
-                    if (!data) {
-                        return;
-                    } else {
-                        createPDF(data.bankaccount);
+                vex.dialog.open({
+                    message: 'İthalatçı için tanımlı banka hesaplarından birini seçiniz',
+                    input: [
+                        '@MvcHtmlString.Create(Regex.Replace(Html.DropDownList("bankaccount", Model.Exporter?.BankAccounts?.Select(x => new SelectListItem() { Text = x.Name, Value = Regex.Replace(x.AccountDetails, @"\r?\n",",") }) ?? new List<SelectListItem>()).ToString(), @"\r?\n",""))'
+                    ].join(''),
+                    buttons: [
+                        $.extend({}, vex.dialog.buttons.YES, { text: 'Devam Et' }),
+                        $.extend({}, vex.dialog.buttons.NO, { text: 'İptal' })
+                    ],
+                    callback: function(data) {
+                        if (!data) {
+                            return;
+                        } else {
+                            createPDF(data.bankaccount);
+                        }
                     }
-                }
-            });
+                });
             } else {
                 createPDF("");
             }
@@ -371,48 +436,48 @@
     var createPDF = function (bankaccount) {
         console.log('bankaccount', bankaccount );
         ERKOSMS.AjaxAction("../Packing/GetPackedProductsExportInfo?orderId=" + @Model.OrderId, {}, false).then(function (data) {
-                var doc = new window.jspdf.jsPDF();
+            var doc = new window.jspdf.jsPDF();
 
-                var orderedProducts = [];
-                var totalCost = 0.00;
-                $(".orderRow").each((index, order) => {
-                    var productCode = $(order).find(".productCode").val();
-                    var description = $(order).find(".productEnglishDescription").val();
-                    var quantity = $(order).find(".quantity").val();
-                    var unitPrice = new Number($(order).find(".unitPrice").val());
-                    var totalPrice = new Number($(order).find(".totalPrice").val());
-                    totalCost += totalPrice;
-                    var orderedProduct = [];
-                    orderedProduct.push(productCode);
-                    orderedProduct.push(description);
-                    orderedProduct.push("ORIGIN");
-                    orderedProduct.push(quantity);
-                    orderedProduct.push(unitPrice.toFixed(2));
-                    orderedProduct.push(totalPrice.toFixed(2));
-                    orderedProducts.push(orderedProduct);
-                });
+            var orderedProducts = [];
+            var totalCost = 0.00;
+            $(".orderRow").each((index, order) => {
+                var productCode = $(order).find(".productCode").val();
+                var description = $(order).find(".productEnglishDescription").val();
+                var quantity = $(order).find(".quantity").val();
+                var unitPrice = new Number($(order).find(".unitPrice").val());
+                var totalPrice = new Number($(order).find(".totalPrice").val());
+                totalCost += totalPrice;
+                var orderedProduct = [];
+                orderedProduct.push(productCode);
+                orderedProduct.push(description);
+                orderedProduct.push("ORIGIN");
+                orderedProduct.push(quantity);
+                orderedProduct.push(unitPrice.toFixed(2));
+                orderedProduct.push(totalPrice.toFixed(2));
+                orderedProducts.push(orderedProduct);
+            });
 
 
-                doc.autoTable({
-                    head: [['CODE', 'DESCRIPTION', 'ORIGIN', 'QTY', 'NET UNIT PRICE', 'TOTAL']],
-                    body: orderedProducts,
-                    theme: 'grid',
-                    margin: { top: 50, left: 10 },
-                    headStyles: { fillColor: [182, 191, 182] }
-                });
+            doc.autoTable({
+                head: [['CODE', 'DESCRIPTION', 'ORIGIN', 'QTY', 'NET UNIT PRICE', 'TOTAL']],
+                body: orderedProducts,
+                theme: 'grid',
+                margin: { top: 50, left: 10 },
+                headStyles: { fillColor: [182, 191, 182] }
+            });
 
-                addHeaderToEachPage(doc);
-                var dataWithoutLastRow = data.slice(0, data.length - 1);
-                var numberOfPallet = dataWithoutLastRow.map(d => d.PalletId.split('.')[0]).filter(item => item).pop(-2);
-                addFooter(doc, totalCost, data[data.length - 1], numberOfPallet,bankaccount);
+            addHeaderToEachPage(doc);
+            var dataWithoutLastRow = data.slice(0, data.length - 1);
+            var numberOfPallet = dataWithoutLastRow.map(d => d.PalletId.split('.')[0]).filter(item => item).pop(-2);
+            addFooter(doc, totalCost, data[data.length - 1], numberOfPallet,bankaccount);
 
-                var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
-                var filename = "Invoice_" + dateNow + ".pdf";
-                doc.save(filename);
+            var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
+            var filename = "Invoice_" + dateNow + ".pdf";
+            doc.save(filename);
 
-            }), function (data) {
-                ERKOSMS.ShowWarning(data);
-            }
+        }), function (data) {
+            ERKOSMS.ShowWarning(data);
+        }
     }
 
     $("#previewButton").off().on('click', function (e) {

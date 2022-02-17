@@ -725,6 +725,7 @@
     <Content Include="Views\Pallet\EditPallet.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="UploadedFiles\" />
     <Folder Include="Views\StockHistory\" />
   </ItemGroup>
   <ItemGroup>
