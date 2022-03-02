@@ -35,7 +35,9 @@ namespace ErkoSMS
                      "~/Scripts/toWords.js",
                      "~/Scripts/DataTables/media/js/jquery.dataTables.min.js",
                       "~/Scripts/DataTables/extensions/Buttons/js/dataTables.buttons.min.js",
-                      "~/Scripts/DataTables/extensions/Buttons/js/buttons.html5.min.js"));
+                      "~/Scripts/pdfmake/pdfmake.min.js",
+                      "~/Scripts/pdfmake/vfs_fonts.js",
+                     "~/Scripts/DataTables/extensions/Buttons/js/buttons.html5.min.js"));
 
 
             bundles.Add(new StyleBundle("~/Content/css").Include(

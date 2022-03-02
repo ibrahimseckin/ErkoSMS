@@ -143,17 +143,17 @@
                 autoWidth: true,
                 columns: [
                     { title: "Id", data: "PurchaseId" },
-                    { title: "Satın Alma Giriş Tarihi", data: "PurchaseStartDate" },
-                    { title: "Durum", data: "PurchaseState" },
-                    { title: "Ürün Kodu", data: "ProductCode" },
-                    { title: "Adet", data: "Quantity" },
-                    { title: "Birim Fiyat", data: "UnitPrice" },
-                    { title: "Tutar", data: "TotalPrice" },
-                    { title: "Kur", data: "Currency" },
-                    { title: "Satış Elemanı", data: "SalesUserName" },
-                    { title: "Süre(gün)", data: "ActiveTime" },
-                    { title: "Tedarikçi", data: "SupplierName" },
-                    { title: "Yorum", data: "Comment" },
+                    { title: "Satın Alma Giriş Tarihi", data: "PurchaseStartDate", className:'data' },
+                    { title: "Durum", data: "PurchaseState", className: 'data' },
+                    { title: "Ürün Kodu", data: "ProductCode", className: 'data' },
+                    { title: "Adet", data: "Quantity", className: 'data' },
+                    { title: "Birim Fiyat", data: "UnitPrice", className: 'data' },
+                    { title: "Tutar", data: "TotalPrice", className: 'data' },
+                    { title: "Kur", data: "Currency", className: 'data' },
+                    { title: "Satış Elemanı", data: "SalesUserName", className: 'data' },
+                    { title: "Süre(gün)", data: "ActiveTime", className: 'data' },
+                    { title: "Tedarikçi", data: "SupplierName", className: 'data' },
+                    { title: "Yorum", data: "Comment", className: 'data' },
                     {
                         data: null,
                         className: "dt-center updateRecord",
@@ -168,7 +168,21 @@
                     }
                 ],
                 data: data,
-                sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
+                sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
+                buttons: [
+                    {
+                        extend: 'pdfHtml5',
+                        charset: 'UTF-8',
+                        bom: true,
+                        text: '<button type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-export"></span>Dışa Aktar (PDF)</button ><br>',
+                        exportOptions: {
+                            columns: ".data"
+                        },
+                        filename: function () {
+                            var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
+                            return "Satın_Alma_Talepleri_" + dateNow;
+                        },
+                    }],
                 aaSorting: [], // Initial sorting
                 bInfo: true, // Info is not shown because the total count to show is not known
                 searching: true, // Disable searching TODO: Enable searching if necessary
@@ -199,17 +213,17 @@
         }).then(function (data) {
             var columns = [
                 { title: "Id", data: "PurchaseId" },
-                { title: "Satın Alma Giriş Tarihi", data: "PurchaseStartDate" },
-                { title: "Durum", data: "PurchaseState" },
-                { title: "Ürün Kodu", data: "ProductCode" },
-                { title: "Adet", data: "Quantity" },
-                { title: "Birim Fiyat", data: "UnitPrice" },
-                { title: "Tutar", data: "TotalPrice" },
-                { title: "Kur", data: "Currency" },
-                { title: "Satış Elemanı", data: "SalesUserName" },
-                { title: "Süre(gün)", data: "ActiveTime" },
-                { title: "Tedarikçi", data: "SupplierName" },
-                { title: "Yorum", data: "Comment" },
+                { title: "Satın Alma Giriş Tarihi", data: "PurchaseStartDate", className: 'data' },
+                { title: "Durum", data: "PurchaseState", className: 'data' },
+                { title: "Ürün Kodu", data: "ProductCode", className: 'data' },
+                { title: "Adet", data: "Quantity", className: 'data' },
+                { title: "Birim Fiyat", data: "UnitPrice", className: 'data' },
+                { title: "Tutar", data: "TotalPrice", className: 'data' },
+                { title: "Kur", data: "Currency", className: 'data' },
+                { title: "Satış Elemanı", data: "SalesUserName", className: 'data' },
+                { title: "Süre(gün)", data: "ActiveTime", className: 'data' },
+                { title: "Tedarikçi", data: "SupplierName", className: 'data' },
+                { title: "Yorum", data: "Comment", className: 'data' },
                 {
                     data: null,
                     className: "dt-center updateRecord",
@@ -236,7 +250,22 @@
                 autoWidth: true,
                 columns: columns,
                 data: data,
-                sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
+                data: data,
+                sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
+                buttons: [
+                    {
+                        extend: 'pdfHtml5',
+                        charset: 'UTF-8',
+                        bom: true,
+                        text: '<button type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-export"></span>Dışa Aktar (PDF)</button ><br>',
+                        exportOptions: {
+                            columns: ".data"
+                        },
+                        filename: function () {
+                            var dateNow = window.moment(new Date(), "DD.MM.YYYY").format("DD_MM_YYYY_HHmmss");
+                            return "Satın_Alma_Talepleri_" + dateNow;
+                        },
+                    }],
                 aaSorting: [], // Initial sorting
                 bInfo: true, // Info is not shown because the total count to show is not known
                 searching: true, // Disable searching TODO: Enable searching if necessary
