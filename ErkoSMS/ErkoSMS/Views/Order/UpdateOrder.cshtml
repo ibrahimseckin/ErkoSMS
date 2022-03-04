@@ -224,9 +224,14 @@
         });
 
         $("#UpdateOrderForm").on("ajax-form:succeed", function (ev, data) {
-            var tg = $(ev.currentTarget);
-            closeParentVexModal(tg);
-            $("#getAllOrders").click();
+            vex.dialog.alert({
+                unsafeMessage: data.result.Data,
+                callback: function (value) {
+                var tg = $(ev.currentTarget);
+                closeParentVexModal(tg);
+                $("#getAllOrders").click();
+            } });
+
         });
 
         $("#UpdateOrderForm").on("submit", function () {

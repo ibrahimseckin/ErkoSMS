@@ -49,7 +49,8 @@ namespace ErkoSMS.ViewModels
                         Quantity = quantity,
                         UnitPrice = unitPrice,
                         ProductDescription = productDescription,
-                        ProductEnglishDescription = salesDetail.ProductEnglishDescription
+                        ProductEnglishDescription = salesDetail.ProductEnglishDescription,
+                        IsAlreadyAddedProduct = true
                     });
                 }
             }
@@ -106,6 +107,8 @@ namespace ErkoSMS.ViewModels
         public double TotalPrice { get; set; }
         [Display(Name = "Top.Fiyat (TL)")]
         public double TotalPriceTL { get; set; }
+
+        public bool IsAlreadyAddedProduct { get; set; }
     }
 
 }

@@ -265,6 +265,25 @@ namespace ErkoSMS.Controllers
             };
             salesDataService.UpdateOrder(sales);
 
+            var message = "Satış güncelleme başarıyla yapıldı.";
+            foreach (var orderLine in order.OrderLines.Where(x=>x.Quantity > x.StokQuantity))
+            {
+                var gap = orderLine.Quantity - orderLine.StokQuantity;
+                var purchase = new Purchase
+                {
+                    OrderId = order.OrderId,
+                    ProductCode = orderLine.ProductCode,
+                    ProductId = new ProductDataService().GetProductByCode(orderLine.ProductCode).Id,
+                    PurchaseStartDate = DateTime.Now,
+                    PurchaseState = PurchaseState.PurchaseRequested,
+                    RequestedBySales = true,
+                    SalesUserName = User.Identity.Name,
+                    Quantity = gap
+                };
+                new PurchaseDataService().CreatePurchase(purchase);
+                message +=
+                    $"<br> <b>{orderLine.ProductCode}</b> kodlu ürün yeteri kadar stokta bulunmadığı için <b>{gap}</b> adet satın alma talebi yapıldı.";
+            }
 
 
             var uploadedFilesPath = Path.Combine(Server.MapPath("~"), "UploadedFiles");
@@ -277,7 +296,7 @@ namespace ErkoSMS.Controllers
             {
                 order.Document.SaveAs(Path.Combine(uploadedFilesPath, $"{order.OrderId}_{order.Document.FileName}"));
             }
-            return Json(new AjaxResult(true));
+            return Json(new AjaxResult(message));
         }
 
         [HttpPost]

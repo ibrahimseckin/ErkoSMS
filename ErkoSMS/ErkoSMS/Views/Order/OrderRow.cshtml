@@ -5,6 +5,7 @@
         <div class="col-sm-6" style="border-right: 1px dashed #333;">
             <div class="row">
                 <div class="col-sm-9">
+                    @Html.HiddenFor(x=>x.IsAlreadyAddedProduct, new { Name = "OrderLines[].IsAlreadyAddedProduct" })
                     @Html.LabelFor(x => x.ProductCode)
                     @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control productCode", Name = "OrderLines[].ProductCode", @id = Guid.NewGuid(), style = "display:inline-block" })
                 </div>
