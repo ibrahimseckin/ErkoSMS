@@ -263,12 +263,23 @@ namespace ErkoSMS.Controllers
                 PaymentType = order.PaymentType,
                 TransportCost = order.TransportCost,
             };
+
+            var existingQuantitiesbyProductCode = new Dictionary<string, int>();
+            var orderDetails = salesDataService.GetSalesById(sales.Id).SalesDetails;
+            foreach (var detail in orderDetails)
+            {
+                existingQuantitiesbyProductCode[detail.ProductCode] = detail.Quantity;
+            }
+
             salesDataService.UpdateOrder(sales);
 
+            
+
             var message = "Satış güncelleme başarıyla yapıldı.";
-            foreach (var orderLine in order.OrderLines.Where(x=>x.Quantity > x.StokQuantity))
+            foreach (var orderLine in order.OrderLines.Where(x=> x.IsAlreadyAddedProduct &&  
+                                                                 x.Quantity > existingQuantitiesbyProductCode[x.ProductCode] + x.StokQuantity))
             {
-                var gap = orderLine.Quantity - orderLine.StokQuantity;
+                var gap = orderLine.Quantity - (orderLine.StokQuantity + existingQuantitiesbyProductCode[orderLine.ProductCode]);
                 var purchase = new Purchase
                 {
                     OrderId = order.OrderId,
