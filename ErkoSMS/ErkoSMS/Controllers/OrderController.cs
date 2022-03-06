@@ -273,27 +273,56 @@ namespace ErkoSMS.Controllers
 
             salesDataService.UpdateOrder(sales);
 
-            
+
 
             var message = "Satış güncelleme başarıyla yapıldı.";
-            foreach (var orderLine in order.OrderLines.Where(x=> x.IsAlreadyAddedProduct &&  
-                                                                 x.Quantity > existingQuantitiesbyProductCode[x.ProductCode] + x.StokQuantity))
+            //daha önceden eklenmiş ürünlerde önceki miktar + stok toplamına bakılır
+            //yeni eklenen ürünlerde direk eklenmek istenen miktar ile stok karşılaştırılır
+            foreach (var orderLine in order.OrderLines.Where(x => (x.IsAlreadyAddedProduct && x.Quantity > existingQuantitiesbyProductCode[x.ProductCode] + x.StokQuantity) ||
+                                                                 (x.IsAlreadyAddedProduct == false && x.Quantity > x.StokQuantity)))
             {
-                var gap = orderLine.Quantity - (orderLine.StokQuantity + existingQuantitiesbyProductCode[orderLine.ProductCode]);
-                var purchase = new Purchase
+                var gap = 0;
+                //daha önce eklenen bir ürün ise daha önceki sipariş miktarı ve stok beraber ele alınmalı
+                if (orderLine.IsAlreadyAddedProduct)
                 {
-                    OrderId = order.OrderId,
-                    ProductCode = orderLine.ProductCode,
-                    ProductId = new ProductDataService().GetProductByCode(orderLine.ProductCode).Id,
-                    PurchaseStartDate = DateTime.Now,
-                    PurchaseState = PurchaseState.PurchaseRequested,
-                    RequestedBySales = true,
-                    SalesUserName = User.Identity.Name,
-                    Quantity = gap
-                };
-                new PurchaseDataService().CreatePurchase(purchase);
-                message +=
-                    $"<br> <b>{orderLine.ProductCode}</b> kodlu ürün yeteri kadar stokta bulunmadığı için <b>{gap}</b> adet satın alma talebi yapıldı.";
+                    //stok negatif olmadıysa stok adedi kullanılabilir
+                    if (orderLine.StokQuantity >= 0)
+                    {
+                        gap = orderLine.Quantity - (orderLine.StokQuantity +
+                                                    existingQuantitiesbyProductCode[orderLine.ProductCode]);
+                    }
+                    //stok negatif olduysa daha önce satın alınma talebi yapıldığı için şuanki sipariş mikarı ile bir öncekini karşılaştırmak satın alma talebi için yeterli
+                    else
+                    {
+                        gap = orderLine.Quantity - existingQuantitiesbyProductCode[orderLine.ProductCode];
+                    }
+                }
+                else
+                {
+                    gap = orderLine.Quantity - orderLine.StokQuantity;
+                }
+
+
+                //yeni bir ürün eklendiğinde diğer ürünler için gereksiz satın alma talebi yaratılmasını engellemek için if kontrolü yapıldı.
+                if (existingQuantitiesbyProductCode.ContainsKey(orderLine.ProductCode) &&
+                    existingQuantitiesbyProductCode[orderLine.ProductCode] != orderLine.Quantity)
+                {
+                    var purchase = new Purchase
+                    {
+                        OrderId = order.OrderId,
+                        ProductCode = orderLine.ProductCode,
+                        ProductId = new ProductDataService().GetProductByCode(orderLine.ProductCode).Id,
+                        PurchaseStartDate = DateTime.Now,
+                        PurchaseState = PurchaseState.PurchaseRequested,
+                        RequestedBySales = true,
+                        SalesUserName = User.Identity.Name,
+                        Quantity = gap
+                    };
+                    new PurchaseDataService().CreatePurchase(purchase);
+                    message +=
+                        $"<br> <b>{orderLine.ProductCode}</b> kodlu ürün yeteri kadar stokta bulunmadığı için <b>{gap}</b> adet satın alma talebi yapıldı.";
+                }
+
             }
 
 
@@ -455,7 +484,7 @@ namespace ErkoSMS.Controllers
             var uploadedFilesPath = Path.Combine(Server.MapPath("~"), "UploadedFiles");
             var fileName = Directory.GetFiles(uploadedFilesPath, $"{orderId}_*").FirstOrDefault();
             string contentType = "application/pdf";
-            return File(fileName, contentType, Path.GetFileName(fileName) );
+            return File(fileName, contentType, Path.GetFileName(fileName));
         }
 
 
