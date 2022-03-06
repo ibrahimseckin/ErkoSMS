@@ -149,7 +149,7 @@ namespace ErkoSMS.Controllers
             sales.SalesState = order.State;
             sales.InvoiceDate = order.InvoiceDate;
             sales.Exporter = order.Exporter;
-            sales.Comment = order.Comment;
+            sales.Comment = $"{User.Identity.Name}({DateTime.Now}):{order.Comment}";
             sales.DeliveryType = order.DeliveryType;
             sales.PaymentType = order.PaymentType;
             sales.TransportCost = order.TransportCost;
@@ -237,6 +237,8 @@ namespace ErkoSMS.Controllers
         public ActionResult UpdateOrder(OrderViewModel order)
         {
             var salesDataService = new SalesDataService();
+            var previousComment = salesDataService.GetSalesById(order.OrderId).Comment;
+            int differentIndex = FindTheIndexOfFirstDifferentCharacter(previousComment, order.Comment);
             var sales = new Sales
             {
                 Id = order.OrderId,
@@ -258,7 +260,7 @@ namespace ErkoSMS.Controllers
                     UnitPrice = x.UnitPrice
                 })?.ToList() ?? new List<SalesDetail>(),
                 TotalPrice = order.OrderLines?.Sum(x => x.TotalPrice) ?? 0,
-                Comment = order.Comment,
+                Comment = order.Comment.Insert(differentIndex,$"\n{User.Identity.Name}({DateTime.Now}):"),
                 DeliveryType = order.DeliveryType,
                 PaymentType = order.PaymentType,
                 TransportCost = order.TransportCost,
@@ -518,6 +520,22 @@ namespace ErkoSMS.Controllers
                                 Value = x.Id.ToString()
                             })
                     .ToList();
+        }
+
+        private int FindTheIndexOfFirstDifferentCharacter(string previousComment, string actualComment)
+        {
+            int length = Math.Min(previousComment.Length, actualComment.Length);
+
+            int index = 0;
+            for (index = 0; index < length; index++)
+            {
+                if (previousComment[index] != actualComment[index])
+                {
+                    return index;
+                }
+            }
+
+            return index + 1;
         }
     }
 }
