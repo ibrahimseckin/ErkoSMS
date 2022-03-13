@@ -3,6 +3,7 @@ using ErkoSMS.DataAccess.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,59 +18,96 @@ namespace ErkoSMS.DataAccess
             _sqliteDataProvider = new SqliteDataProvider();
         }
 
-        public IList<IStock> GetReservedStocks()
+        public IList<IStock> GetAllStocksFromOrka()
         {
-            const string query = "select s.ID, p.Code, s.Reserved from Stock s join Products p on s.ProductId = p.Id";
-            var dataset = _sqliteDataProvider.ExecuteDataSet(query);
+            const string query = "SELECT sm.stokkodu, sm.kalanmiktar, ss.fiyat FROM dbo.[STOK_MIZAN] sm " +
+                "join dbo.STK_STOKSATIR ss on sm.stokkodu = ss.stokkodu " +
+                "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) and ss.IOdurum = 1";
+            var dataset = _sqliteDataProvider.ExecuteDataRows(query);
             IList<IStock> stocks = new List<IStock>();
-            foreach (DataRow row in dataset.Tables[0].Rows)
+
+            foreach (var row in dataset)
             {
                 stocks.Add(CreateStockObject(row));
             }
-
             return stocks;
         }
 
-
-        public IStock GetReservedStockByCode(string productCode)
+        public IStock GetStockByCodeFromOrka(string stockCode)
         {
-            const string query = "select s.ID, p.Code, s.Reserved from Stock s join Products p on s.ProductId = p.Id where p.Code = @productCode";
-            _sqliteDataProvider.AddParameter("@productCode", productCode);
-
-            DataRow row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
+            const string query = "SELECT sm.stokkodu, sm.kalanmiktar, ss.fiyat FROM dbo.[STOK_MIZAN] sm " +
+                                "join dbo.STK_STOKSATIR ss on sm.stokkodu = ss.stokkodu " +
+                                "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) AND lower(sm.stokkodu) = lower(@stokkodu) and ss.IOdurum = 1";
+            _sqliteDataProvider.AddParameter("@stokkodu", stockCode);
+            var row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
             return row != null ? CreateStockObject(row) : null;
         }
 
-
-        public IList<IStock> GetReservedStockByCodeWithWildCard(string productCode)
+        public IList<IStock> GetStockByCodeWithWildCardFromOrka(string stockCode)
         {
-            const string query = "select s.ID, p.Code, s.Reserved from Stock s join Products p on s.ProductId = p.Id where p.Code like  @productCode";
-            _sqliteDataProvider.AddParameter("@productCode", $"%{productCode}%");
-
+            const string query = "SELECT sm.stokkodu, sm.kalanmiktar, ss.fiyat FROM dbo.[STOK_MIZAN] sm " +
+                                "join dbo.STK_STOKSATIR ss on sm.stokkodu = ss.stokkodu " +
+                                "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) AND lower(sm.stokkodu) like lower(@stokkodu) and ss.IOdurum = 1";
+            _sqliteDataProvider.AddParameter("@stokkodu", $"%{stockCode}%");
             var rows = _sqliteDataProvider.ExecuteDataRows(query);
             IList<IStock> stocks = new List<IStock>();
-            foreach (DataRow row in rows)
+
+            foreach (var row in rows)
             {
                 stocks.Add(CreateStockObject(row));
+            }
+            return stocks;
+        }
+
+        public void InsertStock(IList<IStock> stocks)
+        {
+            string query =
+                "INSERT INTO Stock (ProductCode,StockAmount,ReservedAmount) VALUES(@productCode,@stockAmount,@reservedAmount)";
+            foreach (var stock in stocks)
+            {
+                _sqliteDataProvider.AddParameter("@productCode",stock.Code);
+                _sqliteDataProvider.AddParameter("@stockAmount", stock.StockAmount);
+                _sqliteDataProvider.AddParameter("@reservedAmount", stock.ReservedAmount);
+                _sqliteDataProvider.ExecuteScalar(query);
+            }
+        }
+
+        public IList<string> GetAllProductCodesInStock()
+        {
+            const string query = "select productCode from Stock";
+            var dataset = _sqliteDataProvider.ExecuteDataSet(query);
+
+            return (from DataRow row in dataset.Tables[0].Rows 
+                    select row["productCode"].ToString()).ToList();
+        }
+
+        public IList<IStock> GetAllStocks()
+        {
+            const string query = "select productCode,amount,reserved from Stock";
+            var dataset = _sqliteDataProvider.ExecuteDataSet(query);
+            var stocks = new List<IStock>();
+
+            foreach (DataRow row in dataset.Tables[0].Rows)
+            {
+                stocks.Add(new Stock
+                {
+                    Code = row["productCode"].ToString(),
+                    StockAmount = Convert.ToInt32(row["amount"].ToString()),
+                    ReservedAmount = Convert.ToInt32(row["reserved"].ToString())
+                });
             }
 
             return stocks;
         }
 
-
         private IStock CreateStockObject(DataRow row)
         {
-            var stock = new Stock
+            return new Stock()
             {
-                Id = Convert.ToInt32(row["Id"]),
-                Product = new Product
-                {
-                    Code = row["Code"]?.ToString()
-                },
-                Reserved = Convert.ToInt32(row["Reserved"])
+                Code = row["stokkodu"].ToString(),
+                StockAmount = row.IsNull("kalanmiktar") ? -1 : Convert.ToInt32(row["kalanmiktar"].ToString()),
+                Price = row.IsNull("fiyat") ? -1 : Convert.ToDouble(row["fiyat"].ToString())
             };
-
-            return stock;
         }
     }
 }

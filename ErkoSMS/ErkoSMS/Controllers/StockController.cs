@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ErkoSMS.DataAccess.Interfaces;
 
 namespace ErkoSMS.Controllers
 {
@@ -20,23 +21,8 @@ namespace ErkoSMS.Controllers
         [HttpGet]
         public ActionResult GetAllStocks()
         {
-            var orkaDataService = new ORKADataService();
-            var allStocks = orkaDataService.GetAllStocks().Select(x => new StockViewModel { Code = x.Code, Price = x.Price, RemainingAmount = x.RemainingAmount }).ToList();
-            var reservedProductIds = new SalesDataService().GetAllProductsForActiveOrders();
-
-            foreach (var reservedProductId in reservedProductIds.Distinct())
-            {
-                var productCode = new ProductDataService().GetProductById(reservedProductId).Code;
-                var reservedAmount = new SalesDataService().GetReservedCountyProductId(reservedProductId);
-                var stock = allStocks.FirstOrDefault(x => x.Code == productCode);
-                if (stock != null)
-                {
-                    stock.ReservedAmount = reservedAmount;
-                    stock.RemainingAmount -= reservedAmount;
-                }
-
-            }
-
+            var stockHistoryHelper = new StockHistoryHelper();
+            var allStocks = stockHistoryHelper.GetAllStocks();
             var orderedStocks = allStocks.OrderByDescending(x => x.ReservedAmount);
 
             return new JsonResult()
@@ -51,8 +37,8 @@ namespace ErkoSMS.Controllers
         [HttpGet]
         public ActionResult GetStock(string productCode)
         {
-            var orkaDataService = new ORKADataService();
-            var stocks = orkaDataService.GetStockByCodeWithWildCard(productCode).Select(x => new StockViewModel { Code = x.Code, Price = x.Price, RemainingAmount = x.RemainingAmount }).ToList();
+            var orkaDataService = new StockDataService();
+            var stocks = orkaDataService.GetStockByCodeWithWildCardFromOrka(productCode).Select(x => new StockViewModel { Code = x.Code, Price = x.Price, StockAmount = x.StockAmount }).ToList();
 
             var productIds = new ProductDataService().GetProductByCodeWithWildCard(productCode).Select(x => x.Id).ToList();
 
@@ -64,7 +50,7 @@ namespace ErkoSMS.Controllers
                 if (stock != null)
                 {
                     stock.ReservedAmount = reservedAmount;
-                    stock.RemainingAmount -= reservedAmount;
+                    stock.StockAmount -= reservedAmount;
                 }
             }
 
@@ -76,5 +62,6 @@ namespace ErkoSMS.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
         }
+
     }
 }

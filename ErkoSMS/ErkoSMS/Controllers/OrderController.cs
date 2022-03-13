@@ -94,11 +94,11 @@ namespace ErkoSMS.Controllers
         [HttpGet]
         public int GetStockInformationByProductCode(string productCode)
         {
-            var stock = new ORKADataService().GetStockByCode(productCode);
+            var stock = new StockDataService().GetStockByCodeFromOrka(productCode);
             var productId = new ProductDataService().GetProductByCode(productCode).Id;
             var reservedStock = new SalesDataService().GetReservedCountyProductId(productId);
 
-            var usableStock = stock.RemainingAmount - reservedStock;
+            var usableStock = stock.StockAmount - reservedStock;
             return usableStock;
         }
 
