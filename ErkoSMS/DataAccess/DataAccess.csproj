@@ -98,6 +98,7 @@
     <Compile Include="Model\SalesDetail.cs" />
     <Compile Include="Model\SalesState.cs" />
     <Compile Include="Model\Stock.cs" />
+    <Compile Include="Model\StockChangeState.cs" />
     <Compile Include="Model\StockHistory.cs" />
     <Compile Include="Model\Supplier.cs" />
     <Compile Include="DataService\ProductDataService.cs" />

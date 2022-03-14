@@ -13,9 +13,11 @@ namespace ErkoSMS.DataAccess
     public class StockDataService
     {
         private IDataProvider _sqliteDataProvider;
+        private IDataProvider _orkaDataProvider;
         public StockDataService()
         {
             _sqliteDataProvider = new SqliteDataProvider();
+            _orkaDataProvider = new MsSqlDataProvider();
         }
 
         public IList<IStock> GetAllStocksFromOrka()
@@ -23,7 +25,7 @@ namespace ErkoSMS.DataAccess
             const string query = "SELECT sm.stokkodu, sm.kalanmiktar, ss.fiyat FROM dbo.[STOK_MIZAN] sm " +
                 "join dbo.STK_STOKSATIR ss on sm.stokkodu = ss.stokkodu " +
                 "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) and ss.IOdurum = 1";
-            var dataset = _sqliteDataProvider.ExecuteDataRows(query);
+            var dataset = _orkaDataProvider.ExecuteDataRows(query);
             IList<IStock> stocks = new List<IStock>();
 
             foreach (var row in dataset)
@@ -38,8 +40,8 @@ namespace ErkoSMS.DataAccess
             const string query = "SELECT sm.stokkodu, sm.kalanmiktar, ss.fiyat FROM dbo.[STOK_MIZAN] sm " +
                                 "join dbo.STK_STOKSATIR ss on sm.stokkodu = ss.stokkodu " +
                                 "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) AND lower(sm.stokkodu) = lower(@stokkodu) and ss.IOdurum = 1";
-            _sqliteDataProvider.AddParameter("@stokkodu", stockCode);
-            var row = _sqliteDataProvider.ExecuteDataRows(query).FirstOrDefault();
+            _orkaDataProvider.AddParameter("@stokkodu", stockCode);
+            var row = _orkaDataProvider.ExecuteDataRows(query).FirstOrDefault();
             return row != null ? CreateStockObject(row) : null;
         }
 
@@ -48,8 +50,8 @@ namespace ErkoSMS.DataAccess
             const string query = "SELECT sm.stokkodu, sm.kalanmiktar, ss.fiyat FROM dbo.[STOK_MIZAN] sm " +
                                 "join dbo.STK_STOKSATIR ss on sm.stokkodu = ss.stokkodu " +
                                 "WHERE ss.firstdate IN (SELECT max(ss2.firstdate) FROM dbo.STK_STOKSATIR ss2 WHERE ss2.stokkodu=ss.stokkodu) AND lower(sm.stokkodu) like lower(@stokkodu) and ss.IOdurum = 1";
-            _sqliteDataProvider.AddParameter("@stokkodu", $"%{stockCode}%");
-            var rows = _sqliteDataProvider.ExecuteDataRows(query);
+            _orkaDataProvider.AddParameter("@stokkodu", $"%{stockCode}%");
+            var rows = _orkaDataProvider.ExecuteDataRows(query);
             IList<IStock> stocks = new List<IStock>();
 
             foreach (var row in rows)
@@ -62,7 +64,7 @@ namespace ErkoSMS.DataAccess
         public void InsertStock(IList<IStock> stocks)
         {
             string query =
-                "INSERT INTO Stock (ProductCode,StockAmount,ReservedAmount) VALUES(@productCode,@stockAmount,@reservedAmount)";
+                "INSERT INTO Stock (ProductCode,Amount,ReservedAmount) VALUES(@productCode,@stockAmount,@reservedAmount)";
             foreach (var stock in stocks)
             {
                 _sqliteDataProvider.AddParameter("@productCode",stock.Code);
@@ -72,18 +74,38 @@ namespace ErkoSMS.DataAccess
             }
         }
 
-        public IList<string> GetAllProductCodesInStock()
+        public Dictionary<string,int> GetAllProductsInStock()
         {
-            const string query = "select productCode from Stock";
+            const string query = "Select productCode,Id from Stock";
             var dataset = _sqliteDataProvider.ExecuteDataSet(query);
 
-            return (from DataRow row in dataset.Tables[0].Rows 
-                    select row["productCode"].ToString()).ToList();
+            var productDictionary = new Dictionary<string, int>();
+            foreach (DataRow row in dataset.Tables[0].Rows)
+            {
+                productDictionary[row["ProductCode"].ToString()] = Convert.ToInt32(row["Id"].ToString());
+            }
+
+            return productDictionary;
+        }
+
+        public void InsertStockHistory(IList<StockHistory> stockHistories)
+        {
+            string query =
+                "INSERT INTO StockHistory (StockId,Change,ChangeDate,ChangeAmount) " +
+                "VALUES(@stockId,@Change,@ChangeDate,@ChangeAmount)";
+            foreach (var stockHistory in stockHistories)
+            {
+                _sqliteDataProvider.AddParameter("@stockId", stockHistory.StockId);
+                _sqliteDataProvider.AddParameter("@Change", stockHistory.Change);
+                _sqliteDataProvider.AddParameter("@changedate", stockHistory.ChangeTime);
+                _sqliteDataProvider.AddParameter("@changeamount", stockHistory.ChangeAmount);
+                _sqliteDataProvider.ExecuteScalar(query);
+            }
         }
 
         public IList<IStock> GetAllStocks()
         {
-            const string query = "select productCode,amount,reserved from Stock";
+            const string query = "select productCode,amount,reservedamount from Stock";
             var dataset = _sqliteDataProvider.ExecuteDataSet(query);
             var stocks = new List<IStock>();
 
@@ -93,7 +115,7 @@ namespace ErkoSMS.DataAccess
                 {
                     Code = row["productCode"].ToString(),
                     StockAmount = Convert.ToInt32(row["amount"].ToString()),
-                    ReservedAmount = Convert.ToInt32(row["reserved"].ToString())
+                    ReservedAmount = Convert.ToInt32(row["reservedamount"].ToString())
                 });
             }
 
