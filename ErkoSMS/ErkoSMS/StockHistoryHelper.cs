@@ -40,50 +40,56 @@ namespace ErkoSMS
             var existingProductsInStock = stockDataService.GetAllProductsInStock();
 
             var allStockInformation = GetAllStocks();
+            var previousStocks = stockDataService.GetAllStocks();
             var stocksWillBeAdded = new List<IStock>();
             var stockHistoryWillBeAdded = new List<StockHistory>();
-            foreach (var stockInformation in allStockInformation)
+            var stockWillBeUpdated = new List<IStock>();
+            foreach (var existingStockInformation in allStockInformation)
             {
                 //stock does not exist, it should be added to stock
-                if (existingProductsInStock.ContainsKey(stockInformation.Code) == false)
+                if (existingProductsInStock.ContainsKey(existingStockInformation.Code) == false)
                 {
                     stocksWillBeAdded.Add(new Stock
                     {
-                        Code = stockInformation.Code,
-                        StockAmount = stockInformation.StockAmount,
-                        ReservedAmount = stockInformation.ReservedAmount
+                        Code = existingStockInformation.Code,
+                        StockAmount = existingStockInformation.StockAmount,
+                        ReservedAmount = existingStockInformation.ReservedAmount
                     });
                 }
                 else
                 {
-                    //Get previous stock information
-                    var previousStocks = stockDataService.GetAllStocks();
-
                     //Compare previous and existing stock amounts
-                    
-                    foreach (var previousStock in previousStocks)
+                    var time = DateTime.Now;
+                    //if there is a change on stock amount
+                    var previousStock = previousStocks.First(x => x.Code == existingStockInformation.Code);
+                    if (previousStock != null && previousStock.StockAmount !=
+                        existingStockInformation.StockAmount)
                     {
-                        var time = DateTime.Now;
-                        var existingStock = allStockInformation.First(x => x.Code == previousStock.Code);
-                        if (existingStock != null && previousStock.StockAmount !=
-                            existingStock.StockAmount)
+                        //insert to updated stock list
+                        stockWillBeUpdated.Add(new Stock
                         {
-                            //insert to history list; 
-                            var stockHistory = new StockHistory();
-                            stockHistory.StockId = existingProductsInStock[previousStock.Code.ToString()];
-                            stockHistory.ChangeAmount = Math.Abs(
-                                existingStock.StockAmount - previousStock.StockAmount);
-                            stockHistory.Change = existingStock.StockAmount > previousStock.StockAmount
+                            Id = existingProductsInStock[previousStock.Code.ToString()],
+                            StockAmount = previousStock.StockAmount
+                        });
+                        //insert to history list; 
+                        var stockHistory = new StockHistory
+                        {
+                            StockId = existingProductsInStock[previousStock.Code.ToString()],
+                            ChangeAmount = Math.Abs(
+                                existingStockInformation.StockAmount - previousStock.StockAmount),
+                            Change = existingStockInformation.StockAmount > previousStock.StockAmount
                                 ? StockChangeState.StokIncreased
-                                : StockChangeState.StokDecreased;
-                            stockHistory.ChangeTime = time;
-                        }
+                                : StockChangeState.StokDecreased,
+                            ChangeTime = time
+                        };
+                        stockHistoryWillBeAdded.Add(stockHistory);
                     }
                 }
             }
 
             stockDataService.InsertStockHistory(stockHistoryWillBeAdded);
             stockDataService.InsertStock(stocksWillBeAdded);
+            stockDataService.UpdateStock(stockWillBeUpdated);
         }
 
 

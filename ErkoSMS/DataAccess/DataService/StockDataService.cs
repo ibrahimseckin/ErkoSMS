@@ -74,6 +74,18 @@ namespace ErkoSMS.DataAccess
             }
         }
 
+        public void UpdateStock(IList<IStock> stocks)
+        {
+            string query =
+                "Update Stock Set Amount = @stockAmount where Id = @Id";
+            foreach (var stock in stocks)
+            {
+                _sqliteDataProvider.AddParameter("@stockAmount", stock.StockAmount);
+                _sqliteDataProvider.AddParameter("@Id", stock.Id);
+                _sqliteDataProvider.ExecuteScalar(query);
+            }
+        }
+
         public Dictionary<string,int> GetAllProductsInStock()
         {
             const string query = "Select productCode,Id from Stock";
