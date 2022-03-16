@@ -1,17 +1,14 @@
 ﻿using ErkoSMS.Enums;
 using ErkoSMS.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using ErkoSMS.DataAccess.Model;
 
 namespace ErkoSMS.Controllers
 {
 
     public class HomeController : Controller
     {
+        
 
         LeftMenuViewModel AdministratorNavigations = new LeftMenuViewModel
         {
@@ -24,7 +21,12 @@ namespace ErkoSMS.Controllers
                         new List<LeftMenuItem>{new LeftMenuItem("Satış Listele/Güncelle","Order","ListOrder"),
                         new LeftMenuItem("Yeni Satış","Order","CreateOrder")
                         }),
-                    new LeftMenu(new LeftMenuItem("Stok Listesi", "Stock", "Index"),null),
+                    new LeftMenu(new LeftMenuItem("Stok Yönetimi", "", ""),
+                        new List<LeftMenuItem>
+                        {
+                            new LeftMenuItem("Stok Listesi", "Stock", "Index"),
+                            new LeftMenuItem("Stok Hareketleri", "Stock", "History")
+                        }),
                     new LeftMenu(new LeftMenuItem("Tedarikçi Yönetimi", "", ""),
                         new List<LeftMenuItem>{new LeftMenuItem("Tedarikçi Listele/Güncelle","Supplier","ListSuppliers"),
                             new LeftMenuItem("Yeni Tedarikçi Girişi","Supplier","CreateSupplier")
@@ -57,7 +59,13 @@ namespace ErkoSMS.Controllers
                     new List<LeftMenuItem>{new LeftMenuItem("Satış Listele/Güncelle","Order","ListOrder"),
                         new LeftMenuItem("Yeni Satış","Order","CreateOrder")
                     }),
-                 new LeftMenu(new LeftMenuItem("Ürünler", "Product", "Index"),null)
+                 new LeftMenu(new LeftMenuItem("Ürünler", "Product", "Index"),null),
+                 new LeftMenu(new LeftMenuItem("Stok Yönetimi", "", ""),
+                     new List<LeftMenuItem>
+                     {
+                         new LeftMenuItem("Stok Listesi", "Stock", "Index"),
+                         new LeftMenuItem("Stok Hareketleri", "Stock", "History")
+                     }),
             }
         };
 
@@ -67,7 +75,13 @@ namespace ErkoSMS.Controllers
             {
                 new LeftMenu(new LeftMenuItem("Paletler", "Pallet", "Index"),null),
                 new LeftMenu(new LeftMenuItem("Paketleme Bekleyen Siparişler", "Packing", "ListUnpackedOrders"),null),
-                new LeftMenu(new LeftMenuItem("Paketlenmiş Siparişler", "Packing", "ListPackedOrders"),null)
+                new LeftMenu(new LeftMenuItem("Paketlenmiş Siparişler", "Packing", "ListPackedOrders"),null),
+                new LeftMenu(new LeftMenuItem("Stok Yönetimi", "", ""),
+                    new List<LeftMenuItem>
+                    {
+                        new LeftMenuItem("Stok Listesi", "Stock", "Index"),
+                        new LeftMenuItem("Stok Hareketleri", "Stock", "History")
+                    }),
             }
         };
 
@@ -89,7 +103,12 @@ namespace ErkoSMS.Controllers
                     new List<LeftMenuItem>{new LeftMenuItem("Satış Listele/Güncelle","Order","ListOrder"),
                         new LeftMenuItem("Yeni Satış","Order","CreateOrder")
                     }),
-                new LeftMenu(new LeftMenuItem("Stok Listesi", "Stock", "Index"),null),
+                new LeftMenu(new LeftMenuItem("Stok Yönetimi", "", ""),
+                    new List<LeftMenuItem>
+                    {
+                        new LeftMenuItem("Stok Listesi", "Stock", "Index"),
+                        new LeftMenuItem("Stok Hareketleri", "Stock", "History")
+                    }),
                 new LeftMenu(new LeftMenuItem("Tedarikçi Yönetimi", "", ""),
                     new List<LeftMenuItem>{new LeftMenuItem("Tedarikçi Listele/Güncelle","Supplier","ListSuppliers"),
                         new LeftMenuItem("Yeni Tedarikçi Girişi","Supplier","CreateSupplier")
@@ -104,8 +123,8 @@ namespace ErkoSMS.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            var stockHistoryHelper = new StockHistoryHelper();
-            stockHistoryHelper.UpdateStockHistory();
+            //var stockHistoryHelper = new StockHistoryHelper();
+            //stockHistoryHelper.UpdateStockHistory();
             ViewBag.Role = User.IsInRole(UserTypes.Administrator.Name) ? UserTypes.Administrator.Name : "";
             return View();
         }

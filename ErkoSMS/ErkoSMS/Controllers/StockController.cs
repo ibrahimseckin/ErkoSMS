@@ -17,6 +17,10 @@ namespace ErkoSMS.Controllers
             return View();
         }
 
+        public ActionResult History()
+        {
+            return View();
+        }
 
         [HttpGet]
         public ActionResult GetAllStocks()
@@ -63,5 +67,32 @@ namespace ErkoSMS.Controllers
             };
         }
 
+        [HttpGet]
+        public ActionResult GetAllStockActivities()
+        {
+            var stockDataService = new StockDataService();
+            var stockHistoryActivities = stockDataService.GetAllStockHistory();
+            var stockHistoryViewModels = new List<StockHistoryViewModel>();
+            foreach (var stockHistory in stockHistoryActivities)
+            {
+                stockHistoryViewModels.Add(new StockHistoryViewModel
+                {
+                    ProductCode = stockDataService.GetProductCodeByStockId(stockHistory.StockId),
+                    Change = stockHistory.Change,
+                    ChangeAmount = stockHistory.ChangeAmount,
+                    ChangeTime = stockHistory.ChangeTime
+                });
+            }
+
+
+            var stockHistoryOrderedByProductCode = stockHistoryViewModels.OrderBy(x => x.ProductCode).ToList();
+            return new JsonResult()
+            {
+                Data = stockHistoryOrderedByProductCode,
+                ContentType = "application/json",
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+        }
     }
 }

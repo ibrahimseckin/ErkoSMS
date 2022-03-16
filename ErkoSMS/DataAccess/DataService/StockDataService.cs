@@ -114,6 +114,36 @@ namespace ErkoSMS.DataAccess
             }
         }
 
+        public IList<StockHistory> GetAllStockHistory()
+        {
+            var stockHistories = new List<StockHistory>();
+
+            const string query = "Select stockId,change,changedate,changeamount from StockHistory";
+            var dataset = _sqliteDataProvider.ExecuteDataSet(query);
+
+            foreach (DataRow row in dataset.Tables[0].Rows)
+            {
+                stockHistories.Add(new StockHistory
+                {
+                    Change = (StockChangeState)Convert.ToInt32(row["change"]),
+                    ChangeAmount = Convert.ToInt32(row["changeamount"].ToString()),
+                    ChangeTime = DateTime.Parse(row["changedate"].ToString()),
+                    StockId = Convert.ToInt32(row["stockId"].ToString())
+            });
+            }
+
+            return stockHistories;
+        }
+
+        public string GetProductCodeByStockId(int stockId)
+        {
+            const string query = "select productCode from Stock where id = @stockId";
+            _sqliteDataProvider.AddParameter("@stockId", stockId);
+
+            var dataSet = _sqliteDataProvider.ExecuteDataSet(query);
+            return dataSet.Tables[0].Rows[0]["productCode"].ToString();
+        }
+
         public IList<IStock> GetAllStocks()
         {
             const string query = "select productCode,amount,reservedamount from Stock";

@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "Stok Haraketlerini İzle";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div id="listStockActivities" style="margin-top:20px;">
+    <input type="button" id="listAllStockActivitiesButton" value="Bütün Stok Hareketlerini Listele" />
+    <hr style="margin: 10px 0;" />
+</div>
+<div style="display:block;margin-top:20px">
+    <table id="stockActivitiesTable" class="table table-bordered table-condensed table-hover table-responsive table-striped"></table>
+</div>
+
+
+<script>
+    var tb = $("#stockActivitiesTable");
+
+    var listStockActivities = function () {
+        destroyTable();
+        ERKOSMS.AjaxAction("GetAllStockActivities", {}, false).then(function (data) {
+            var datatable = tb.DataTable({
+                autoWidth: true,
+                columns: [
+                    { title: "ProductCode", data: "ProductCode", className: "data" },
+                    { title: "Change", data: "Change", className: "data" },
+                    { title: "ChangeAmount", data: "ChangeAmount", className: "data" },
+                    { title: "ChangeTime", data: "ChangeTime", className: "data" }
+                ],
+                columnDefs: [
+                    {
+                        targets: [1],
+                        render: formatChangeState
+                    },
+                    {
+                        targets: [3],
+                        render: formatDate
+                    }
+                ],
+                data: data,
+                sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
+                aaSorting: [], // Initial sorting
+                bInfo: true, // Info is not shown because the total count to show is not known
+                searching: true, // Disable searching TODO: Enable searching if necessary
+                paging: true, // Disable paging in outstanding
+                pageLength: 50,
+                deferRender: true
+            });
+        });
+    }
+
+    var formatChangeState = function (data) {
+        debugger;
+        if (data == 0) {
+            return "Stok Arttı";
+        }
+        else if (data == 1) {
+            return "Stok Azaldı";
+        }
+    }
+
+    var formatDate = function (date) {
+        debugger;
+        if (date == null) {
+            return '';
+        }
+        else {
+            return window.moment(date).format("L");
+        }
+
+    }
+
+    var destroyTable = function () {
+        var tb = $("#stockActivitiesTable");
+
+        if ($.fn.dataTable.isDataTable(tb))
+            tb.DataTable().destroy();
+
+        tb.empty();
+    };
+    $("#listAllStockActivitiesButton").on("click", listStockActivities);
+</script>
+
+

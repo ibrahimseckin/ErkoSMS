@@ -227,6 +227,7 @@
     <Compile Include="ViewModels\OrderViewModel.cs" />
     <Compile Include="ViewModels\ProductViewModel.cs" />
     <Compile Include="ViewModels\PurchaseViewModel.cs" />
+    <Compile Include="ViewModels\StockHistoryViewModel.cs" />
     <Compile Include="ViewModels\StockViewModel.cs" />
     <Compile Include="ViewModels\ExporterViewModel.cs" />
     <Compile Include="ViewModels\SupplierViewModel.cs" />
@@ -726,6 +727,7 @@
     <Content Include="Views\Order\ListOrder.cshtml" />
     <Content Include="Views\Exporter\BankAccountRow.cshtml" />
     <Content Include="Views\Pallet\EditPallet.cshtml" />
+    <Content Include="Views\Stock\History.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UploadedFiles\" />
