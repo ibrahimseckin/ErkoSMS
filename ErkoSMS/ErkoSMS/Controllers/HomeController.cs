@@ -104,6 +104,8 @@ namespace ErkoSMS.Controllers
         [Authorize]
         public ActionResult Index()
         {
+            var stockHistoryHelper = new StockHistoryHelper();
+            stockHistoryHelper.UpdateStockHistory();
             ViewBag.Role = User.IsInRole(UserTypes.Administrator.Name) ? UserTypes.Administrator.Name : "";
             return View();
         }

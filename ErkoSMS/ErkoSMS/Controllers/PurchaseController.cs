@@ -64,8 +64,8 @@ namespace ErkoSMS.Controllers
         [HttpGet]
         public int GetStockInformationByProductCode(string productCode)
         {
-            var stock = new ORKADataService().GetStockByCode(productCode);
-            return stock.RemainingAmount;
+            var stock = new StockDataService().GetStockByCodeFromOrka(productCode);
+            return stock.StockAmount;
         }
 
         public ActionResult ListPurchase()

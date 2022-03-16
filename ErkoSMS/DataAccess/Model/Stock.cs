@@ -10,7 +10,9 @@ namespace ErkoSMS.DataAccess.Model
     public class Stock : IStock
     {
         public int Id { get; set; }
-        public IProduct Product { get; set; }
-        public int Reserved { get; set; }
+        public string Code { get; set; }
+        public int StockAmount { get; set; }
+        public int ReservedAmount { get; set; }
+        public double Price { get; set; }
     }
 }

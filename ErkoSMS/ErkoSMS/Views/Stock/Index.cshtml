@@ -8,6 +8,7 @@
     <input type="text" id="productCode" placeholder="Ürün Kodu" />
     <input type="button" id="searchButton" value="Ara" />
     <input type="button" id="getAllButtomn" value="Hepsini getir" />
+    <input type="button" id="syncStocks" value="Stokları senkronla" />
 </div>
 
 <div id="stockTableDiv" style="margin-top:20px">
@@ -27,14 +28,14 @@
     $("#getAllButtomn").on("click", function () {
         destroyTable();
         var tb = $("#stockListTable");
-        ERKOSMS.AjaxAction("Stock/GetAllStocks", {}, false).then(function (data) {
+        ERKOSMS.AjaxAction("Stock/GetAllStocksFromOrka", {}, false).then(function (data) {
             var datatable = tb.DataTable({
                 autoWidth: true,
                 columns: [
                     { title: "Ürün Kodu", data: "Code" },
                     { title: "Fiyat", data: "Price" },
                     { title: "Kalan Miktar", data: "RemainingAmount" },
-                    { title: "Rezerve", data: "ReservedAmount" }
+                    { title: "Rezerve", data: "ReservedAmountAmount" }
                 ],
                 data: data,
                 sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
@@ -60,7 +61,7 @@
                     { title: "Ürün Kodu", data: "Code" },
                     { title: "Fiyat", data: "Price" },
                     { title: "Kalan Miktar", data: "RemainingAmount" },
-                    { title: "Rezerve Edilmiş Miktar", data: "ReservedAmount" }
+                    { title: "Rezerve Edilmiş Miktar", data: "ReservedAmountAmount" }
                 ],
                 data: data,
                 sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',

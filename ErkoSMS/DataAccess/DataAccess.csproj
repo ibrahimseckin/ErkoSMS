@@ -85,7 +85,6 @@
     <Compile Include="Interfaces\IPallet.cs" />
     <Compile Include="Interfaces\IProduct.cs" />
     <Compile Include="Interfaces\IStock.cs" />
-    <Compile Include="Interfaces\IStockORKA.cs" />
     <Compile Include="Model\Exporter.cs" />
     <Compile Include="Model\PackedProduct.cs" />
     <Compile Include="Model\PackingExport.cs" />
@@ -99,9 +98,9 @@
     <Compile Include="Model\SalesDetail.cs" />
     <Compile Include="Model\SalesState.cs" />
     <Compile Include="Model\Stock.cs" />
-    <Compile Include="Model\StockORKA.cs" />
+    <Compile Include="Model\StockChangeState.cs" />
+    <Compile Include="Model\StockHistory.cs" />
     <Compile Include="Model\Supplier.cs" />
-    <Compile Include="DataService\ORKADataService.cs" />
     <Compile Include="DataService\ProductDataService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataService\PurchaseDataService.cs" />

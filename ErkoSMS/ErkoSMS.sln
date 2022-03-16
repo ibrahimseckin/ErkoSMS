@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQlite", "SQlite", "{32BFCE
 		SolutionItems\SQLite\sqlite3.exe = SolutionItems\SQLite\sqlite3.exe
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockHistoryUpdate", "StockHistoryUpdate\StockHistoryUpdate.csproj", "{EEB40B4C-69C3-4644-8EB8-708A3F5EBA80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{C231430B-82A6-4AD2-977C-DCF27D80FE48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C231430B-82A6-4AD2-977C-DCF27D80FE48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C231430B-82A6-4AD2-977C-DCF27D80FE48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEB40B4C-69C3-4644-8EB8-708A3F5EBA80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEB40B4C-69C3-4644-8EB8-708A3F5EBA80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEB40B4C-69C3-4644-8EB8-708A3F5EBA80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEB40B4C-69C3-4644-8EB8-708A3F5EBA80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
