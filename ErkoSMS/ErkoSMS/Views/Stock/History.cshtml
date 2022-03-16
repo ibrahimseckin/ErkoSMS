@@ -15,40 +15,14 @@
 
 <script>
     var tb = $("#stockActivitiesTable");
+    var destroyTable = function () {
+        var tb = $("#stockActivitiesTable");
 
-    var listStockActivities = function () {
-        destroyTable();
-        ERKOSMS.AjaxAction("GetAllStockActivities", {}, false).then(function (data) {
-            var datatable = tb.DataTable({
-                autoWidth: true,
-                columns: [
-                    { title: "ProductCode", data: "ProductCode", className: "data" },
-                    { title: "Change", data: "Change", className: "data" },
-                    { title: "ChangeAmount", data: "ChangeAmount", className: "data" },
-                    { title: "ChangeTime", data: "ChangeTime", className: "data" }
-                ],
-                columnDefs: [
-                    {
-                        targets: [1],
-                        render: formatChangeState
-                    },
-                    {
-                        targets: [3],
-                        render: formatDate
-                    }
-                ],
-                data: data,
-                sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
-                aaSorting: [], // Initial sorting
-                bInfo: true, // Info is not shown because the total count to show is not known
-                searching: true, // Disable searching TODO: Enable searching if necessary
-                paging: true, // Disable paging in outstanding
-                pageLength: 50,
-                deferRender: true
-            });
-        });
-    }
+        if ($.fn.dataTable.isDataTable(tb))
+            tb.DataTable().destroy();
 
+        tb.empty();
+    };
     var formatChangeState = function (data) {
         debugger;
         if (data == 0) {
@@ -69,15 +43,39 @@
         }
 
     }
+    var listStockActivities = function () {
+        destroyTable();
+        ERKOSMS.AjaxAction("GetAllStockActivities", {}, false).then(function (data) {
+            var datatable = tb.DataTable({
+                autoWidth: true,
+                columns: [
+                    { title: "Ürün Kodu", data: "ProductCode", className: "data" },
+                    { title: "Değişiklik", data: "Change", className: "data" },
+                    { title: "Miktar", data: "ChangeAmount", className: "data" },
+                    { title: "Tarih", data: "ChangeTime", className: "data" }
+                ],
+                columnDefs: [
+                    {
+                        targets: [1],
+                        render: formatChangeState
+                    },
+                    {
+                        targets: [3],
+                        render: formatDate
+                    }
+                ],
+                data: data
+                //sDom: '<"top"Blif<"clear">>rt<"bottom"ip<"clear">>',
+                //aaSorting: [], // Initial sorting
+                //bInfo: true, // Info is not shown because the total count to show is not known
+                //searching: true, // Disable searching TODO: Enable searching if necessary
+                //paging: true, // Disable paging in outstanding
+                //pageLength: 50,
+                //deferRender: true
+            });
+        });
+    }
 
-    var destroyTable = function () {
-        var tb = $("#stockActivitiesTable");
-
-        if ($.fn.dataTable.isDataTable(tb))
-            tb.DataTable().destroy();
-
-        tb.empty();
-    };
     $("#listAllStockActivitiesButton").on("click", listStockActivities);
 </script>
 
