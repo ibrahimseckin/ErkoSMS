@@ -27,14 +27,14 @@
     $("#getAllButtomn").on("click", function () {
         destroyTable();
         var tb = $("#stockListTable");
-        ERKOSMS.AjaxAction("Stock/GetAllStocksFromOrka", {}, false).then(function (data) {
+        ERKOSMS.AjaxAction("Stock/GetAllStocks", {}, false).then(function (data) {
             var datatable = tb.DataTable({
                 autoWidth: true,
                 columns: [
                     { title: "Ürün Kodu", data: "Code" },
                     { title: "Fiyat", data: "Price" },
-                    { title: "Kalan Miktar", data: "RemainingAmount" },
-                    { title: "Rezerve", data: "ReservedAmountAmount" }
+                    { title: "Stok Miktarı", data: "StockAmount" },
+                    { title: "Rezerve", data: "ReservedAmount" }
                 ],
                 data: data,
                 sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
@@ -59,8 +59,8 @@
                 columns: [
                     { title: "Ürün Kodu", data: "Code" },
                     { title: "Fiyat", data: "Price" },
-                    { title: "Kalan Miktar", data: "RemainingAmount" },
-                    { title: "Rezerve Edilmiş Miktar", data: "ReservedAmountAmount" }
+                    { title: "Stok Miktarı", data: "StockAmount" },
+                    { title: "Rezerve Edilmiş Miktar", data: "ReservedAmount" }
                 ],
                 data: data,
                 sDom: '<"top"lif<"clear">>rt<"bottom"ip<"clear">>',
